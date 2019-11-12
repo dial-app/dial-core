@@ -11,10 +11,19 @@ from PySide2.QtWidgets import QApplication
 
 from .mainwindow import MainWindow
 
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
+
+def main(argv):
+    """
+    Initialize Qt and start the program.
+    """
+
+    app = QApplication(argv)
 
     window = MainWindow()
     window.show()
 
     sys.exit(app.exec_())
+
+
+if __name__ == "__main__":
+    main(sys.argv)

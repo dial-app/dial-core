@@ -2,8 +2,7 @@
 
 """The main window for the program."""
 
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QMainWindow, QVBoxLayout
+from PySide2.QtWidgets import QMainWindow
 
 from tfg.utils import log
 

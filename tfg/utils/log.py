@@ -3,7 +3,6 @@
 """Loggers used to display information and debug."""
 
 import logging
-from io import StringIO
 
 from PySide2.QtWidgets import QDialog, QPlainTextEdit, QVBoxLayout, QWidget
 
