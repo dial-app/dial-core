@@ -8,6 +8,7 @@ from PySide2.QtWidgets import QAction, QMenuBar
 
 class MainMenuBar(QMenuBar):
     quit = Signal()
+    toggle_log_window = Signal()
 
     def __init__(self, parent):
         super().__init__(parent)
@@ -16,10 +17,19 @@ class MainMenuBar(QMenuBar):
         self._create_menus()
 
     def _create_actions(self):
+        # Quit act
         self._quit_act = QAction("Quit", self)
         self._quit_act.triggered.connect(self.quit)
 
-    def _create_menus(self):
-        self._file_menu = self.addMenu("&File")
+        # Show log window act
+        self._show_log_act = QAction("Show log", self)
+        self._show_log_act.triggered.connect(self.toggle_log_window)
 
+    def _create_menus(self):
+        # File menu
+        self._file_menu = self.addMenu("&File")
         self._file_menu.addAction(self._quit_act)
+
+        # Windows menu
+        self._windows_menu = self.addMenu("Windows")
+        self._windows_menu.addAction(self._show_log_act)

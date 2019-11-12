@@ -28,4 +28,11 @@ class MainWindow(QMainWindow):
 
         self.setMenuBar(self._main_menu_bar)
 
+        # Connections
         self._main_menu_bar.quit.connect(QApplication.quit)
+        self._main_menu_bar.toggle_log_window.connect(self._toggle_log_window)
+
+    def _toggle_log_window(self):
+        dialog = log.LoggerTextboxDialog(self)
+
+        dialog.show()
