@@ -2,9 +2,11 @@
 
 """The main window for the program."""
 
-from PySide2.QtWidgets import QMainWindow
+from PySide2.QtWidgets import QApplication, QMainWindow
 
 from tfg.utils import log
+
+from .mainmenubar import MainMenuBar
 
 
 class MainWindow(QMainWindow):
@@ -15,6 +17,15 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.setWindowTitle("TFG")
+        self._main_menu_bar = MainMenuBar(self)
+
+        self._setup()
 
         log.mainwindow.info("Program Initialized")
+
+    def _setup(self):
+        self.setWindowTitle("TFG")
+
+        self.setMenuBar(self._main_menu_bar)
+
+        self._main_menu_bar.quit.connect(QApplication.quit)
