@@ -7,11 +7,14 @@ Entry point for the application.
 
 import sys
 
-from PySide2.QtWidgets import QApplication, QLabel
+from PySide2.QtWidgets import QApplication
+
+from .mainwindow import MainWindow
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
 
-    label = QLabel("<font color=Red size=40>Hello World!</font>")
-    label.show()
-    app.exec_()
+    window = MainWindow()
+    window.show()
+
+    sys.exit(app.exec_())
