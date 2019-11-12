@@ -5,6 +5,8 @@
 from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QMainWindow, QVBoxLayout, QWidget
 
+from tfg.utils import log
+
 
 class MainWindow(QMainWindow):
     """
@@ -18,6 +20,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("TFG")
 
         self._add_widgets()
+
+        log.mainwindow.info("Program initialized.")
 
     def _add_widgets(self):
         main_widget = QWidget(self)
