@@ -20,7 +20,8 @@ from enum import Enum
 import keras
 import matplotlib.pyplot as plt
 import numpy as np
-from keras.datasets import mnist
+from keras.datasets import cifar10, mnist
+from keras.preprocessing.image import ImageDataGenerator
 from skimage.io import imread
 from skimage.transform import resize
 
@@ -31,22 +32,14 @@ class DataType(Enum):
     NUMERIC = 3
 
 
-class DataArray:
-    def __init__(self, data, data_type):
-        self.data = data
-        self.data_type = data_type
-
-    def __getitem__(self, idx):
-        return self.data[idx]
-
-
 class Dataset(keras.utils.Sequence):
     """
     Dataset generator
     """
 
-    def __init__(self, x_set, y_set, batch_size=32):
+    def __init__(self, x_set, y_set, x_type, y_type, batch_size=32):
         self.x, self.y = x_set, y_set
+        self.x_type, self.y_type = x_type, y_type
         self.batch_size = batch_size
 
     def __len__(self):
@@ -56,7 +49,7 @@ class Dataset(keras.utils.Sequence):
         batch_x = self.x[idx * self.batch_size : (idx + 1) * self.batch_size]
         batch_y = self.y[idx * self.batch_size : (idx + 1) * self.batch_size]
 
-        if self.x.data_type is DataType.IMAGE_PATH:
+        if self.x_type is DataType.IMAGE_PATH:
             batch_x = [resize(imread(file_name), (200, 200)) for file_name in batch_x]
 
         return np.array(batch_x), np.array(batch_y)
@@ -65,14 +58,9 @@ class Dataset(keras.utils.Sequence):
 if __name__ == "__main__":
     (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
-    x_train_array = DataArray(x_train, DataType.IMAGE_ARRAY)
-    y_train_array = DataArray(y_train, DataType.NUMERIC)
+    train_dataset = Dataset(x_train, y_train, DataType.IMAGE_ARRAY, DataType.NUMERIC)
 
-    dset = Dataset(x_train_array, y_train_array)
+    x, y = train_dataset[0]
 
-    print("Dataset loaded")
-
-    bx, by = dset[0]
-
-    plt.imshow(bx[1])
+    plt.imshow(x[0])
     plt.show()
