@@ -5,9 +5,9 @@
 from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget, QWidget
 
+from tfg.mainwindow.mainmenubar import MainMenuBar
 from tfg.utils import log
-
-from .mainmenubar import MainMenuBar
+from tfg.widgets import DatasetsWindow
 
 
 class MainWindow(QMainWindow):
@@ -34,7 +34,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self._tabs_widget)
 
         # Tab widget
-        self._tabs_widget.addTab(QWidget(self), "Datasets")
+        self._tabs_widget.addTab(DatasetsWindow(self), "Datasets")
 
         # Connections
         self._main_menu_bar.quit.connect(QApplication.quit)
