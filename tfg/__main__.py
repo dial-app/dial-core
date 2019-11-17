@@ -9,7 +9,15 @@ import sys
 
 from PySide2.QtWidgets import QApplication
 
-from .mainwindow import MainWindow
+from tfg.mainwindow import MainWindow
+from tfg.utils import log
+
+
+def early_init():
+    """
+    Early initialization and checks needed before starting.
+    """
+    log.init_logs()
 
 
 def main(argv):
@@ -26,4 +34,5 @@ def main(argv):
 
 
 if __name__ == "__main__":
+    early_init()
     main(sys.argv)

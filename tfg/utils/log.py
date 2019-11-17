@@ -6,9 +6,11 @@ import logging
 
 from PySide2.QtWidgets import QDialog, QPlainTextEdit, QVBoxLayout, QWidget
 
-logging.basicConfig(level=logging.DEBUG)
-
 mainwindow = logging.getLogger("mainwindow")
+
+
+def init_logs():
+    logging.basicConfig(level=logging.DEBUG)
 
 
 class LoggerTextboxWidget(logging.Handler, QWidget):
