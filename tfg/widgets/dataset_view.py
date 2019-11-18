@@ -30,6 +30,7 @@ class DatasetView(QWidget):
         self._items_list.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self._items_list.setAlignment(Qt.AlignHCenter)
 
+        layout.setContentsMargins(0, 0, 0, 0)
         layout.addWidget(self._items_list)
 
         self.setLayout(layout)
