@@ -44,6 +44,10 @@ class Dataset(keras.utils.Sequence):
         self.x_type, self.y_type = x_type, y_type
         self.batch_size = batch_size
 
+    def head(self, items=10):
+        x, y = self._preprocess_data(self.x[:items], self.y[:items])
+        return zip(x, y)
+
     def __len__(self):
         return int(np.ceil(len(self.x) / float(self.batch_size)))
 
@@ -51,10 +55,15 @@ class Dataset(keras.utils.Sequence):
         batch_x = self.x[idx * self.batch_size : (idx + 1) * self.batch_size]
         batch_y = self.y[idx * self.batch_size : (idx + 1) * self.batch_size]
 
-        if self.x_type is DataType.IMAGE_PATH:
-            batch_x = [resize(imread(file_name), (200, 200)) for file_name in batch_x]
+        batch_x, batch_y = self._preprocess_data(batch_x, batch_y)
 
         return np.array(batch_x), np.array(batch_y)
+
+    def _preprocess_data(self, x, y):
+        if self.x_type is DataType.IMAGE_PATH:
+            x = [resize(imread(file_name), (200, 200)) for file_name in x]
+
+        return (x, y)
 
 
 if __name__ == "__main__":

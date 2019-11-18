@@ -5,6 +5,7 @@ Widget for displaying some content example of the dataset.
 """
 
 import matplotlib.pyplot as plt
+from PySide2.QtCore import Qt
 from PySide2.QtGui import QImage, QPixmap
 from PySide2.QtWidgets import QHBoxLayout, QLabel, QVBoxLayout, QWidget
 
@@ -14,7 +15,7 @@ class DatasetView(QWidget):
         super().__init__(parent)
 
         self._dataset = dataset
-        self._display_limit = 10  # Max nº of items to display
+        self._display_limit = 25  # Max nº of items to display
 
         self._setup()
         self._update_displayed_content()
@@ -28,23 +29,16 @@ class DatasetView(QWidget):
         # TODO: Manage other types of data
         # Display a batch of data from the train set
 
-        batch_x, batch_y = self._dataset[0]
-
-        for i in range(min(self._display_limit, self._dataset.batch_size)):
-            # TODO: Check number of channels on image
+        for x, y in self._dataset.head(self._display_limit):
             hbox = QHBoxLayout()
+            hbox.setAlignment(Qt.AlignHCenter | Qt.AlignVCenter)
 
-            qimage = QImage(
-                batch_x[i],
-                batch_x[i].shape[0],
-                batch_x[i].shape[1],
-                QImage.Format_Grayscale8,
-            )
+            qimage = QImage(x, x.shape[0], x.shape[1], QImage.Format_Grayscale8)
             label_display = QLabel()
             label_display.setPixmap(QPixmap(qimage))
 
             label_output = QLabel()
-            label_output.setText(str(batch_y[i]))
+            label_output.setText(str(y))
 
             hbox.addWidget(label_display)
             hbox.addWidget(label_output)
