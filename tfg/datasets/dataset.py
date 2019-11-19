@@ -23,9 +23,7 @@ import keras
 import matplotlib.pyplot as plt
 import numpy as np
 from keras.datasets import cifar10, mnist
-from keras.preprocessing.image import ImageDataGenerator
-from skimage.io import imread
-from skimage.transform import resize
+from PIL import Image
 
 
 class DataType(Enum):
@@ -61,7 +59,7 @@ class Dataset(keras.utils.Sequence):
 
     def _preprocess_data(self, x, y):
         if self.x_type is DataType.IMAGE_PATH:
-            x = [resize(imread(file_name), (200, 200)) for file_name in x]
+            x = [Image.open(file_name).resize(200, 200) for file_name in x]
 
         return (x, y)
 
