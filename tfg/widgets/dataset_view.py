@@ -4,7 +4,6 @@
 Widget for displaying some content example of the dataset.
 """
 
-import matplotlib.pyplot as plt
 from PySide2.QtCore import QSize, Qt
 from PySide2.QtGui import QImage, QPixmap
 from PySide2.QtWidgets import (QHBoxLayout, QLabel, QScrollArea, QVBoxLayout,

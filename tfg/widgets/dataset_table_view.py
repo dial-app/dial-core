@@ -1,7 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QHeaderView, QStyleOptionViewItem, QTableView
+from PySide2.QtWidgets import (QHeaderView, QStyledItemDelegate,
+                               QStyleOptionViewItem, QTableView)
 
 
 class DatasetTableView(QTableView):
@@ -9,3 +10,11 @@ class DatasetTableView(QTableView):
         super().__init__(parent)
 
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+
+    def viewOptions(self):
+        option = super().viewOptions()
+        option.decorationAlignment = Qt.AlignCenter
+
+        option.decorationPosition = QStyleOptionViewItem.Top
+
+        return option
