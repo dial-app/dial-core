@@ -1,7 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from keras.datasets import mnist
-from PySide2.QtWidgets import QGridLayout, QPushButton, QSpacerItem, QWidget
+from PySide2.QtWidgets import (QGridLayout, QPushButton, QSpacerItem,
+                               QSplitter, QWidget)
 
 from tfg.datasets import Dataset, DataType
 from tfg.widgets.dataset_table_model import DatasetTableModel
@@ -20,18 +21,20 @@ class DatasetsWindow(QWidget):
         self._setup()
 
     def _setup(self):
-        self._main_layout.setColumnStretch(0, 50)
-        self._main_layout.setColumnStretch(1, 50)
+        splitter = QSplitter()
 
         # TODO: Move initialization to the correct place
         (x, y), _ = mnist.load_data()
         self._loaded_dataset = Dataset(x, y, DataType.IMAGE_ARRAY, DataType.NUMERIC)
 
         model = DatasetTableModel(self)
+        model.load_dataset(self._loaded_dataset)
         table_view = DatasetTableView(self)
         table_view.setModel(model)
 
-        self._main_layout.addWidget(table_view, 0, 1)
+        splitter.addWidget(QPushButton("space"))
+        splitter.addWidget(table_view)
+        self._main_layout.addWidget(splitter, 0, 0)
         self._main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self._main_layout)

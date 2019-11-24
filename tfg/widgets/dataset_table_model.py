@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtCore import QAbstractTableModel, QModelIndex, Qt
-from PySide2.QtGui import QColor
+from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
+from PySide2.QtGui import QColor, QImage, QPixmap, QPixmapCache
 
 
 class DatasetTableModel(QAbstractTableModel):
@@ -9,9 +9,19 @@ class DatasetTableModel(QAbstractTableModel):
         super().__init__(parent)
 
         self.dataset = None
+        self.x = None
+        self.y = None
 
-        self.row_count = 2
+        self.row_count = 0
         self.column_count = 2
+        self.images_size = QSize(75, 75)
+
+    def load_dataset(self, dataset):
+        self.dataset = dataset
+
+        self.row_count = 20
+
+        self.x, self.y = self.dataset.head(self.row_count)
 
     def rowCount(self, parent=QModelIndex()):
         return self.row_count
@@ -25,7 +35,7 @@ class DatasetTableModel(QAbstractTableModel):
 
         # Header names
         if orientation == Qt.Horizontal:
-            return ("Date", "Magnitude")[section]
+            return ("Input", "Output")[section]
         else:
             return f"{section}"
 
@@ -33,11 +43,28 @@ class DatasetTableModel(QAbstractTableModel):
         column = index.column()
         row = index.row()
 
-        if role == Qt.DisplayRole:
-            return f"{row} {column}"
+        if role == Qt.DecorationRole:
+            if column == 0:
 
-        if role == Qt.BackgroundRole:
-            return QColor(Qt.white)
+                pm = QPixmap()
+                if not QPixmapCache.find(f"input_{row}", pm):
+                    image_data = self.x[row]
+                    pm = QPixmap.fromImage(
+                        QImage(
+                            image_data,
+                            image_data.shape[0],
+                            image_data.shape[1],
+                            QImage.Format_Grayscale8,
+                        )
+                    )
+
+                    QPixmapCache.insert(f"input_{row}", pm)
+
+                return pm
+
+        if role == Qt.DisplayRole:
+            if column == 1:
+                return f"{self.y[row]}"
 
         if role == Qt.TextAlignmentRole:
             return Qt.AlignCenter

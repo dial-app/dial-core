@@ -44,7 +44,7 @@ class Dataset(keras.utils.Sequence):
 
     def head(self, items=10):
         x, y = self._preprocess_data(self.x[:items], self.y[:items])
-        return zip(x, y)
+        return x, y
 
     def __len__(self):
         return int(np.ceil(len(self.x) / float(self.batch_size)))
