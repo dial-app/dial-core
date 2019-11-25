@@ -18,19 +18,23 @@ image...)
 """
 
 from enum import Enum
+from typing import List, Tuple
 
 import keras
 import matplotlib.pyplot as plt
 import numpy as np
-from keras.datasets import cifar10, mnist
 from PIL import Image
 
 
 class DataType(Enum):
+    """
+    Types of data that the dataset can use as input/output.
+    """
+
     IMAGE_ARRAY = 1
     IMAGE_PATH = 2
     NUMERIC = 3
-    ARRAY = 4
+    NUMERIC_ARRAY = 4
 
 
 class Dataset(keras.utils.Sequence):
@@ -38,39 +42,79 @@ class Dataset(keras.utils.Sequence):
     Dataset generator
     """
 
-    def __init__(self, x_set, y_set, x_type, y_type, batch_size=32):
-        self.x, self.y = x_set, y_set
-        self.x_type, self.y_type = x_type, y_type
+    def __init__(
+        self,
+        x_data: List,
+        y_data: List,
+        x_type: DataType,
+        y_type: DataType,
+        batch_size: int = 32,
+        shuffled: bool = False,
+    ):
+        self.__x, self.__y = x_data, y_data
+        self.__x_type, self.__y_type = x_type, y_type
+
+        self.__indices = np.arange(self.__x.shape[0])
+
+        self.shuffled = shuffled
+
         self.batch_size = batch_size
 
-    def head(self, items=10):
-        x, y = self._preprocess_data(self.x[:items], self.y[:items])
-        return x, y
+    @property
+    def shuffled(self) -> bool:
+        return self.__shuffled
 
-    def __len__(self):
-        return int(np.ceil(len(self.x) / float(self.batch_size)))
+    @shuffled.setter
+    def shuffled(self, toggle: bool):
+        self.__shuffled = False
 
-    def __getitem__(self, idx):
-        batch_x = self.x[idx * self.batch_size : (idx + 1) * self.batch_size]
-        batch_y = self.y[idx * self.batch_size : (idx + 1) * self.batch_size]
+        if self.__shuffled:
+            np.random.shuffle(self.__indices)
+        else:
+            self.__indices = np.arange(self.__x.shape[0])
 
-        batch_x, batch_y = self._preprocess_data(batch_x, batch_y)
+    @property
+    def x_type(self) -> DataType:
+        return self.__x_type
+
+    @property
+    def y_type(self) -> DataType:
+        return self.__y_type
+
+    def head(self, items: int = 10) -> Tuple[List, List]:
+        """
+        Returns the first `items` items on the dataset.
+        """
+
+        x_head, y_head = self.__preprocess_data(self.__x[:items], self.__y[:items])
+        return x_head, y_head
+
+    def __len__(self) -> int:
+        """
+        Return the length of the dataset.
+        """
+        return int(np.ceil(len(self.__x) / float(self.batch_size)))
+
+    def __getitem__(self, idx) -> Tuple[List, List]:
+        """
+        Return the batch of dataset items starting on `idx`.
+        """
+
+        batch_x = self.__x[idx * self.batch_size : (idx + 1) * self.batch_size]
+        batch_y = self.__y[idx * self.batch_size : (idx + 1) * self.batch_size]
+
+        batch_x, batch_y = self.__preprocess_data(batch_x, batch_y)
 
         return np.array(batch_x), np.array(batch_y)
 
-    def _preprocess_data(self, x, y):
-        if self.x_type is DataType.IMAGE_PATH:
+    def __preprocess_data(self, x: List, y: List) -> Tuple[List, List]:
+        """
+        Preprocess the data. For example, if the image is a path to a file, load it and
+        return the corresponding array.
+        """
+
+        # TODO: Move Image "resize" to another place
+        if self.__x_type is DataType.IMAGE_PATH:
             x = [Image.open(file_name).resize(200, 200) for file_name in x]
 
         return (x, y)
-
-
-if __name__ == "__main__":
-    (x_train, y_train), (x_test, y_test) = mnist.load_data()
-
-    train_dataset = Dataset(x_train, y_train, DataType.IMAGE_ARRAY, DataType.NUMERIC)
-
-    x, y = train_dataset[0]
-
-    plt.imshow(x[0])
-    plt.show()

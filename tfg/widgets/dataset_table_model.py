@@ -75,7 +75,7 @@ class DatasetTableModel(QAbstractTableModel):
                 return f"{self.y[row]}"
 
         if role == Qt.TextAlignmentRole:
-            if column == 0 and self.dataset.x_type == DataType.ARRAY:
+            if column == 0 and self.dataset.x_type == DataType.NUMERIC_ARRAY:
                 return Qt.AlignLeft
 
             return Qt.AlignCenter
