@@ -30,6 +30,7 @@ class DataType(Enum):
     IMAGE_ARRAY = 1
     IMAGE_PATH = 2
     NUMERIC = 3
+    ARRAY = 4
 
 
 class Dataset(keras.utils.Sequence):

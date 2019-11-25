@@ -64,17 +64,20 @@ class DatasetTableModel(QAbstractTableModel):
 
                     return pm
 
-                print(self.x[row])
                 return f"1"
 
         if role == Qt.DisplayRole:
-            if column == 0 and self.dataset.x_type == DataType.NUMERIC:
+            if column == 0 and self.dataset.x_type != DataType.IMAGE_ARRAY:
+                print(f"{self.x[row]}")
                 return f"{self.x[row]}"
 
             if column == 1:
                 return f"{self.y[row]}"
 
         if role == Qt.TextAlignmentRole:
+            if column == 0 and self.dataset.x_type == DataType.ARRAY:
+                return Qt.AlignLeft
+
             return Qt.AlignCenter
 
         return None

@@ -9,12 +9,13 @@ class DatasetTableView(QTableView):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
+        self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
 
     def viewOptions(self):
         option = super().viewOptions()
         option.decorationAlignment = Qt.AlignCenter
 
-        option.decorationPosition = QStyleOptionViewItem.Top
+        #option.decorationPosition = QStyleOptionViewItem.Top
 
         return option

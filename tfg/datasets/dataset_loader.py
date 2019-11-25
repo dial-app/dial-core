@@ -14,6 +14,6 @@ def mnist_loader():
 
 def boston_housing_price_loader():
     (x_train, y_train), _ = boston_housing.load_data()
-    train_dataset = Dataset(x_train, y_train, DataType.NUMERIC, DataType.NUMERIC)
+    train_dataset = Dataset(x_train, y_train, DataType.ARRAY, DataType.NUMERIC)
 
     return train_dataset
