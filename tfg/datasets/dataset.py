@@ -53,7 +53,7 @@ class Dataset(keras.utils.Sequence):
         self.__x, self.__y = x_data, y_data
         self.__x_type, self.__y_type = x_type, y_type
 
-        self.__indices = np.arange(self.__x.shape[0])
+        self.__indexes = np.arange(self.__x.shape[0])
 
         self.shuffled = shuffled
 
@@ -68,9 +68,9 @@ class Dataset(keras.utils.Sequence):
         self.__shuffled = toggle
 
         if self.__shuffled:
-            np.random.shuffle(self.__indices)
+            np.random.shuffle(self.__indexes)
         else:
-            self.__indices = np.arange(self.__x.shape[0])
+            self.__indexes = np.arange(self.__x.shape[0])
 
     @property
     def x_type(self) -> DataType:
@@ -84,8 +84,9 @@ class Dataset(keras.utils.Sequence):
         """
         Returns the first `items` items on the dataset.
         """
+        indexes = self.__indexes[:items]
 
-        x_head, y_head = self.__preprocess_data(self.__x[:items], self.__y[:items])
+        x_head, y_head = self.__preprocess_data(self.__x[indexes], self.__y[indexes])
         return x_head, y_head
 
     def __len__(self) -> int:
@@ -98,9 +99,12 @@ class Dataset(keras.utils.Sequence):
         """
         Return the batch of dataset items starting on `idx`.
         """
+        batch_indexes = self.__indexes[
+            idx * self.batch_size : (idx + 1) * self.batch_size
+        ]
 
-        batch_x = self.__x[idx * self.batch_size : (idx + 1) * self.batch_size]
-        batch_y = self.__y[idx * self.batch_size : (idx + 1) * self.batch_size]
+        batch_x = self.__x[batch_indexes]
+        batch_y = self.__y[batch_indexes]
 
         batch_x, batch_y = self.__preprocess_data(batch_x, batch_y)
 
