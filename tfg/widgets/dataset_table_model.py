@@ -3,6 +3,8 @@
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QColor, QImage, QPixmap, QPixmapCache
 
+from tfg.datasets import DataType
+
 
 class DatasetTableModel(QAbstractTableModel):
     def __init__(self, parent):
@@ -45,24 +47,30 @@ class DatasetTableModel(QAbstractTableModel):
 
         if role == Qt.DecorationRole:
             if column == 0:
-
-                pm = QPixmap()
-                if not QPixmapCache.find(f"input_{row}", pm):
-                    image_data = self.x[row]
-                    pm = QPixmap.fromImage(
-                        QImage(
-                            image_data,
-                            image_data.shape[0],
-                            image_data.shape[1],
-                            QImage.Format_Grayscale8,
+                if self.dataset.x_type == DataType.IMAGE_ARRAY:
+                    pm = QPixmap()
+                    if not QPixmapCache.find(f"input_{row}", pm):
+                        image_data = self.x[row]
+                        pm = QPixmap.fromImage(
+                            QImage(
+                                image_data,
+                                image_data.shape[0],
+                                image_data.shape[1],
+                                QImage.Format_Grayscale8,
+                            )
                         )
-                    )
 
-                    QPixmapCache.insert(f"input_{row}", pm)
+                        QPixmapCache.insert(f"input_{row}", pm)
 
-                return pm
+                    return pm
+
+                print(self.x[row])
+                return f"1"
 
         if role == Qt.DisplayRole:
+            if column == 0 and self.dataset.x_type == DataType.NUMERIC:
+                return f"{self.x[row]}"
+
             if column == 1:
                 return f"{self.y[row]}"
 
