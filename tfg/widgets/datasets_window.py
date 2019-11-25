@@ -5,7 +5,7 @@ from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QPushButton,
 
 from tfg.datasets import Dataset, DataType
 from tfg.datasets.dataset_loader import (boston_housing_price_loader,
-                                         mnist_loader)
+                                         cifar10_loader, mnist_loader)
 from tfg.widgets.dataset_table_model import DatasetTableModel
 from tfg.widgets.dataset_table_view import DatasetTableView
 from tfg.widgets.load_dataset_dialog import LoadDatasetDialog

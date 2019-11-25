@@ -21,14 +21,13 @@ from enum import Enum
 from typing import List, Tuple
 
 import keras
-import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
 
 
 class DataType(Enum):
     """
-    Types of data that the dataset can use as input/output.
+    Data Types that the dataset could use as Input/Output.
     """
 
     IMAGE_ARRAY = 1
@@ -66,7 +65,7 @@ class Dataset(keras.utils.Sequence):
 
     @shuffled.setter
     def shuffled(self, toggle: bool):
-        self.__shuffled = False
+        self.__shuffled = toggle
 
         if self.__shuffled:
             np.random.shuffle(self.__indices)
@@ -107,7 +106,7 @@ class Dataset(keras.utils.Sequence):
 
         return np.array(batch_x), np.array(batch_y)
 
-    def __preprocess_data(self, x: List, y: List) -> Tuple[List, List]:
+    def __preprocess_data(self, x_data: List, y_data: List) -> Tuple[List, List]:
         """
         Preprocess the data. For example, if the image is a path to a file, load it and
         return the corresponding array.
@@ -115,6 +114,10 @@ class Dataset(keras.utils.Sequence):
 
         # TODO: Move Image "resize" to another place
         if self.__x_type is DataType.IMAGE_PATH:
-            x = [Image.open(file_name).resize(200, 200) for file_name in x]
+            x_data = [Image.open(file_name).resize(200, 200) for file_name in x_data]
+            # np.vectorize(lambda img: Image.open(img).resize(20, 20))(x_data)
 
-        return (x, y)
+        if self.__y_type is DataType.IMAGE_PATH:
+            y_data = [Image.open(file_name).resize(200, 200) for file_name in y_data]
+
+        return (x_data, y_data)

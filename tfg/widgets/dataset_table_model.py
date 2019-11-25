@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import numpy as np
+import qimage2ndarray
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QColor, QImage, QPixmap, QPixmapCache
 
@@ -51,14 +53,8 @@ class DatasetTableModel(QAbstractTableModel):
                     pm = QPixmap()
                     if not QPixmapCache.find(f"input_{row}", pm):
                         image_data = self.x[row]
-                        pm = QPixmap.fromImage(
-                            QImage(
-                                image_data,
-                                image_data.shape[0],
-                                image_data.shape[1],
-                                QImage.Format_Grayscale8,
-                            )
-                        )
+
+                        pm = QPixmap.fromImage(qimage2ndarray.array2qimage(image_data))
 
                         QPixmapCache.insert(f"input_{row}", pm)
 
