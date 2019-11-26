@@ -22,14 +22,13 @@ class DatasetTableModel(QAbstractTableModel):
         self.__row_count = 0
         self.__column_count = 2
 
-        self.__max_row_count = 20
+        self.__max_row_count = 100
 
         self.column_names = ("Input", "Output")
 
         self.__images_size = QSize(75, 75)
 
         self.__role_map = {
-            Qt.TextAlignmentRole: self.__data_textalignment_role,
             Tfg.RawRole: self.__data_raw_role,
             Tfg.TypeRole: self.__data_type_role,
         }
@@ -73,12 +72,20 @@ class DatasetTableModel(QAbstractTableModel):
             return f"{section}"
 
     def data(self, index, role=Qt.DisplayRole):
+        """
+        Return the corresponding data depending on the specified role.
+        """
+
         if role in self.__role_map:
             return self.__role_map[role](index.row(), index.column())
 
         return None
 
     def __data_raw_role(self, row: int, column: int):
+        """
+        Return the raw value of the cell.
+        """
+
         if column == 0:
             return self.__x[row]
 
@@ -87,10 +94,10 @@ class DatasetTableModel(QAbstractTableModel):
 
         return None
 
-    def __data_textalignment_role(self, row: int, column: int):
-        return Qt.AlignCenter
-
     def __data_type_role(self, row: int, column: int):
+        """
+        Return the type of the data on the cell.
+        """
         if column == 0:
             return self.__x_type
 
