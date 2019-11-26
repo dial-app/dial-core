@@ -7,32 +7,7 @@ Entry point for the application.
 
 import sys
 
-from PySide2.QtWidgets import QApplication
-
-from tfg.mainwindow import MainWindow
-from tfg.utils import log
-
-
-def early_init():
-    """
-    Early initialization and checks needed before starting.
-    """
-    log.init_logs()
-
-
-def main(argv):
-    """
-    Initialize Qt and start the program.
-    """
-
-    app = QApplication(argv)
-
-    window = MainWindow()
-    window.show()
-
-    sys.exit(app.exec_())
-
+from tfg.gui import app
 
 if __name__ == "__main__":
-    early_init()
-    main(sys.argv)
+    sys.exit(app.run(sys.argv))

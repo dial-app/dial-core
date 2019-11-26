@@ -4,7 +4,7 @@ from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QSplitter,
                                QWidget)
 
 from tfg.datasets.dataset_loader import mnist_loader
-from tfg.widgets.dataset_table import DatasetTableModel, DatasetTableView
+from tfg.gui.widgets.dataset_table import DatasetTableModel, DatasetTableView
 
 
 class DatasetsWindow(QWidget):

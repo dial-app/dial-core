@@ -9,6 +9,10 @@ from PySide2.QtWidgets import QAction, QMenuBar
 
 
 class MainMenuBar(QMenuBar):
+    """
+    Top menu bar for the main window.
+    """
+
     quit = Signal()
     toggle_log_window = Signal()
 

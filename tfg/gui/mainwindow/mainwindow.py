@@ -5,9 +5,9 @@
 from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
 
-from tfg.mainwindow.mainmenubar import MainMenuBar
+from tfg.gui.mainwindow.mainmenubar import MainMenuBar
+from tfg.gui.widgets.windows import DatasetsWindow
 from tfg.utils import log
-from tfg.widgets.windows import DatasetsWindow
 
 
 class MainWindow(QMainWindow):
