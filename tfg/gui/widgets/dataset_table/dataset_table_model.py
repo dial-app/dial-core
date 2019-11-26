@@ -71,7 +71,7 @@ class DatasetTableModel(QAbstractTableModel):
         if orientation == Qt.Vertical:
             return f"{section}"
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index: QModelIndex, role=Qt.DisplayRole):
         """
         Return the corresponding data depending on the specified role.
         """

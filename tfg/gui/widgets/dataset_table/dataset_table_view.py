@@ -1,13 +1,21 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import (QHeaderView, QStyledItemDelegate,
-                               QStyleOptionViewItem, QTableView)
+"""
+View for the Dataset Table model. Leverages all painting to the DatasetImteDelegate
+class.
+"""
+
+from PySide2.QtWidgets import QHeaderView, QTableView
 
 from .dataset_item_delegate import DatasetItemDelegate
 
 
 class DatasetTableView(QTableView):
+    """
+    View for the Dataset Table model. Leverages all painting to the DatasetImteDelegate
+    class.
+    """
+
     def __init__(self, parent):
         super().__init__(parent)
 
