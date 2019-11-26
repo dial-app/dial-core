@@ -3,8 +3,9 @@
 from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QSplitter,
                                QWidget)
 
-from tfg.datasets.dataset_loader import mnist_loader
+from tfg.datasets.predefined_dataset import MnistDataset
 from tfg.gui.widgets.dataset_table import DatasetTableModel, DatasetTableView
+from tfg.gui.widgets.predefined_datasets_list import PredefinedDatasetsDialog
 
 
 class DatasetsWindow(QWidget):
@@ -21,7 +22,7 @@ class DatasetsWindow(QWidget):
         splitter = QSplitter()
 
         # TODO: Move initialization to the correct place
-        self._loaded_dataset = mnist_loader()
+        self._loaded_dataset, _ = MnistDataset.load()
 
         self._form_layout = QFormLayout(self)
         self._form_layout.addRow("Dataset name", QLabel('"Name"'))
@@ -31,6 +32,9 @@ class DatasetsWindow(QWidget):
         model.load_dataset(self._loaded_dataset)
         table_view = DatasetTableView(self)
         table_view.setModel(model)
+
+        dialog = PredefinedDatasetsDialog(self)
+        dialog.show()
 
         widget = QWidget()
         widget.setLayout(self._form_layout)
