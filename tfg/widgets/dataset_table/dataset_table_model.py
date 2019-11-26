@@ -1,9 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-import numpy as np
 import qimage2ndarray
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
-from PySide2.QtGui import QColor, QImage, QPixmap, QPixmapCache
+from PySide2.QtGui import QPixmap, QPixmapCache
 
 from tfg.datasets import DataType
 

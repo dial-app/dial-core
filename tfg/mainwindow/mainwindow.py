@@ -2,12 +2,12 @@
 
 """The main window for the program."""
 
-from PySide2.QtCore import QSize, Qt
+from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
 
 from tfg.mainwindow.mainmenubar import MainMenuBar
 from tfg.utils import log
-from tfg.widgets import DatasetsWindow
+from tfg.widgets.windows import DatasetsWindow
 
 
 class MainWindow(QMainWindow):

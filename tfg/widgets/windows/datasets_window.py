@@ -1,14 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QPushButton,
-                               QSpacerItem, QSplitter, QWidget)
+from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QSplitter,
+                               QWidget)
 
-from tfg.datasets import Dataset, DataType
-from tfg.datasets.dataset_loader import (boston_housing_price_loader,
-                                         cifar10_loader, mnist_loader)
-from tfg.widgets.dataset_table_model import DatasetTableModel
-from tfg.widgets.dataset_table_view import DatasetTableView
-from tfg.widgets.load_dataset_dialog import LoadDatasetDialog
+from tfg.datasets.dataset_loader import mnist_loader
+from tfg.widgets.dataset_table import DatasetTableModel, DatasetTableView
 
 
 class DatasetsWindow(QWidget):
@@ -44,6 +40,3 @@ class DatasetsWindow(QWidget):
         self._main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self._main_layout)
-
-        dialog = LoadDatasetDialog(self)
-        dialog.show()

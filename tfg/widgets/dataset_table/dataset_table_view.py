@@ -16,6 +16,6 @@ class DatasetTableView(QTableView):
         option = super().viewOptions()
         option.decorationAlignment = Qt.AlignCenter
 
-        # option.decorationPosition = QStyleOptionViewItem.Top
+        option.decorationPosition = QStyleOptionViewItem.Top
 
         return option
