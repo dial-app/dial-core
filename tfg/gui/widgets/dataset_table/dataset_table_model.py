@@ -1,10 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-import qimage2ndarray
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
-from PySide2.QtGui import QPixmap, QPixmapCache
 
-from tfg.datasets import Dataset, DataType
+from tfg.datasets import Dataset
+from tfg.utils import Tfg
 
 
 class DatasetTableModel(QAbstractTableModel):
@@ -17,6 +16,8 @@ class DatasetTableModel(QAbstractTableModel):
 
         self.__x = None
         self.__y = None
+        self.__x_type = None
+        self.__y_type = None
 
         self.__row_count = 0
         self.__column_count = 2
@@ -28,9 +29,9 @@ class DatasetTableModel(QAbstractTableModel):
         self.__images_size = QSize(75, 75)
 
         self.__role_map = {
-            Qt.DecorationRole: self.__data_decoration_role,
             Qt.TextAlignmentRole: self.__data_textalignment_role,
-            Qt.DisplayRole: self.__data_display_role,
+            Tfg.RawRole: self.__data_raw_role,
+            Tfg.TypeRole: self.__data_type_role,
         }
 
     def load_dataset(self, dataset: Dataset):
@@ -40,6 +41,8 @@ class DatasetTableModel(QAbstractTableModel):
         self.__row_count = min(self.__max_row_count, len(dataset))
 
         self.__x, self.__y = dataset.head(self.rowCount())
+        self.__x_type = dataset.x_type
+        self.__y_type = dataset.y_type
 
     def rowCount(self, parent=QModelIndex()):
         """
@@ -69,23 +72,29 @@ class DatasetTableModel(QAbstractTableModel):
         if orientation == Qt.Vertical:
             return f"{section}"
 
-    def __data_display_role(self, row: int, column: int):
-        if column == 0:
-            return f"{self.__x[row]}"
-
-        if column == 1:
-            return f"{self.__y[row]}"
+    def data(self, index, role=Qt.DisplayRole):
+        if role in self.__role_map:
+            return self.__role_map[role](index.row(), index.column())
 
         return None
 
-    def __data_decoration_role(self, row: int, column: int):
-        pass
+    def __data_raw_role(self, row: int, column: int):
+        if column == 0:
+            return self.__x[row]
+
+        if column == 1:
+            return self.__y[row]
+
+        return None
 
     def __data_textalignment_role(self, row: int, column: int):
         return Qt.AlignCenter
 
-    def data(self, index, role=Qt.DisplayRole):
-        if role in self.__role_map:
-            return self.__role_map[role](index.row(), index.column())
+    def __data_type_role(self, row: int, column: int):
+        if column == 0:
+            return self.__x_type
+
+        if column == 1:
+            return self.__y_type
 
         return None

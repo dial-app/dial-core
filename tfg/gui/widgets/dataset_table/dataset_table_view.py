@@ -4,18 +4,14 @@ from PySide2.QtCore import Qt
 from PySide2.QtWidgets import (QHeaderView, QStyledItemDelegate,
                                QStyleOptionViewItem, QTableView)
 
+from .dataset_item_delegate import DatasetItemDelegate
+
 
 class DatasetTableView(QTableView):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
-        self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeToContents)
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.verticalHeader().setSectionResizeMode(QHeaderView.Interactive)
 
-    def viewOptions(self):
-        option = super().viewOptions()
-        option.decorationAlignment = Qt.AlignCenter
-
-        option.decorationPosition = QStyleOptionViewItem.Top
-
-        return option
+        self.setItemDelegate(DatasetItemDelegate())

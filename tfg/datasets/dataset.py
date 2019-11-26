@@ -30,10 +30,10 @@ class DataType(Enum):
     Data Types that the dataset could use as Input/Output.
     """
 
-    IMAGE_ARRAY = 1
-    IMAGE_PATH = 2
-    NUMERIC = 3
-    NUMERIC_ARRAY = 4
+    ImageArray = 1
+    ImagePath = 2
+    Numeric = 3
+    NumericArray = 4
 
 
 class Dataset(keras.utils.Sequence):
@@ -117,11 +117,11 @@ class Dataset(keras.utils.Sequence):
         """
 
         # TODO: Move Image "resize" to another place
-        if self.__x_type is DataType.IMAGE_PATH:
+        if self.__x_type is DataType.ImagePath:
             x_data = [Image.open(file_name).resize(200, 200) for file_name in x_data]
             # np.vectorize(lambda img: Image.open(img).resize(20, 20))(x_data)
 
-        if self.__y_type is DataType.IMAGE_PATH:
+        if self.__y_type is DataType.ImagePath:
             y_data = [Image.open(file_name).resize(200, 200) for file_name in y_data]
 
         return (x_data, y_data)
