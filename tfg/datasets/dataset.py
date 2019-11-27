@@ -35,6 +35,9 @@ class DataType(Enum):
     Numeric = 3
     NumericArray = 4
 
+    def __str__(self):
+        return self.name
+
 
 class Dataset(keras.utils.Sequence):
     """

@@ -4,6 +4,7 @@ from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
 from tfg.datasets.predefined_dataset import (BostonHousingDataset,
                                              Cifar10Dataset, MnistDataset)
+from tfg.utils import Tfg
 
 
 class PredefinedDatasetsListModel(QAbstractListModel):
@@ -22,5 +23,8 @@ class PredefinedDatasetsListModel(QAbstractListModel):
     def data(self, index, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
             return f"{self.predefined_datasets[index.row()]}"
+
+        if role == Tfg.RawRole:
+            return self.predefined_datasets[index.row()]
 
         return None
