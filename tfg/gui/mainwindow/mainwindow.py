@@ -3,7 +3,8 @@
 """The main window for the program."""
 
 from PySide2.QtCore import QSize
-from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
+from PySide2.QtWidgets import (QApplication, QMainWindow, QPushButton,
+                               QTabWidget)
 
 from tfg.gui.mainwindow.mainmenubar import MainMenuBar
 from tfg.gui.widgets.windows import DatasetsWindow
@@ -18,32 +19,35 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self._main_menu_bar = MainMenuBar(self)
-        self._tabs_widget = QTabWidget(self)
+        self.__main_menu_bar = MainMenuBar(self)
+        self.__tabs_widget = QTabWidget(self)
 
-        self._setup()
+        self.__setup_ui()
 
         log.mainwindow.info("Program Initialized")
 
-    def _setup(self):
+    def __setup_ui(self):
         # Widget configuration
         self.setWindowTitle("TFG")
 
-        self.setMenuBar(self._main_menu_bar)
+        self.setMenuBar(self.__main_menu_bar)
+        self.setStatusBar(self.statusBar())
 
-        self.setCentralWidget(self._tabs_widget)
+        # self.statusBar().addPermanentWidget(QPushButton("Log"))
+
+        self.setCentralWidget(self.__tabs_widget)
 
         # Tab widget
-        self._tabs_widget.addTab(DatasetsWindow(self), "Datasets")
+        self.__tabs_widget.addTab(DatasetsWindow(self), "Datasets")
 
         # Connections
-        self._main_menu_bar.quit.connect(QApplication.quit)
-        self._main_menu_bar.toggle_log_window.connect(self._toggle_log_window)
+        self.__main_menu_bar.quit.connect(QApplication.quit)
+        self.__main_menu_bar.toggle_log_window.connect(self.__toggle_log_window)
 
     def sizeHint(self):
         return QSize(800, 600)
 
-    def _toggle_log_window(self):
+    def __toggle_log_window(self):
         dialog = log.LoggerTextboxDialog(self)
 
         dialog.show()
