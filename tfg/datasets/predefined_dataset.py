@@ -8,7 +8,7 @@ from keras.datasets import boston_housing, cifar10, mnist
 from tfg.datasets import Dataset, DataType
 
 
-class PredefinedDataset(ABC):
+class PredefinedDatasetLoader(ABC):
     """
     Abstract class for any predefined dataset.
     """
@@ -32,7 +32,7 @@ class PredefinedDataset(ABC):
         return self.name
 
 
-class MnistDataset(PredefinedDataset):
+class MnistLoader(PredefinedDatasetLoader):
     """
     Mnist dataset.
     """
@@ -44,7 +44,7 @@ class MnistDataset(PredefinedDataset):
 
     @staticmethod
     def load() -> Tuple[Dataset, Dataset]:
-        dataset = MnistDataset()
+        dataset = MnistLoader()
 
         (x_train, y_train), (x_test, y_test) = mnist.load_data()
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
@@ -53,7 +53,7 @@ class MnistDataset(PredefinedDataset):
         return train_dataset, test_dataset
 
 
-class Cifar10Dataset(PredefinedDataset):
+class Cifar10Loader(PredefinedDatasetLoader):
     """
     Cifar10.
     """
@@ -65,7 +65,7 @@ class Cifar10Dataset(PredefinedDataset):
 
     @staticmethod
     def load() -> Tuple[Dataset, Dataset]:
-        dataset = Cifar10Dataset()
+        dataset = Cifar10Loader()
 
         (x_train, y_train), (x_test, y_test) = cifar10.load_data()
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
@@ -74,7 +74,7 @@ class Cifar10Dataset(PredefinedDataset):
         return train_dataset, test_dataset
 
 
-class BostonHousingDataset(PredefinedDataset):
+class BostonHousingLoader(PredefinedDatasetLoader):
     """
     Boston Housing Datasets.
     """
@@ -89,7 +89,7 @@ class BostonHousingDataset(PredefinedDataset):
 
     @staticmethod
     def load() -> Tuple[Dataset, Dataset]:
-        dataset = BostonHousingDataset()
+        dataset = BostonHousingLoader()
 
         (x_train, y_train), (x_test, y_test) = boston_housing.load_data()
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)

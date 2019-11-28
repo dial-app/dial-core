@@ -2,8 +2,8 @@
 
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
-from tfg.datasets.predefined_dataset import (BostonHousingDataset,
-                                             Cifar10Dataset, MnistDataset)
+from tfg.datasets.predefined_dataset import (BostonHousingLoader,
+                                             Cifar10Loader, MnistLoader)
 from tfg.utils import Tfg
 
 
@@ -12,9 +12,9 @@ class PredefinedDatasetsListModel(QAbstractListModel):
         super().__init__(parent)
 
         self.predefined_datasets = [
-            MnistDataset(),
-            Cifar10Dataset(),
-            BostonHousingDataset(),
+            MnistLoader(),
+            Cifar10Loader(),
+            BostonHousingLoader(),
         ]
 
     def rowCount(self, parent=QModelIndex()):

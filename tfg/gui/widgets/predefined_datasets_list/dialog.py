@@ -8,6 +8,7 @@ from PySide2.QtCore import QModelIndex, Slot
 from PySide2.QtWidgets import (QDialog, QDialogButtonBox, QFormLayout,
                                QHBoxLayout, QLabel, QVBoxLayout)
 
+from tfg.datasets.predefined_dataset import PredefinedDatasetLoader
 from tfg.utils import Tfg
 
 from .model import PredefinedDatasetsListModel
@@ -23,6 +24,9 @@ class PredefinedDatasetsDialog(QDialog):
         super().__init__(parent)
 
         self.setWindowTitle("Predefined datasets")
+
+        # Attributes
+        self.__dataset_loader = None
 
         # Setup MVC
         self.__model = PredefinedDatasetsListModel(self)
@@ -48,7 +52,13 @@ class PredefinedDatasetsDialog(QDialog):
         # Setup UI
         self.__setup_ui()
 
-        self.__view.activated.connect(self.update_description)
+        self.__view.activated.connect(self.__selected_loader_changed)
+
+    def selected_loader(self) -> PredefinedDatasetLoader:
+        """
+        Return the loaded currently selected by the Dialog.
+        """
+        return self.__dataset_loader
 
     def __setup_ui(self):
         # Main layout
@@ -70,12 +80,19 @@ class PredefinedDatasetsDialog(QDialog):
         self.__main_layout.addLayout(right_layout)
 
     @Slot(QModelIndex)
-    def update_description(self, index: QModelIndex):
+    def __selected_loader_changed(self, index: QModelIndex):
+        """
+        Slot called when a user clicks on any list item.
+        """
+        self.__dataset_loader = index.data(Tfg.RawRole)
+
+        self.__update_description(self.__dataset_loader)
+
+    @Slot(PredefinedDatasetLoader)
+    def __update_description(self, dataset: PredefinedDatasetLoader):
         """
         Update the description on the right widget after selecting a new dataset.
         """
-        dataset = index.data(Tfg.RawRole)
-
         self.__name_label.setText(dataset.name)
         self.__brief_label.setText(dataset.brief)
         self.__types_label.setText(

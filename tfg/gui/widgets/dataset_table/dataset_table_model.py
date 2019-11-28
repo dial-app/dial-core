@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
+from PySide2.QtGui import QPixmapCache
 
 from tfg.datasets import Dataset
 from tfg.utils import Tfg
@@ -43,6 +44,9 @@ class DatasetTableModel(QAbstractTableModel):
         self.__x_type = dataset.x_type
         self.__y_type = dataset.y_type
 
+        QPixmapCache.clear()
+        self.modelReset.emit()
+
     def rowCount(self, parent=QModelIndex()):
         """
         Return the number of rows.
@@ -70,6 +74,8 @@ class DatasetTableModel(QAbstractTableModel):
         # Row header will have the row number as name
         if orientation == Qt.Vertical:
             return f"{section}"
+
+        return None
 
     def data(self, index: QModelIndex, role=Qt.DisplayRole):
         """
