@@ -1,4 +1,4 @@
-PyQt5==5.13.1
+PySide2==5.13.1
 dependency-injector==3.14.12
 Pillow==6.2.1
 qimage2ndarray==1.8
