@@ -48,32 +48,30 @@ class DatasetItemDelegate(QStyledItemDelegate):
         Generated pixmaps are saved on cache by the name "dataset_row_col"
         """
 
-        # Load Qt pixmap from array
-        pixm = QPixmap()
-        pixm_name = f"dataset_{index.row()}_{index.column()}"
+        # Load Qt pixap from array
+        pix = QPixmap()
+        pix_name = f"{id(self)}_{index.row()}_{index.column()}"
 
-        if not QPixmapCache.find(pixm_name, pixm):
+        if not QPixmapCache.find(pix_name, pix):
             # Get image raw array
             raw_data = index.data(Tfg.RawRole)
 
-            # Load pixm from raw array
-            pixm = QPixmap.fromImage(qimage2ndarray.array2qimage(raw_data))
+            # Load pix from raw array
+            pix = QPixmap.fromImage(qimage2ndarray.array2qimage(raw_data))
 
-            # Save pixm on cache
-            QPixmapCache.insert(pixm_name, pixm)
+            # Save pix on cache
+            QPixmapCache.insert(pix_name, pix)
 
-        pixm = pixm.scaled(
-            option.rect.width(), option.rect.height(), Qt.KeepAspectRatio
-        )
+        pix = pix.scaled(option.rect.width(), option.rect.height(), Qt.KeepAspectRatio)
 
         # Calculate central position
-        x_coord = option.rect.center().x() - pixm.width() / 2
-        y_coord = option.rect.center().y() - pixm.height() / 2
+        x_coord = option.rect.center().x() - pix.width() / 2
+        y_coord = option.rect.center().y() - pix.height() / 2
 
-        draw_rect = QRect(x_coord, y_coord, pixm.width(), pixm.height())
+        draw_rect = QRect(x_coord, y_coord, pix.width(), pix.height())
 
         # Draw pixm
-        painter.drawPixmap(draw_rect, pixm)
+        painter.drawPixmap(draw_rect, pix)
 
     def __paint_numeric(
         self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex
