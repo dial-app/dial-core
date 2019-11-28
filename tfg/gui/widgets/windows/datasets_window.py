@@ -50,8 +50,12 @@ class DatasetsWindow(QWidget):
         options_widget = QWidget()
         options_widget.setLayout(self.__options_layout)
 
+
         splitter.addWidget(options_widget)
         splitter.addWidget(self.__train_test_tabs)
+
+        width = self.parent().width()
+        splitter.setSizes([width * 0.4, width * 0.6])
 
         self.__main_layout.addWidget(splitter, 0, 0)
         self.__main_layout.setContentsMargins(0, 0, 0, 0)
