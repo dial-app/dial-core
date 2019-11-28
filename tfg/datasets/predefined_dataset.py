@@ -91,7 +91,8 @@ class BostonHousingDataset(PredefinedDataset):
     def load() -> Tuple[Dataset, Dataset]:
         dataset = BostonHousingDataset()
 
-        (x_train, y_train), _ = boston_housing.load_data()
+        (x_train, y_train), (x_test, y_test) = boston_housing.load_data()
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
+        test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
 
-        return train_dataset
+        return train_dataset, test_dataset

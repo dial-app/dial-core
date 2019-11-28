@@ -1,5 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+"""
+Window for all the dataset related operations (Visualization, loading...)
+"""
+
 from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QSplitter,
                                QWidget)
 
@@ -9,38 +13,42 @@ from tfg.gui.widgets.predefined_datasets_list import PredefinedDatasetsDialog
 
 
 class DatasetsWindow(QWidget):
+    """
+    Window for all the dataset related operations (Visualization, loading...)
+    """
+
     def __init__(self, parent):
         super().__init__(parent)
 
-        self._loaded_dataset = None
+        # Attributes
+        self.__loaded_dataset = None
 
-        self._main_layout = QGridLayout(self)
+        self.__dataset_model = DatasetTableModel(self)
+        self.__dataset_view = DatasetTableView(self)
+        self.__dataset_view.setModel(self.__dataset_model)
 
-        self._setup()
+        # Widgets
+        self.__main_layout = QGridLayout()
+        self.__options_layout = QFormLayout()
 
-    def _setup(self):
+        self.__dataset_name_label = QLabel("")
+        self.__dataset_len_label = QLabel("")
+
+        self.__setup_ui()
+
+    def __setup_ui(self):
         splitter = QSplitter()
 
-        # TODO: Move initialization to the correct place
-        self._loaded_dataset, _ = MnistDataset.load()
+        self.__options_layout.addRow("Dataset name", self.__dataset_name_label)
+        self.__options_layout.addRow("Total items", self.__dataset_len_label)
 
-        self._form_layout = QFormLayout(self)
-        self._form_layout.addRow("Dataset name", QLabel('"Name"'))
-        self._form_layout.addRow("Total items:", QLabel(f"{len(self._loaded_dataset)}"))
+        options_widget = QWidget()
+        options_widget.setLayout(self.__options_layout)
 
-        model = DatasetTableModel(self)
-        model.load_dataset(self._loaded_dataset)
-        table_view = DatasetTableView(self)
-        table_view.setModel(model)
+        splitter.addWidget(options_widget)
+        splitter.addWidget(self.__dataset_view)
 
-        dialog = PredefinedDatasetsDialog(self)
-        dialog.show()
+        self.__main_layout.addWidget(splitter, 0, 0)
+        self.__main_layout.setContentsMargins(0, 0, 0, 0)
 
-        widget = QWidget()
-        widget.setLayout(self._form_layout)
-        splitter.addWidget(widget)
-        splitter.addWidget(table_view)
-        self._main_layout.addWidget(splitter, 0, 0)
-        self._main_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.setLayout(self._main_layout)
+        self.setLayout(self.__main_layout)
