@@ -7,6 +7,7 @@ from PySide2.QtWidgets import (QApplication, QMainWindow, QPushButton,
                                QTabWidget)
 
 from tfg.gui.mainwindow.mainmenubar import MainMenuBar
+from tfg.gui.widgets.log import LoggerDialog
 from tfg.gui.widgets.windows import DatasetsWindow
 from tfg.utils import log
 
@@ -48,6 +49,6 @@ class MainWindow(QMainWindow):
         return QSize(800, 600)
 
     def __toggle_log_window(self):
-        dialog = log.LoggerTextboxDialog(self)
+        dialog = LoggerDialog(self)
 
         dialog.show()
