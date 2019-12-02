@@ -27,7 +27,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://github.com/davafons/dial",
     download_url=f"https://github.com/davafons/dial/archive/v{dial.__version__}.tar.gz",
-    entry_points={"gui_scripts": "dial = dial:main"},
+    entry_points={"gui_scripts": "dial = dial.__main__:main"},
     python_requires=">=3.6",
     install_requires=["PySide2", "Pillow", "qimage2ndarray"],
     keywords=["Deep Learning", "UI"],

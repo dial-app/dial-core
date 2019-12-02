@@ -2,10 +2,9 @@
 Starting point for the application GUI.
 """
 
-from PySide2.QtWidgets import QApplication
-
 from dial.gui.mainwindow import MainWindow
 from dial.utils import log
+from PySide2.QtWidgets import QApplication
 
 
 def __early_init(argv):

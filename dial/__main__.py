@@ -2,12 +2,20 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 """
-Entry point for the application.
+Entry point for dial ui.
 """
 
 import sys
 
 from dial.gui import app
 
-if __name__ == "__main__":
+
+def main():
+    """
+    Entry point for dial ui.
+    """
     sys.exit(app.run(sys.argv))
+
+
+if __name__ == "__main__":
+    main()
