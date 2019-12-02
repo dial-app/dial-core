@@ -26,7 +26,7 @@ setuptools.setup(
     long_description=read_file("README.md"),
     long_description_content_type="text/markdown",
     url="https://github.com/davafons/dial",
-    download_url="https://github.com/davafons/dial/archive/v0.0.0a.tar.gz",
+    download_url=f"https://github.com/davafons/dial/archive/v{dial.__version__}.tar.gz",
     entry_points={"gui_scripts": "dial = dial:main"},
     python_requires=">=3.6",
     install_requires=["PySide2", "Pillow", "qimage2ndarray"],

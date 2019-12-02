@@ -5,5 +5,5 @@
 __author__ = "David Afonso"
 __license__ = "GPL"
 __maintainer__ = __author__
-__version__ = "0.0.1a"
+__version__ = "0.0.1"
 __description__ = "A Deep Learning GUI-based Framework"
