@@ -34,6 +34,7 @@ class DataType(Enum):
     ImagePath = 2
     Numeric = 3
     NumericArray = 4
+    Categorical = 5
 
     def __str__(self):
         return self.name
@@ -62,8 +63,14 @@ class Dataset(keras.utils.Sequence):
 
         self.batch_size = batch_size
 
+        self.x_categories = None
+        self.y_categories = None
+
     @property
     def shuffled(self) -> bool:
+        """
+        Toggle if the dataset will be shuffled. TODO: Reshuffle after each epoch?
+        """
         return self.__shuffled
 
     @shuffled.setter
@@ -77,10 +84,16 @@ class Dataset(keras.utils.Sequence):
 
     @property
     def x_type(self) -> DataType:
+        """
+        Return the data type (Image, Array, Numeric, Categorical...) of X
+        """
         return self.__x_type
 
     @property
     def y_type(self) -> DataType:
+        """
+        Return the data type (Image, Array, Numeric, Categorical...) of Y
+        """
         return self.__y_type
 
     def head(self, items: int = 10) -> Tuple[List, List]:

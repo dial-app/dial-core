@@ -3,7 +3,7 @@
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QPixmapCache
 
-from tfg.datasets import Dataset
+from tfg.datasets import Dataset, DataType
 from tfg.utils import Tfg
 
 
@@ -15,6 +15,7 @@ class DatasetTableModel(QAbstractTableModel):
     def __init__(self, parent):
         super().__init__(parent)
 
+        self.__dataset = None
         self.__x = None
         self.__y = None
         self.__x_type = None
@@ -30,6 +31,7 @@ class DatasetTableModel(QAbstractTableModel):
         self.__images_size = QSize(75, 75)
 
         self.__role_map = {
+            Qt.DisplayRole: self.__display_role,
             Tfg.RawRole: self.__data_raw_role,
             Tfg.TypeRole: self.__data_type_role,
         }
@@ -38,6 +40,8 @@ class DatasetTableModel(QAbstractTableModel):
         """
         Load new Dataset data to the model.
         """
+        self.__dataset = dataset
+
         self.__row_count = min(self.__max_row_count, len(dataset))
 
         self.__x, self.__y = dataset.head(self.rowCount())
@@ -84,6 +88,26 @@ class DatasetTableModel(QAbstractTableModel):
 
         if role in self.__role_map:
             return self.__role_map[role](index.row(), index.column())
+
+        return None
+
+    def __display_role(self, row: int, column: int):
+        """
+        Return the text representation of the cell value.
+        """
+
+        # TODO: Remove code duplication?
+        if column == 0:
+            if self.__x_type == DataType.Categorical:
+                return self.__dataset.x_categories[self.__x[row][0]]
+
+            return f"{self.__x[row]}"
+
+        if column == 1:
+            if self.__y_type == DataType.Categorical:
+                return self.__dataset.y_categories[self.__y[row][0]]
+
+            return f"{self.__y[row]}"
 
         return None
 

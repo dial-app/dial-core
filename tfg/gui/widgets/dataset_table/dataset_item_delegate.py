@@ -81,10 +81,10 @@ class DatasetItemDelegate(QStyledItemDelegate):
         """
 
         # Get numeric raw value
-        raw_data = index.data(Tfg.RawRole)
+        display_text = index.data(Qt.DisplayRole)
 
         # Paint it
-        painter.drawText(option.rect, Qt.AlignCenter, f"{raw_data}")
+        painter.drawText(option.rect, Qt.AlignCenter, display_text)
 
     def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex):
         """

@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from abc import ABC, abstractmethod
-from typing import Tuple
+from typing import List, Tuple
 
 from keras.datasets import boston_housing, cifar10, mnist
 
@@ -60,18 +60,42 @@ class Cifar10Loader(PredefinedDatasetLoader):
 
     def __init__(self):
         super().__init__(
-            "CIFAR10", "Categorized images.", DataType.ImageArray, DataType.Numeric
+            "CIFAR10", "Categorized images.", DataType.ImageArray, DataType.Categorical
         )
+
+        self.__categories = [
+            "airplane",
+            "automobile",
+            "bird",
+            "cat",
+            "deer",
+            "dog",
+            "frog",
+            "horse",
+            "ship",
+            "truck",
+        ]
 
     @staticmethod
     def load() -> Tuple[Dataset, Dataset]:
         dataset = Cifar10Loader()
 
         (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
+        train_dataset.y_categories = dataset.categories
+
         test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
+        test_dataset.y_categories = dataset.categories
 
         return train_dataset, test_dataset
+
+    @property
+    def categories(self) -> List[str]:
+        """
+        Return the list of classes identified by CIFAR10
+        """
+        return self.__categories
 
 
 class BostonHousingLoader(PredefinedDatasetLoader):
