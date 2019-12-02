@@ -4,8 +4,8 @@ Starting point for the application GUI.
 
 from PySide2.QtWidgets import QApplication
 
-from tfg.gui.mainwindow import MainWindow
-from tfg.utils import log
+from dial.gui.mainwindow import MainWindow
+from dial.utils import log
 
 
 def __early_init(argv):

@@ -5,7 +5,7 @@ from typing import List, Tuple
 
 from keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
-from tfg.datasets import Dataset, DataType
+from dial.datasets import Dataset, DataType
 
 
 class PredefinedDatasetLoader(ABC):

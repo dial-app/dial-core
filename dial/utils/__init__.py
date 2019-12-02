@@ -2,4 +2,4 @@
 
 """Utility and helpers."""
 
-from .enums import Tfg
+from .enums import Dial

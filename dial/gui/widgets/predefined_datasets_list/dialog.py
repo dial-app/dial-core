@@ -8,8 +8,8 @@ from PySide2.QtCore import QModelIndex, Slot
 from PySide2.QtWidgets import (QDialog, QDialogButtonBox, QFormLayout,
                                QHBoxLayout, QLabel, QVBoxLayout)
 
-from tfg.datasets import PredefinedDatasetLoader
-from tfg.utils import Tfg
+from dial.datasets import PredefinedDatasetLoader
+from dial.utils import Dial
 
 from .model import PredefinedDatasetsListModel
 from .view import PredefinedDatasetsListView
@@ -84,7 +84,7 @@ class PredefinedDatasetsDialog(QDialog):
         """
         Slot called when a user clicks on any list item.
         """
-        self.__dataset_loader = index.data(Tfg.RawRole)
+        self.__dataset_loader = index.data(Dial.RawRole)
 
         self.__update_description(self.__dataset_loader)
 

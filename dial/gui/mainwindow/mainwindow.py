@@ -6,10 +6,10 @@ from PySide2.QtCore import QSize
 from PySide2.QtWidgets import (QApplication, QMainWindow, QPushButton,
                                QTabWidget)
 
-from tfg.gui.mainwindow.mainmenubar import MainMenuBar
-from tfg.gui.widgets.log import LoggerDialog
-from tfg.gui.widgets.windows import DatasetsWindow
-from tfg.utils import log
+from dial.gui.mainwindow.mainmenubar import MainMenuBar
+from dial.gui.widgets.log import LoggerDialog
+from dial.gui.widgets.windows import DatasetsWindow
+from dial.utils import log
 
 
 class MainWindow(QMainWindow):
@@ -29,7 +29,7 @@ class MainWindow(QMainWindow):
 
     def __setup_ui(self):
         # Widget configuration
-        self.setWindowTitle("TFG")
+        self.setWindowTitle("Dial")  # TODO: Set version
 
         self.setMenuBar(self.__main_menu_bar)
         self.setStatusBar(self.statusBar())

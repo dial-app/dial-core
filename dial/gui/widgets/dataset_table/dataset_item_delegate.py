@@ -9,8 +9,8 @@ from PySide2.QtCore import QModelIndex, QRect, QSize, Qt
 from PySide2.QtGui import QPainter, QPixmap, QPixmapCache
 from PySide2.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem
 
-from tfg.datasets import DataType
-from tfg.utils import Tfg
+from dial.datasets import DataType
+from dial.utils import Dial
 
 
 class DatasetItemDelegate(QStyledItemDelegate):
@@ -30,7 +30,7 @@ class DatasetItemDelegate(QStyledItemDelegate):
         Paint the element according to its type.
         """
         # Get the data type (Image, Numeric...)
-        data_type = index.data(Tfg.TypeRole)
+        data_type = index.data(Dial.TypeRole)
 
         # Draw image
         if data_type == DataType.ImageArray:
@@ -54,7 +54,7 @@ class DatasetItemDelegate(QStyledItemDelegate):
 
         if not QPixmapCache.find(pix_name, pix):
             # Get image raw array
-            raw_data = index.data(Tfg.RawRole)
+            raw_data = index.data(Dial.RawRole)
 
             # Load pix from raw array
             pix = QPixmap.fromImage(qimage2ndarray.array2qimage(raw_data))

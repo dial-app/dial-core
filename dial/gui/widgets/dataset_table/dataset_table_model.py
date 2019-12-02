@@ -3,8 +3,8 @@
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QPixmapCache
 
-from tfg.datasets import Dataset, DataType
-from tfg.utils import Tfg
+from dial.datasets import Dataset, DataType
+from dial.utils import Dial
 
 
 class DatasetTableModel(QAbstractTableModel):
@@ -32,8 +32,8 @@ class DatasetTableModel(QAbstractTableModel):
 
         self.__role_map = {
             Qt.DisplayRole: self.__display_role,
-            Tfg.RawRole: self.__data_raw_role,
-            Tfg.TypeRole: self.__data_type_role,
+            Dial.RawRole: self.__data_raw_role,
+            Dial.TypeRole: self.__data_type_role,
         }
 
     def load_dataset(self, dataset: Dataset):

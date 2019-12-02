@@ -2,8 +2,8 @@
 
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
-from tfg.datasets import PREDEFINED_DATASETS
-from tfg.utils import Tfg
+from dial.datasets import PREDEFINED_DATASETS
+from dial.utils import Dial
 
 
 class PredefinedDatasetsListModel(QAbstractListModel):
@@ -19,7 +19,7 @@ class PredefinedDatasetsListModel(QAbstractListModel):
         if role == Qt.DisplayRole:
             return f"{self.predefined_datasets[index.row()]}"
 
-        if role == Tfg.RawRole:
+        if role == Dial.RawRole:
             return self.predefined_datasets[index.row()]
 
         return None

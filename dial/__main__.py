@@ -7,7 +7,7 @@ Entry point for the application.
 
 import sys
 
-from tfg.gui import app
+from dial.gui import app
 
 if __name__ == "__main__":
     sys.exit(app.run(sys.argv))
