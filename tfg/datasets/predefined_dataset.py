@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from keras.datasets import boston_housing, cifar10, mnist
+from keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
 from tfg.datasets import Dataset, DataType
 
@@ -51,6 +51,54 @@ class MnistLoader(PredefinedDatasetLoader):
         test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
 
         return train_dataset, test_dataset
+
+
+class FashionMnistLoader(PredefinedDatasetLoader):
+    """
+    Fashion Mnist Loader.
+    """
+
+    def __init__(self):
+        super().__init__(
+            "Fashion-MNIST",
+            "Categorized set of clothing images",
+            DataType.ImageArray,
+            DataType.Categorical,
+        )
+
+        self.__categories = [
+            "T-shirt/top",
+            "Trouser",
+            "Pullover",
+            "Dress",
+            "Coat",
+            "Sandal",
+            "Shirt",
+            "Sneaker",
+            "Bag",
+            "Ankle boot",
+        ]
+
+    @staticmethod
+    def load() -> Tuple[Dataset, Dataset]:
+        dataset = FashionMnistLoader()
+
+        (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
+
+        train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
+        train_dataset.y_categories = dataset.categories
+
+        test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
+        test_dataset.y_categories = dataset.categories
+
+        return train_dataset, test_dataset
+
+    @property
+    def categories(self) -> List[str]:
+        """
+        Return the list of classes identified by Fashion-MNIST
+        """
+        return self.__categories
 
 
 class Cifar10Loader(PredefinedDatasetLoader):

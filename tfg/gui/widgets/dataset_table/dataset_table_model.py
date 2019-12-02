@@ -99,13 +99,13 @@ class DatasetTableModel(QAbstractTableModel):
         # TODO: Remove code duplication?
         if column == 0:
             if self.__x_type == DataType.Categorical:
-                return self.__dataset.x_categories[self.__x[row][0]]
+                return self.__dataset.x_categories[self.__x[row]]
 
             return f"{self.__x[row]}"
 
         if column == 1:
             if self.__y_type == DataType.Categorical:
-                return self.__dataset.y_categories[self.__y[row][0]]
+                return self.__dataset.y_categories[self.__y[row]]
 
             return f"{self.__y[row]}"
 
