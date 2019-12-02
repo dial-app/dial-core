@@ -4,23 +4,33 @@
 dial package installer.
 """
 
-from distutils.core import setup
+import setuptools
 
 import dial
 
 
-setup(
+def read_file(file_path):
+    """
+    Return the file content as a string.
+    """
+    return open(file_path, "r").read()
+
+
+setuptools.setup(
     name="dial",
-    packages=["dial"],
+    packages=setuptools.find_packages(),
+    author=dial.__author__,
     version=dial.__version__,
     license=dial.__license__,
     description=dial.__description__,
-    author=dial.__author__,
-    author_email="",
+    long_description=read_file("README.md"),
+    long_description_content_type="text/markdown",
     url="https://github.com/davafons/dial",
     download_url="https://github.com/davafons/dial/archive/v0.0.0a.tar.gz",
-    keywords=["Deep Learning", "UI"],
+    entry_points={"gui_scripts": "dial = dial:main"},
+    python_requires=">=3.6",
     install_requires=["PySide2", "Pillow", "qimage2ndarray"],
+    keywords=["Deep Learning", "UI"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
