@@ -5,6 +5,5 @@
 __author__ = "David Afonso"
 __license__ = "GPL"
 __maintainer__ = __author__
-__version__ = "0.0.0"
-__version_info__ = tuple(int(part) for part in __version__.split("."))
+__version__ = "0.0.0a"
 __description__ = "A Deep Learning GUI-based Framework"
