@@ -34,7 +34,7 @@ class PredefinedDatasetLoader(ABC):
 
 class MnistLoader(PredefinedDatasetLoader):
     """
-    Mnist dataset.
+    Mnist dataset loader.
     """
 
     def __init__(self):
@@ -47,7 +47,9 @@ class MnistLoader(PredefinedDatasetLoader):
         dataset = MnistLoader()
 
         (x_train, y_train), (x_test, y_test) = mnist.load_data()
+
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
+
         test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
 
         return train_dataset, test_dataset
@@ -55,7 +57,7 @@ class MnistLoader(PredefinedDatasetLoader):
 
 class FashionMnistLoader(PredefinedDatasetLoader):
     """
-    Fashion Mnist Loader.
+    Fashion Mnist dataset loader.
     """
 
     def __init__(self):
@@ -103,7 +105,7 @@ class FashionMnistLoader(PredefinedDatasetLoader):
 
 class Cifar10Loader(PredefinedDatasetLoader):
     """
-    Cifar10.
+    Cifar10 dataset loader.
     """
 
     def __init__(self):
@@ -148,7 +150,7 @@ class Cifar10Loader(PredefinedDatasetLoader):
 
 class BostonHousingLoader(PredefinedDatasetLoader):
     """
-    Boston Housing Datasets.
+    Boston Housing dataset loader.
     """
 
     def __init__(self):
@@ -164,7 +166,17 @@ class BostonHousingLoader(PredefinedDatasetLoader):
         dataset = BostonHousingLoader()
 
         (x_train, y_train), (x_test, y_test) = boston_housing.load_data()
+
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
+
         test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
 
         return train_dataset, test_dataset
+
+
+PREDEFINED_DATASETS = {
+    "mnist": MnistLoader(),
+    "fashion-mnist": FashionMnistLoader(),
+    "cifar10": Cifar10Loader(),
+    "boston-housing": BostonHousingLoader(),
+}

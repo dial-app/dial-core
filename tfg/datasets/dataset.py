@@ -137,7 +137,4 @@ class Dataset(keras.utils.Sequence):
             x_data = [Image.open(file_name).resize(200, 200) for file_name in x_data]
             # np.vectorize(lambda img: Image.open(img).resize(20, 20))(x_data)
 
-        if self.__y_type is DataType.ImagePath:
-            y_data = [Image.open(file_name).resize(200, 200) for file_name in y_data]
-
         return (x_data, y_data)

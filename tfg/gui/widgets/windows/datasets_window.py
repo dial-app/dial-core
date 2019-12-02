@@ -7,7 +7,7 @@ Window for all the dataset related operations (Visualization, loading...)
 from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QPushButton,
                                QSplitter, QWidget)
 
-from tfg.datasets.predefined_dataset import PredefinedDatasetLoader
+from tfg.datasets import PredefinedDatasetLoader
 from tfg.gui.widgets.dataset_table import TrainTestTabs
 from tfg.gui.widgets.predefined_datasets_list import PredefinedDatasetsDialog
 
@@ -49,7 +49,6 @@ class DatasetsWindow(QWidget):
 
         options_widget = QWidget()
         options_widget.setLayout(self.__options_layout)
-
 
         splitter.addWidget(options_widget)
         splitter.addWidget(self.__train_test_tabs)

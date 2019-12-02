@@ -8,7 +8,7 @@ from PySide2.QtCore import QModelIndex, Slot
 from PySide2.QtWidgets import (QDialog, QDialogButtonBox, QFormLayout,
                                QHBoxLayout, QLabel, QVBoxLayout)
 
-from tfg.datasets.predefined_dataset import PredefinedDatasetLoader
+from tfg.datasets import PredefinedDatasetLoader
 from tfg.utils import Tfg
 
 from .model import PredefinedDatasetsListModel
