@@ -4,6 +4,7 @@ Starting point for the application GUI.
 
 import sys
 
+
 def __early_init(argv):
     """
     Early initialization and checks needed before starting.
@@ -39,7 +40,7 @@ def run(argv):
     try:
         __early_init(argv)
     except Exception as err:
-        print(err)
+        print(err)  # TODO: Change with logging
         showinfo("Error", err)
         sys.exit(126)
 

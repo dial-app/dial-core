@@ -7,14 +7,7 @@ dial package installer.
 import setuptools
 
 import dial
-
-
-def read_file(file_path):
-    """
-    Return the file content as a string.
-    """
-    return open(file_path, "r").read()
-
+from misc import read_file
 
 setuptools.setup(
     name="dial",
@@ -29,7 +22,7 @@ setuptools.setup(
     download_url=f"https://github.com/davafons/dial/archive/v{dial.__version__}.tar.gz",
     entry_points={"gui_scripts": "dial = dial.__main__:main"},
     python_requires=">=3.6",
-    install_requires=["PySide2", "Pillow", "qimage2ndarray"],
+    install_requires=dial.__requirements__,
     keywords=["Deep Learning", "UI"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
