@@ -3,7 +3,6 @@
 """
 dial package installer.
 """
-
 import setuptools
 
 import dial
@@ -22,7 +21,7 @@ setuptools.setup(
     download_url=f"https://github.com/davafons/dial/archive/v{dial.__version__}.tar.gz",
     entry_points={"gui_scripts": "dial = dial.__main__:main"},
     python_requires=">=3.6",
-    install_requires=dial.__requirements__,
+    install_requires=["Keras", "tensorflow", "PySide2", "Pillow", "qimage2ndarray"],
     keywords=["Deep Learning", "UI"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

@@ -3,6 +3,7 @@ Starting point for the application GUI.
 """
 
 import sys
+from dial.utils import tkinter
 
 
 def __early_init(argv):
@@ -41,7 +42,8 @@ def run(argv):
         __early_init(argv)
     except Exception as err:
         print(err)  # TODO: Change with logging
-        showinfo("Error", err)
+
+        tkinter.showerror("Error", err)
         sys.exit(126)
 
     # After this point we have checked all dependencies, versions, and all major systems
