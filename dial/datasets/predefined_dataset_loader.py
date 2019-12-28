@@ -4,14 +4,14 @@
 Classes for loading predefined datasets.
 """
 
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
 from typing import List, Tuple
 
 from dial.datasets import Dataset, datatype
 from keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
 
-class PredefinedDatasetLoader(ABC):
+class PredefinedDatasetLoader(metaclass=ABCMeta):
     """
     Abstract class for any predefined dataset.
     """

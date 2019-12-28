@@ -4,8 +4,8 @@
 Data Types normally used on datasets.
 """
 
-import collections
-from abc import ABC, abstractmethod
+from abc import ABCMeta, abstractmethod
+from collections.abc import Sequence
 from typing import List, Union
 
 import numpy as np
@@ -13,7 +13,7 @@ import numpy as np
 # from PIL import Image
 
 
-class DataType(ABC):
+class DataType(metaclass=ABCMeta):
     """
     Abstract class for any data type of a Dataset.
     """
@@ -103,7 +103,7 @@ class Categorical(DataType):
 
     def process(self, data: Union[List[int], int]) -> int:
         # Sometimes, categorical data can be passed as an array of 1 element
-        if isinstance(data, (collections.Sequence, np.ndarray)):
+        if isinstance(data, (Sequence, np.ndarray)):
             return data[0]
 
         return data
