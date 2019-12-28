@@ -2,6 +2,7 @@
 Starting point for the application GUI.
 """
 
+import argparse
 import importlib
 import sys
 from datetime import datetime
@@ -38,13 +39,13 @@ def check_module_installed(module_name: str):
     LOGGER.debug("%s module found (%s)", spec.name, spec.origin)
 
 
-def early_init(argv):
+def early_init(args: argparse.Namespace):
     """
     Early initialization and checks needed before starting.
     """
 
     # Init logs system
-    log.init_logs()
+    log.init_logs(args)
 
     # Check correct python and module versions
     check_python_version()
@@ -61,16 +62,16 @@ def early_init(argv):
     # Initialize PySide2
     from PySide2.QtWidgets import QApplication
 
-    QApplication(argv)
+    QApplication()
 
 
-def run(argv):
+def run(args: argparse.Namespace):
     """
     Init all necessary components and show the main window.
     """
 
     try:
-        early_init(argv)
+        early_init(args)
 
     except (ImportError, SystemError) as err:
         log.get_logger(__name__).exception(err)

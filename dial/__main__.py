@@ -5,16 +5,42 @@
 Entry point for dial ui.
 """
 
+import argparse
 import sys
 
+from dial import __description__
 from dial.gui import app
+
+
+def arg_parser() -> argparse.ArgumentParser:
+    """
+    Return an argument parser.
+    """
+
+    parser = argparse.ArgumentParser(prog="dial", description=__description__)
+
+    parser.add_argument(
+        "-d", "--debug", help="Show debug messages", action="store_true"
+    )
+    parser.add_argument(
+        "-l",
+        "--loglevel",
+        dest="loglevel",
+        help="Set logging level",
+        default="info",
+        choices=["critical", "error", "warning", "info", "debug"],
+    )
+
+    return parser
 
 
 def main():
     """
     Entry point for dial ui.
     """
-    sys.exit(app.run(sys.argv))
+    args = arg_parser().parse_args(sys.argv[1:])
+
+    sys.exit(app.run(args))
 
 
 if __name__ == "__main__":
