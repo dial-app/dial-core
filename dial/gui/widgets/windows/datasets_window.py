@@ -4,12 +4,14 @@
 Window for all the dataset related operations (Visualization, loading...)
 """
 
-from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QPushButton,
-                               QSplitter, QWidget)
-
 from dial.datasets import PredefinedDatasetLoader
 from dial.gui.widgets.dataset_table import TrainTestTabs
 from dial.gui.widgets.predefined_datasets_list import PredefinedDatasetsDialog
+from dial.utils import log
+from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QPushButton,
+                               QSplitter, QWidget)
+
+LOGGER = log.get_logger(__name__)
 
 
 class DatasetsWindow(QWidget):
@@ -86,3 +88,13 @@ class DatasetsWindow(QWidget):
         self.__dataset_name_label.setText(str(dataset_loader.name))
         self.__train_len_label.setText(str(len(train)))
         self.__test_len_label.setText(str(len(test)))
+
+        # Logging
+        LOGGER.info("Dataset loaded: %s", dataset_loader.name)
+        LOGGER.info(
+            "Data types: Input -> %s | Output -> %s",
+            str(dataset_loader.x_type),
+            str(dataset_loader.y_type),
+        )
+        LOGGER.info("Train instances: %d", len(train))
+        LOGGER.info("Test instances: %d", len(test))

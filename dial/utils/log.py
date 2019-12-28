@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+# pylint: disable=global-statement
+
 """Loggers used to display information and debug."""
 
 import argparse
@@ -69,7 +71,7 @@ def init_logs(args: argparse.Namespace) -> NoReturn:
         LOG_LEVEL = getattr(logging, args.loglevel.upper())
 
     except AttributeError:
-        raise ValueError("Invalid log level: %s", args.loglevel)
+        raise ValueError("Invalid log level: %s" % args.loglevel)
 
     # If debug flag, change log level to DEBUG
     if args.debug:

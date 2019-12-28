@@ -16,7 +16,6 @@ def arg_parser() -> argparse.ArgumentParser:
     """
     Return an argument parser.
     """
-
     parser = argparse.ArgumentParser(prog="dial", description=__description__)
 
     parser.add_argument(
