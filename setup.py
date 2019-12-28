@@ -5,23 +5,24 @@ dial package installer.
 """
 import setuptools
 
-import dial
+from dial import (__author__, __description__, __license__, __requirements__,
+                  __url__, __version__)
 from misc import read_file
 
 setuptools.setup(
     name="dial",
     packages=setuptools.find_packages(),
-    author=dial.__author__,
-    version=dial.__version__,
-    license=dial.__license__,
-    description=dial.__description__,
+    author=__author__,
+    version=__version__,
+    license=__license__,
+    description=__description__,
     long_description=read_file("README.md"),
     long_description_content_type="text/markdown",
-    url="https://github.com/davafons/dial",
-    download_url=f"https://github.com/davafons/dial/archive/v{dial.__version__}.tar.gz",
+    url=__url__,
+    download_url=f"https://github.com/davafons/dial/archive/v{__version__}.tar.gz",
     entry_points={"gui_scripts": "dial = dial.__main__:main"},
     python_requires=">=3.6",
-    install_requires=["Keras", "tensorflow", "PySide2", "Pillow", "qimage2ndarray"],
+    install_requires=__requirements__,
     keywords=["Deep Learning", "UI"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
