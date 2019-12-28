@@ -2,6 +2,7 @@
 
 """The main window for the program."""
 
+from dial import __version__
 from dial.gui.mainwindow.mainmenubar import MainMenuBar
 from dial.gui.widgets.log import LoggerDialog
 from dial.gui.widgets.windows import DatasetsWindow
@@ -24,7 +25,7 @@ class MainWindow(QMainWindow):
 
     def __setup_ui(self):
         # Widget configuration
-        self.setWindowTitle("Dial")  # TODO: Set version
+        self.setWindowTitle("Dial " + __version__)
 
         self.setMenuBar(self.__main_menu_bar)
         self.setStatusBar(self.statusBar())
