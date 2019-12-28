@@ -22,7 +22,7 @@ setuptools.setup(
     download_url=f"https://github.com/davafons/dial/archive/v{__version__}.tar.gz",
     entry_points={"gui_scripts": "dial = dial.__main__:main"},
     python_requires=">=3.6",
-    install_requires=__requirements__,
+    install_requires=["".join(module_desc) for module_desc in __requirements__],
     keywords=["Deep Learning", "UI"],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",

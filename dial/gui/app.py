@@ -5,6 +5,7 @@ Starting point for the application GUI.
 import importlib
 import sys
 
+from dial import __requirements__
 from dial.utils import log
 
 
@@ -17,20 +18,17 @@ def check_python_version():
         raise SystemError("Must use Python 3.6 or newer.")
 
 
-def check_module_version(module_name: str, module_version: str = "a"):
+def check_module_installed(module_name: str):
     """
     Check if PySide2 version installed is correct.
     """
-
     spec = importlib.util.find_spec(module_name)
 
     if spec is None:
         raise ImportError(
-            f"{module_name} module not found! Please use"
-            f'"pip install --user {module_name}" to install it'
+            f"{module_name} module not found!\n\nPlease use "
+            f'"pip install --user {module_name}" to install it.'
         )
-
-    # TODO: Check the minimal working version
 
 
 def early_init(argv):
@@ -42,9 +40,16 @@ def early_init(argv):
     log.init_logs()
 
     # Check correct python and module versions
-    # TODO: Check all modules used by the app
     check_python_version()
-    check_module_version("PySide2")
+
+    # Warning: Pillow module is actually imported as "PIL", so we have to change its
+    # name before checking it
+    required_modules_names = [
+        module[0].replace("Pillow", "PIL") for module in __requirements__
+    ]
+
+    for module_name in required_modules_names:
+        check_module_installed(module_name)
 
     # Initialize PySide2
     from PySide2.QtWidgets import QApplication
