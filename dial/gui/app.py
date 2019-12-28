@@ -2,10 +2,13 @@
 Starting point for the application GUI.
 """
 
+import importlib
 import sys
 
+from dial.utils import log
 
-def __check_python_version():
+
+def check_python_version():
     """
     Check if Python version installed is correct.
     """
@@ -14,36 +17,36 @@ def __check_python_version():
         raise SystemError("Must use Python 3.6 or newer.")
 
 
-def __check_pyside2_version():
+def check_module_version(module_name: str, module_version: str = "a"):
     """
     Check if PySide2 version installed is correct.
     """
-    try:
-        import PySide2
 
-        # TODO: Check minimal working PySide2 version
+    spec = importlib.util.find_spec(module_name)
 
-    except ImportError:
+    if spec is None:
         raise ImportError(
-            'Pyside2 module not found. Please use "pip install --user PySide2" '
-            "to install it."
+            f"{module_name} module not found! Please use"
+            f'"pip install --user {module_name}" to install it'
         )
 
+    # TODO: Check the minimal working version
 
-def __early_init(argv):
+
+def early_init(argv):
     """
     Early initialization and checks needed before starting.
     """
 
     # Init logs system
-    from dial.utils import log
-
-    __check_python_version()
-    __check_pyside2_version()
-
     log.init_logs()
 
-    # Check if PySide2 is installed and init it
+    # Check correct python and module versions
+    # TODO: Check all modules used by the app
+    check_python_version()
+    check_module_version("PySide2")
+
+    # Initialize PySide2
     from PySide2.QtWidgets import QApplication
 
     QApplication(argv)
@@ -55,24 +58,24 @@ def run(argv):
     """
 
     try:
-        __early_init(argv)
+        early_init(argv)
 
-        # After this point we have checked all dependencies, versions, and all major
-        # systems (PySide2) are initialized and ready to work with.
-
-        from dial.gui.mainwindow import MainWindow
-
-        main_window = MainWindow()
-        main_window.show()
-
-        from PySide2.QtWidgets import QApplication
-
-        return QApplication.exec_()
-
-    except Exception as err:
-        print(err)
+    except (ImportError, SystemError) as err:
+        log.get_logger(__name__).exception(err)
 
         from dial.utils import tkinter
 
-        tkinter.showerror("Error", err)
+        tkinter.showerror(err)
         sys.exit(1)
+
+    # After this point we have checked all dependencies, versions, and all major
+    # systems (PySide2) are initialized and ready to work with.
+
+    from dial.gui.mainwindow import MainWindow
+
+    main_window = MainWindow()
+    main_window.show()
+
+    from PySide2.QtWidgets import QApplication
+
+    return QApplication.exec_()

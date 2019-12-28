@@ -2,14 +2,11 @@
 
 """The main window for the program."""
 
-from PySide2.QtCore import QSize
-from PySide2.QtWidgets import (QApplication, QMainWindow, QPushButton,
-                               QTabWidget)
-
 from dial.gui.mainwindow.mainmenubar import MainMenuBar
 from dial.gui.widgets.log import LoggerDialog
 from dial.gui.widgets.windows import DatasetsWindow
-from dial.utils import log
+from PySide2.QtCore import QSize
+from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
 
 
 class MainWindow(QMainWindow):
@@ -24,8 +21,6 @@ class MainWindow(QMainWindow):
         self.__tabs_widget = QTabWidget(self)
 
         self.__setup_ui()
-
-        log.mainwindow.info("Program Initialized")
 
     def __setup_ui(self):
         # Widget configuration
