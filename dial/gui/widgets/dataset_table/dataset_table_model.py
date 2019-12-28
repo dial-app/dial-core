@@ -1,10 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from dial.datasets import Dataset
+from dial.utils import Dial
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QPixmapCache
-
-from dial.datasets import Dataset, DataType
-from dial.utils import Dial
 
 
 class DatasetTableModel(QAbstractTableModel):
@@ -15,7 +14,6 @@ class DatasetTableModel(QAbstractTableModel):
     def __init__(self, parent):
         super().__init__(parent)
 
-        self.__dataset = None
         self.__x = None
         self.__y = None
         self.__x_type = None
@@ -40,8 +38,6 @@ class DatasetTableModel(QAbstractTableModel):
         """
         Load new Dataset data to the model.
         """
-        self.__dataset = dataset
-
         self.__row_count = min(self.__max_row_count, len(dataset))
 
         self.__x, self.__y = dataset.head(self.rowCount())
@@ -95,19 +91,11 @@ class DatasetTableModel(QAbstractTableModel):
         """
         Return the text representation of the cell value.
         """
-
-        # TODO: Remove code duplication?
         if column == 0:
-            if self.__x_type == DataType.Categorical:
-                return self.__dataset.x_categories[self.__x[row]]
-
-            return f"{self.__x[row]}"
+            return self.__x_type.display(self.__x[row])
 
         if column == 1:
-            if self.__y_type == DataType.Categorical:
-                return self.__dataset.y_categories[self.__y[row]]
-
-            return f"{self.__y[row]}"
+            return self.__y_type.display(self.__y[row])
 
         return None
 
@@ -115,7 +103,6 @@ class DatasetTableModel(QAbstractTableModel):
         """
         Return the raw value of the cell.
         """
-
         if column == 0:
             return self.__x[row]
 

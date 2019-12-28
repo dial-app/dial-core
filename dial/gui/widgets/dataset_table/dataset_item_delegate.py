@@ -5,12 +5,11 @@ Delegate that knows how to paint any data that can be loaded to a dataset.
 """
 
 import qimage2ndarray
+from dial.datasets import datatype
+from dial.utils import Dial
 from PySide2.QtCore import QModelIndex, QRect, QSize, Qt
 from PySide2.QtGui import QPainter, QPixmap, QPixmapCache
 from PySide2.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem
-
-from dial.datasets import DataType
-from dial.utils import Dial
 
 
 class DatasetItemDelegate(QStyledItemDelegate):
@@ -33,12 +32,12 @@ class DatasetItemDelegate(QStyledItemDelegate):
         data_type = index.data(Dial.TypeRole)
 
         # Draw image
-        if data_type == DataType.ImageArray:
+        if isinstance(data_type, datatype.ImageArray):
             self.__paint_pixmap(painter, option, index)
 
-        # Draw anything else
+        # Draw anything else as a string
         else:
-            self.__paint_numeric(painter, option, index)
+            self.__paint_string(painter, option, index)
 
     def __paint_pixmap(
         self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex
@@ -73,14 +72,14 @@ class DatasetItemDelegate(QStyledItemDelegate):
         # Draw pixm
         painter.drawPixmap(draw_rect, pix)
 
-    def __paint_numeric(
+    def __paint_string(
         self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex
     ):
         """
-        Paint a numeric value centered on the cell.
+        Paint a value that can be converted to string.
         """
 
-        # Get numeric raw value
+        # Get numeric raw value as a string
         display_text = index.data(Qt.DisplayRole)
 
         # Paint it

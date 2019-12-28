@@ -1,11 +1,14 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+"""
+Classes for loading predefined datasets.
+"""
+
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
+from dial.datasets import Dataset, datatype
 from keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
-
-from dial.datasets import Dataset, DataType
 
 
 class PredefinedDatasetLoader(ABC):
@@ -14,7 +17,7 @@ class PredefinedDatasetLoader(ABC):
     """
 
     def __init__(
-        self, name="", brief="", x_type=DataType.Numeric, y_type=DataType.Numeric
+        self, name="", brief="", x_type=datatype.Numeric(), y_type=datatype.Numeric()
     ):
         self.name = name
         self.brief = brief
@@ -39,7 +42,10 @@ class MnistLoader(PredefinedDatasetLoader):
 
     def __init__(self):
         super().__init__(
-            "MNIST", "Handwritten digit numbers", DataType.ImageArray, DataType.Numeric
+            "MNIST",
+            "Handwritten digit numbers",
+            datatype.ImageArray(),
+            datatype.Numeric(),
         )
 
     @staticmethod
@@ -49,7 +55,6 @@ class MnistLoader(PredefinedDatasetLoader):
         (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
-
         test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
 
         return train_dataset, test_dataset
@@ -64,11 +69,11 @@ class FashionMnistLoader(PredefinedDatasetLoader):
         super().__init__(
             "Fashion-MNIST",
             "Categorized set of clothing images",
-            DataType.ImageArray,
-            DataType.Categorical,
+            datatype.ImageArray(),
+            datatype.Categorical(),
         )
 
-        self.__categories = [
+        self.y_type.categories = [
             "T-shirt/top",
             "Trouser",
             "Pullover",
@@ -88,10 +93,7 @@ class FashionMnistLoader(PredefinedDatasetLoader):
         (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
 
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
-        train_dataset.y_categories = dataset.categories
-
         test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
-        test_dataset.y_categories = dataset.categories
 
         return train_dataset, test_dataset
 
@@ -100,7 +102,7 @@ class FashionMnistLoader(PredefinedDatasetLoader):
         """
         Return the list of classes identified by Fashion-MNIST
         """
-        return self.__categories
+        return self.y_type.categories
 
 
 class Cifar10Loader(PredefinedDatasetLoader):
@@ -110,10 +112,13 @@ class Cifar10Loader(PredefinedDatasetLoader):
 
     def __init__(self):
         super().__init__(
-            "CIFAR10", "Categorized images.", DataType.ImageArray, DataType.Categorical
+            "CIFAR10",
+            "Categorized images.",
+            datatype.ImageArray(),
+            datatype.Categorical(),
         )
 
-        self.__categories = [
+        self.y_type.categories = [
             "airplane",
             "automobile",
             "bird",
@@ -133,10 +138,7 @@ class Cifar10Loader(PredefinedDatasetLoader):
         (x_train, y_train), (x_test, y_test) = cifar10.load_data()
 
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
-        train_dataset.y_categories = dataset.categories
-
         test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
-        test_dataset.y_categories = dataset.categories
 
         return train_dataset, test_dataset
 
@@ -145,7 +147,7 @@ class Cifar10Loader(PredefinedDatasetLoader):
         """
         Return the list of classes identified by CIFAR10
         """
-        return self.__categories
+        return self.y_type.categories
 
 
 class BostonHousingLoader(PredefinedDatasetLoader):
@@ -157,8 +159,8 @@ class BostonHousingLoader(PredefinedDatasetLoader):
         super().__init__(
             "Boston Housing",
             "Boston House prices.",
-            DataType.NumericArray,
-            DataType.Numeric,
+            datatype.NumericArray(),
+            datatype.Numeric(),
         )
 
     @staticmethod
@@ -168,7 +170,6 @@ class BostonHousingLoader(PredefinedDatasetLoader):
         (x_train, y_train), (x_test, y_test) = boston_housing.load_data()
 
         train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
-
         test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
 
         return train_dataset, test_dataset

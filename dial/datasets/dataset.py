@@ -17,27 +17,11 @@ For a sequence of data (array), define the type of data using (categorical, nume
 image...)
 """
 
-from enum import Enum
 from typing import List, Tuple
 
 import keras
 import numpy as np
-from PIL import Image
-
-
-class DataType(Enum):
-    """
-    Data Types that the dataset could use as Input/Output.
-    """
-
-    ImageArray = 1
-    ImagePath = 2
-    Numeric = 3
-    NumericArray = 4
-    Categorical = 5
-
-    def __str__(self):
-        return self.name
+from dial.datasets.datatype import DataType
 
 
 class Dataset(keras.utils.Sequence):
@@ -54,17 +38,18 @@ class Dataset(keras.utils.Sequence):
         batch_size: int = 32,
         shuffled: bool = False,
     ):
+        # Data arrays
         self.__x, self.__y = x_data, y_data
-        self.__x_type, self.__y_type = x_type, y_type
 
+        # Data types
+        self.x_type, self.y_type = x_type, y_type
+
+        # Class attributes
         self.__indexes = np.arange(self.__x.shape[0])
 
         self.shuffled = shuffled
 
         self.batch_size = batch_size
-
-        self.x_categories = None
-        self.y_categories = None
 
     @property
     def shuffled(self) -> bool:
@@ -82,25 +67,11 @@ class Dataset(keras.utils.Sequence):
         else:
             self.__indexes = np.arange(self.__x.shape[0])
 
-    @property
-    def x_type(self) -> DataType:
+    def head(self, n_items: int = 10) -> Tuple[List, List]:
         """
-        Return the data type (Image, Array, Numeric, Categorical...) of X
+        Returns the first `n` items on the dataset.
         """
-        return self.__x_type
-
-    @property
-    def y_type(self) -> DataType:
-        """
-        Return the data type (Image, Array, Numeric, Categorical...) of Y
-        """
-        return self.__y_type
-
-    def head(self, items: int = 10) -> Tuple[List, List]:
-        """
-        Returns the first `items` items on the dataset.
-        """
-        indexes = self.__indexes[:items]
+        indexes = self.__indexes[:n_items]
 
         x_head, y_head = self.__preprocess_data(self.__x[indexes], self.__y[indexes])
         return x_head, y_head
@@ -132,9 +103,7 @@ class Dataset(keras.utils.Sequence):
         return the corresponding array.
         """
 
-        # TODO: Move Image "resize" to another place
-        if self.__x_type is DataType.ImagePath:
-            x_data = [Image.open(file_name).resize(200, 200) for file_name in x_data]
-            # np.vectorize(lambda img: Image.open(img).resize(20, 20))(x_data)
+        x_data = [self.x_type.process(element) for element in x_data]
+        y_data = [self.y_type.process(element) for element in y_data]
 
         return (x_data, y_data)

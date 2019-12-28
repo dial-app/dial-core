@@ -4,12 +4,11 @@
 Dialog window for selecting between predefined datasets.
 """
 
+from dial.datasets import PredefinedDatasetLoader
+from dial.utils import Dial
 from PySide2.QtCore import QModelIndex, Slot
 from PySide2.QtWidgets import (QDialog, QDialogButtonBox, QFormLayout,
                                QHBoxLayout, QLabel, QVBoxLayout)
-
-from dial.datasets import PredefinedDatasetLoader
-from dial.utils import Dial
 
 from .model import PredefinedDatasetsListModel
 from .view import PredefinedDatasetsListView
@@ -96,5 +95,5 @@ class PredefinedDatasetsDialog(QDialog):
         self.__name_label.setText(dataset.name)
         self.__brief_label.setText(dataset.brief)
         self.__types_label.setText(
-            ", ".join([dataset.x_type.name, dataset.y_type.name])
+            ", ".join([str(dataset.x_type), str(dataset.y_type)])
         )
