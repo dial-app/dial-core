@@ -4,9 +4,12 @@ Starting point for the application GUI.
 
 import importlib
 import sys
+from datetime import datetime
 
 from dial import __requirements__
 from dial.utils import log
+
+LOGGER = log.get_logger(__name__)
 
 
 def check_python_version():
@@ -16,6 +19,8 @@ def check_python_version():
     # Check correct python version
     if sys.version_info[0] < 3 or sys.version_info[1] < 6:
         raise SystemError("Must use Python 3.6 or newer.")
+
+    LOGGER.debug("Python Version: %s", sys.version)
 
 
 def check_module_installed(module_name: str):
@@ -29,6 +34,8 @@ def check_module_installed(module_name: str):
             f"{module_name} module not found!\n\nPlease use "
             f'"pip install --user {module_name}" to install it.'
         )
+
+    LOGGER.debug("%s module found (%s)", spec.name, spec.origin)
 
 
 def early_init(argv):
@@ -82,5 +89,8 @@ def run(argv):
     main_window.show()
 
     from PySide2.QtWidgets import QApplication
+
+    LOGGER.info("Dial.")
+    LOGGER.info("Started on %s", datetime.now().ctime())
 
     return QApplication.exec_()

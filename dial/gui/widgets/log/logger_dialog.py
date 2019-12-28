@@ -3,7 +3,9 @@
 """
 Pop-up window displaying the LoggerTextbox widget.
 """
+import logging
 
+from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QDialog, QVBoxLayout
 
 from .logger_textbox import LoggerTextboxWidget
@@ -17,9 +19,19 @@ class LoggerDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.__logger_textbox = LoggerTextboxWidget(self)
+        self.textbox = LoggerTextboxWidget(self)
 
         self.__setup_ui()
+
+    def handler(self) -> logging.Handler:
+        """
+        Return log handler associated to this dialog (And used to write on it).
+        """
+
+        return self.textbox
+
+    def sizeHint(self):
+        return QSize(800, 600)
 
     def __setup_ui(self):
         """
@@ -30,7 +42,7 @@ class LoggerDialog(QDialog):
 
         layout = QVBoxLayout()
 
-        layout.addWidget(self.__logger_textbox)
+        layout.addWidget(self.textbox)
         layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(layout)
