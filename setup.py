@@ -7,7 +7,14 @@ import setuptools
 
 from dial import (__author__, __description__, __license__, __requirements__,
                   __url__, __version__)
-from misc import read_file
+
+
+def read_file(file_path):
+    """
+    Return the file content as a string.
+    """
+    return open(file_path, "r").read()
+
 
 setuptools.setup(
     name="dial",
