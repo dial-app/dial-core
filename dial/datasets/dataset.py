@@ -19,9 +19,9 @@ image...)
 
 from typing import List, Tuple
 
-import keras
 import numpy as np
 from dial.datasets.datatype import DataType
+from tensorflow import keras
 
 
 class Dataset(keras.utils.Sequence):

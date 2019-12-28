@@ -8,7 +8,8 @@ from abc import ABCMeta, abstractmethod
 from typing import List, Tuple
 
 from dial.datasets import Dataset, datatype
-from keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
+from tensorflow.keras.datasets import (boston_housing, cifar10, fashion_mnist,
+                                       mnist)
 
 
 class PredefinedDatasetLoader(metaclass=ABCMeta):
