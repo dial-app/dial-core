@@ -18,18 +18,32 @@ class PredefinedDatasetLoader(metaclass=ABCMeta):
     """
 
     def __init__(
-        self, name="", brief="", x_type=datatype.Numeric(), y_type=datatype.Numeric()
+        self,
+        name: str,
+        brief: str,
+        x_type: datatype.DataType,
+        y_type: datatype.DataType,
     ):
         self.name = name
         self.brief = brief
         self.x_type = x_type
         self.y_type = y_type
 
-    @staticmethod
-    @abstractmethod
-    def load() -> Tuple[Dataset, Dataset]:
+    def load(self) -> Tuple[Dataset, Dataset]:
         """
-        Return the train/test dataset objects.
+        Load and return the train/test dataset objects.
+        """
+        (x_train, y_train), (x_test, y_test) = self._load_data()
+
+        train_dataset = Dataset(x_train, y_train, self.x_type, self.y_type)
+        test_dataset = Dataset(x_test, y_test, self.x_type, self.y_type)
+
+        return train_dataset, test_dataset
+
+    @abstractmethod
+    def _load_data():
+        """
+        Return an instance of the dataset loader.
         """
 
     def __str__(self) -> str:
@@ -49,16 +63,8 @@ class MnistLoader(PredefinedDatasetLoader):
             datatype.Numeric(),
         )
 
-    @staticmethod
-    def load() -> Tuple[Dataset, Dataset]:
-        dataset = MnistLoader()
-
-        (x_train, y_train), (x_test, y_test) = mnist.load_data()
-
-        train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
-        test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
-
-        return train_dataset, test_dataset
+    def _load_data(self):
+        return mnist.load_data()
 
 
 class FashionMnistLoader(PredefinedDatasetLoader):
@@ -87,16 +93,8 @@ class FashionMnistLoader(PredefinedDatasetLoader):
             "Ankle boot",
         ]
 
-    @staticmethod
-    def load() -> Tuple[Dataset, Dataset]:
-        dataset = FashionMnistLoader()
-
-        (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
-
-        train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
-        test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
-
-        return train_dataset, test_dataset
+    def _load_data(self):
+        return fashion_mnist.load_data()
 
     @property
     def categories(self) -> List[str]:
@@ -132,16 +130,8 @@ class Cifar10Loader(PredefinedDatasetLoader):
             "truck",
         ]
 
-    @staticmethod
-    def load() -> Tuple[Dataset, Dataset]:
-        dataset = Cifar10Loader()
-
-        (x_train, y_train), (x_test, y_test) = cifar10.load_data()
-
-        train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
-        test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
-
-        return train_dataset, test_dataset
+    def _load_data(self):
+        return cifar10.load_data()
 
     @property
     def categories(self) -> List[str]:
@@ -164,16 +154,8 @@ class BostonHousingLoader(PredefinedDatasetLoader):
             datatype.Numeric(),
         )
 
-    @staticmethod
-    def load() -> Tuple[Dataset, Dataset]:
-        dataset = BostonHousingLoader()
-
-        (x_train, y_train), (x_test, y_test) = boston_housing.load_data()
-
-        train_dataset = Dataset(x_train, y_train, dataset.x_type, dataset.y_type)
-        test_dataset = Dataset(x_test, y_test, dataset.x_type, dataset.y_type)
-
-        return train_dataset, test_dataset
+    def _load_data(self):
+        return boston_housing.load_data()
 
 
 PREDEFINED_DATASETS = {
