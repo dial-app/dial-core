@@ -79,7 +79,6 @@ class DatasetsWindow(QWidget):
         """
         Set a new Dataset, updating the model, view, and labels.
         """
-
         train, test = dataset_loader.load()
 
         self.__train_test_tabs.set_train_dataset(train)

@@ -3,3 +3,4 @@
 """Utility and helpers."""
 
 from .enums import Dial
+from .timer import Timer
