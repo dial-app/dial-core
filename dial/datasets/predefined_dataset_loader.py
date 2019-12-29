@@ -8,8 +8,11 @@ from abc import ABCMeta, abstractmethod
 from typing import List, Tuple
 
 from dial.datasets import Dataset, datatype
+from dial.utils import Timer, log
 from tensorflow.keras.datasets import (boston_housing, cifar10, fashion_mnist,
                                        mnist)
+
+LOGGER = log.get_logger(__name__)
 
 
 class PredefinedDatasetLoader(metaclass=ABCMeta):
@@ -33,7 +36,10 @@ class PredefinedDatasetLoader(metaclass=ABCMeta):
         """
         Load and return the train/test dataset objects.
         """
-        (x_train, y_train), (x_test, y_test) = self._load_data()
+        with Timer() as t:
+            (x_train, y_train), (x_test, y_test) = self._load_data()
+
+        LOGGER.info("Fetched dataset data in %s ms", t.elapsed())
 
         train_dataset = Dataset(x_train, y_train, self.x_type, self.y_type)
         test_dataset = Dataset(x_test, y_test, self.x_type, self.y_type)
@@ -43,7 +49,7 @@ class PredefinedDatasetLoader(metaclass=ABCMeta):
     @abstractmethod
     def _load_data():
         """
-        Return an instance of the dataset loader.
+        Return the train/test pairs.
         """
 
     def __str__(self) -> str:
