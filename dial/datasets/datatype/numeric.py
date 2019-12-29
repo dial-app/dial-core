@@ -9,8 +9,8 @@ class Numeric(DataType):
     Represents a single numeric value.
     """
 
-    def process(self, data: List[int]) -> List[int]:
+    def process(self, data: int) -> int:
         return data
 
-    def display(self, data: List[int]) -> str:
+    def display(self, data: int) -> str:
         return str(data)
