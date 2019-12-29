@@ -1,7 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from dial.datasets.datatype import DataType
 from typing import List
+
+import numpy as np
+from dial.datasets.datatype import DataType
 
 
 class NumericArray(DataType):
@@ -13,4 +15,4 @@ class NumericArray(DataType):
         return data
 
     def display(self, data: List[int]) -> str:
-        return str(data)
+        return np.array2string(data, precision=4, suppress_small=True)

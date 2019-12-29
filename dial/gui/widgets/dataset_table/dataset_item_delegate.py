@@ -82,8 +82,17 @@ class DatasetItemDelegate(QStyledItemDelegate):
         # Get numeric raw value as a string
         display_text = index.data(Qt.DisplayRole)
 
+        alignment = Qt.AlignCenter
+
+        # Get the datatype
+        data_type = index.data(Dial.TypeRole)
+
+        # Align arrays to left
+        if isinstance(data_type, datatype.NumericArray):
+            alignment = Qt.AlignLeft
+
         # Paint it
-        painter.drawText(option.rect, Qt.AlignCenter, display_text)
+        painter.drawText(option.rect, alignment, display_text)
 
     def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex):
         """
