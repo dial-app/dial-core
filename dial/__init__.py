@@ -6,7 +6,8 @@ __author__ = "David Afonso"
 __license__ = "GPL"
 __maintainer__ = __author__
 __url__ = "https://github.com/davafons/dial"
-__version__ = "0.0.6"
+__version__ = "0.0.7"
+__version_info__ = tuple((int(n) for n in __version__.split(".")))
 __description__ = "A Deep Learning GUI-based Framework"
 
 __requirements__ = [
