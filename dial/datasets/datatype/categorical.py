@@ -1,10 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from dial.datasets.datatype import DataType
 import numbers
 from typing import List, Union
 
 import numpy as np
+from dial.datasets.datatype import DataType
 
 
 class Categorical(DataType):
@@ -20,7 +20,7 @@ class Categorical(DataType):
 
         self.categories = categories
 
-    def process(self, data: Union[List[int], int]) -> int:
+    def process(self, data: Union[list, tuple, np.ndarray, int]) -> int:
         # Sometimes, categorical data can be passed as an array of 1 element
         if isinstance(data, (list, tuple, np.ndarray)):
             return data[0]

@@ -1,7 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from dial.datasets.datatype import DataType
 from typing import List
+
+import numpy as np
+from dial.datasets.datatype import DataType
 
 
 class ImageArray(DataType):
@@ -13,8 +15,8 @@ class ImageArray(DataType):
     represents the number of color channels (For RGB images)
     """
 
-    def process(self, data: List[int]) -> List[int]:
+    def process(self, data: np.ndarray) -> np.ndarray:
         return data
 
-    def display(self, data: List[int]) -> str:
-        return str(data)
+    def display(self, data: np.ndarray) -> str:
+        return np.array2string(data, precision=4, suppress_small=True, separator=", ")
