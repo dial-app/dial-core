@@ -3,6 +3,7 @@
 """
 Pop-up window displaying the LoggerTextbox widget.
 """
+
 import logging
 
 from PySide2.QtCore import QSize

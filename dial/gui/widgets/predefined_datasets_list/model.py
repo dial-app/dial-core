@@ -1,9 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
-
 from dial.datasets import PREDEFINED_DATASETS
 from dial.utils import Dial
+from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
 
 class PredefinedDatasetsListModel(QAbstractListModel):

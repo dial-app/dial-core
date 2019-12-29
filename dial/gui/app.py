@@ -1,3 +1,5 @@
+# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
+
 """
 Starting point for the application GUI.
 """

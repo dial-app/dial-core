@@ -8,8 +8,14 @@ from dial.datasets import PredefinedDatasetLoader
 from dial.gui.widgets.dataset_table import TrainTestTabs
 from dial.gui.widgets.predefined_datasets_list import PredefinedDatasetsDialog
 from dial.utils import log
-from PySide2.QtWidgets import (QFormLayout, QGridLayout, QLabel, QPushButton,
-                               QSplitter, QWidget)
+from PySide2.QtWidgets import (
+    QFormLayout,
+    QGridLayout,
+    QLabel,
+    QPushButton,
+    QSplitter,
+    QWidget,
+)
 
 LOGGER = log.get_logger(__name__)
 

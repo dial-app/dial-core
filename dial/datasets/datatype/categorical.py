@@ -4,7 +4,8 @@ import numbers
 from typing import List, Union
 
 import numpy as np
-from dial.datasets.datatype import DataType
+
+from .datatype import DataType
 
 
 class Categorical(DataType):

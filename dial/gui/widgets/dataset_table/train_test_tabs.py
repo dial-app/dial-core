@@ -3,10 +3,9 @@
 """
 """
 
-from PySide2.QtWidgets import QTabWidget
-
 from dial.datasets import Dataset
 from dial.gui.widgets.dataset_table import DatasetTableModel, DatasetTableView
+from PySide2.QtWidgets import QTabWidget
 
 
 class TrainTestTabs(QTabWidget):

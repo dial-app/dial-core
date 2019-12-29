@@ -7,8 +7,14 @@ Dialog window for selecting between predefined datasets.
 from dial.datasets import PredefinedDatasetLoader
 from dial.utils import Dial
 from PySide2.QtCore import QModelIndex, Slot
-from PySide2.QtWidgets import (QDialog, QDialogButtonBox, QFormLayout,
-                               QHBoxLayout, QLabel, QVBoxLayout)
+from PySide2.QtWidgets import (
+    QDialog,
+    QDialogButtonBox,
+    QFormLayout,
+    QHBoxLayout,
+    QLabel,
+    QVBoxLayout,
+)
 
 from .model import PredefinedDatasetsListModel
 from .view import PredefinedDatasetsListView

@@ -1,3 +1,9 @@
-from .model import PredefinedDatasetsListModel
-from .view import PredefinedDatasetsListView
+# vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
+
+"""
+Widgets for displaying a dialog with predefined datasets that can be loaded.
+"""
+
 from .dialog import PredefinedDatasetsDialog
+
+__all__ = ["PredefinedDatasetsDialog"]

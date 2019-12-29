@@ -1,13 +1,12 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-
 """
 Widget used for displaying the outputs of a Python logger onto a plain text widget.
 """
 
 import logging
-from dial.utils import log
 
+from dial.utils import log
 from PySide2.QtWidgets import QPlainTextEdit, QVBoxLayout, QWidget
 
 
