@@ -69,11 +69,18 @@ class DatasetsWindow(QWidget):
         """
         dataset_loader_dialog = PredefinedDatasetsDialog(self)
 
+        LOGGER.debug("Opening dialog to select a predefined dataset...")
+
         accepted = dataset_loader_dialog.exec_()
 
         if accepted:
+            LOGGER.debug("Dataset selected")
+
             dataset_loader = dataset_loader_dialog.selected_loader()
             self.__set_dataset(dataset_loader)
+
+        else:
+            LOGGER.debug("Operation cancelled")
 
     def __set_dataset(self, dataset_loader: PredefinedDatasetLoader):
         """

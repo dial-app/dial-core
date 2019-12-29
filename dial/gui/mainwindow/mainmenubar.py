@@ -14,6 +14,7 @@ class MainMenuBar(QMenuBar):
     """
 
     quit = Signal()
+    open_predefined_dataset = Signal()
     toggle_log_window = Signal()
 
     def __init__(self, parent):
@@ -24,6 +25,9 @@ class MainMenuBar(QMenuBar):
 
     def _create_actions(self):
         # Quit act
+        self._open_predefined_dataset = QAction("Open predefined dataset...", self)
+        self._open_predefined_dataset.triggered.connect(self.open_predefined_dataset)
+
         self._quit_act = QAction("Quit", self)
         self._quit_act.triggered.connect(self.quit)
 
@@ -34,6 +38,7 @@ class MainMenuBar(QMenuBar):
     def _create_menus(self):
         # File menu
         self._file_menu = self.addMenu("&File")
+        self._file_menu.addAction(self._open_predefined_dataset)
         self._file_menu.addAction(self._quit_act)
 
         # Windows menu

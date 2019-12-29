@@ -21,6 +21,7 @@ class MainWindow(QMainWindow):
         self.__main_menu_bar = MainMenuBar(self)
         self.__tabs_widget = QTabWidget(self)
         self.__logger_dialog = LoggerDialog(self)
+        self.__datasets_window = DatasetsWindow(self)
 
         self.__setup_logger_dialog()
         self.__setup_ui()
@@ -39,9 +40,13 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.__tabs_widget)
 
         # Tab widget
-        self.__tabs_widget.addTab(DatasetsWindow(self), "Datasets")
+        self.__tabs_widget.addTab(self.__datasets_window, "Datasets")
 
         # Connections
+        self.__main_menu_bar.open_predefined_dataset.connect(
+            self.__datasets_window.load_predefined_dataset
+        )
+
         self.__main_menu_bar.quit.connect(QApplication.quit)
         self.__main_menu_bar.toggle_log_window.connect(self.__toggle_log_window)
 
