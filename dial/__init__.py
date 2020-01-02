@@ -15,4 +15,5 @@ __requirements__ = [
     ("PySide2", ">=5.13.1"),
     ("Pillow", ">=6.2.1"),
     ("qimage2ndarray", "==1.8"),
+    ("dependency-injector", ">=3.14.12"),
 ]

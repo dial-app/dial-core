@@ -9,6 +9,7 @@ import signal
 import importlib
 import sys
 from datetime import datetime
+from typing import List, Tuple
 
 from dial import __requirements__
 from dial.utils import log
@@ -42,6 +43,30 @@ def check_module_installed(module_name: str):
     LOGGER.debug("%s module found (%s)", spec.name, spec.origin)
 
 
+def check_required_modules(requirements: List[Tuple[str, str]]):
+    """
+    Check if the required modules are installed.
+    """
+    # Warning: Pillow module is actually imported as "PIL", so we have to change its
+    # name before checking it
+    # Same with "dependency-injector", which is imported name has an underscore
+    # (dependency_injector)
+    module_imported_name = {
+        "Pillow": "PIL",
+        "dependency-injector": "dependency_injector",
+    }
+
+    required_modules_names = []
+    for module_name, _ in __requirements__:
+        try:
+            required_modules_names.append(module_imported_name[module_name])
+        except KeyError:
+            continue
+
+    for module_name in required_modules_names:
+        check_module_installed(module_name)
+
+
 def early_init(args: argparse.Namespace):
     """
     Early initialization and checks needed before starting.
@@ -52,14 +77,8 @@ def early_init(args: argparse.Namespace):
     # Check correct python and module versions
     check_python_version()
 
-    # Warning: Pillow module is actually imported as "PIL", so we have to change its
-    # name before checking it
-    required_modules_names = [
-        module[0].replace("Pillow", "PIL") for module in __requirements__
-    ]
-
-    for module_name in required_modules_names:
-        check_module_installed(module_name)
+    # Check that all the required modules are installed
+    check_required_modules(__requirements__)
 
     # Initialize PySide2
     from PySide2.QtWidgets import QApplication
