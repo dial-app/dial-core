@@ -5,6 +5,7 @@ Starting point for the application GUI.
 """
 
 import argparse
+import signal
 import importlib
 import sys
 from datetime import datetime
@@ -45,7 +46,6 @@ def early_init(args: argparse.Namespace):
     """
     Early initialization and checks needed before starting.
     """
-
     # Init logs system
     log.init_logs(args)
 
@@ -65,6 +65,9 @@ def early_init(args: argparse.Namespace):
     from PySide2.QtWidgets import QApplication
 
     QApplication()
+
+    # Handle signals
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
 def run(args: argparse.Namespace):
