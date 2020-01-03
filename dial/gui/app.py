@@ -5,8 +5,8 @@ Starting point for the application GUI.
 """
 
 import argparse
-import signal
 import importlib
+import signal
 import sys
 from datetime import datetime
 from typing import List, Tuple
@@ -56,15 +56,12 @@ def check_required_modules(requirements: List[Tuple[str, str]]):
         "dependency-injector": "dependency_injector",
     }
 
-    required_modules_names = []
+    # Iterate through each module
     for module_name, _ in __requirements__:
         try:
-            required_modules_names.append(module_imported_name[module_name])
+            check_module_installed(module_imported_name[module_name])
         except KeyError:
-            continue
-
-    for module_name in required_modules_names:
-        check_module_installed(module_name)
+            check_module_installed(module_name)
 
 
 def early_init(args: argparse.Namespace):
