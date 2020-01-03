@@ -4,7 +4,7 @@
 Dialog window for selecting between predefined datasets.
 """
 
-from dial.datasets import PredefinedDatasetLoader
+from dial.datasets import DatasetLoader
 from dial.utils import Dial
 from PySide2.QtCore import QModelIndex, Slot
 from PySide2.QtWidgets import (
@@ -16,26 +16,31 @@ from PySide2.QtWidgets import (
     QVBoxLayout,
 )
 
-from .model import PredefinedDatasetsListModel
-from .view import PredefinedDatasetsListView
+from .model import DatasetsListModel
+from .view import DatasetsListView
 
 
-class PredefinedDatasetsDialog(QDialog):
+class DatasetsListDialog(QDialog):
     """
     Dialog window for selecting between predefined datasets.
     """
 
-    def __init__(self, parent):
+    def __init__(
+        self, model: DatasetsListModel, view: DatasetsListView, parent=None,
+    ):
         super().__init__(parent)
 
-        self.setWindowTitle("Predefined datasets")
+        self.setWindowTitle(" datasets")
 
         # Attributes
         self.__dataset_loader = None
 
         # Setup MVC
-        self.__model = PredefinedDatasetsListModel(self)
-        self.__view = PredefinedDatasetsListView(self)
+        self.__model = model
+        self.__model.setParent(self)
+        self.__view = view
+        self.__view.setParent(self)
+
         self.__view.setModel(self.__model)
 
         # Create widgets
@@ -59,7 +64,7 @@ class PredefinedDatasetsDialog(QDialog):
 
         self.__view.activated.connect(self.__selected_loader_changed)
 
-    def selected_loader(self) -> PredefinedDatasetLoader:
+    def selected_loader(self) -> DatasetLoader:
         """
         Return the loaded currently selected by the Dialog.
         """
@@ -93,8 +98,8 @@ class PredefinedDatasetsDialog(QDialog):
 
         self.__update_description(self.__dataset_loader)
 
-    @Slot(PredefinedDatasetLoader)
-    def __update_description(self, dataset: PredefinedDatasetLoader):
+    @Slot(DatasetLoader)
+    def __update_description(self, dataset: DatasetLoader):
         """
         Update the description on the right widget after selecting a new dataset.
         """

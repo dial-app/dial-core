@@ -4,9 +4,9 @@
 Window for all the dataset related operations (Visualization, loading...)
 """
 
-from dial.datasets import PredefinedDatasetLoader
+from dial.datasets import DatasetLoader
 from dial.gui.widgets.dataset_table import TrainTestTabs
-from dial.gui.widgets.predefined_datasets_list import PredefinedDatasetsDialog
+from dial.gui.widgets.datasets_list import PredefinedDatasetsListDialog
 from dial.utils import log
 from PySide2.QtWidgets import (
     QFormLayout,
@@ -73,7 +73,7 @@ class DatasetsWindow(QWidget):
         """
         Select and load a predefined dataset from a Dialog list.
         """
-        dataset_loader_dialog = PredefinedDatasetsDialog(self)
+        dataset_loader_dialog = PredefinedDatasetsListDialog(parent=self)
 
         LOGGER.debug("Opening dialog to select a predefined dataset...")
 
@@ -88,7 +88,7 @@ class DatasetsWindow(QWidget):
         else:
             LOGGER.debug("Operation cancelled")
 
-    def __set_dataset(self, dataset_loader: PredefinedDatasetLoader):
+    def __set_dataset(self, dataset_loader: DatasetLoader):
         """
         Set a new Dataset, updating the model, view, and labels.
         """

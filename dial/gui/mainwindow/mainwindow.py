@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
 
         self.__main_menu_bar = MainMenuBar(self)
         self.__tabs_widget = QTabWidget(self)
-        self.__logger_dialog = LoggerDialog(self)
+        self.__logger_dialog = LoggerDialog(parent=self)
         self.__datasets_window = DatasetsWindow(self)
 
         self.__setup_logger_dialog()

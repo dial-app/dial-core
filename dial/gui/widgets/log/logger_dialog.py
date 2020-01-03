@@ -7,7 +7,7 @@ Pop-up window displaying the LoggerTextbox widget.
 import logging
 
 from PySide2.QtCore import QSize
-from PySide2.QtWidgets import QDialog, QVBoxLayout
+from PySide2.QtWidgets import QDialog, QVBoxLayout, QWidget
 
 from .logger_textbox import LoggerTextboxWidget
 
@@ -17,10 +17,11 @@ class LoggerDialog(QDialog):
     Pop-up window displaying the LoggerTextbox widget.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, textbox_widget: LoggerTextboxWidget, parent: QWidget = None):
         super().__init__(parent)
 
-        self.textbox = LoggerTextboxWidget(self)
+        self.textbox = textbox_widget
+        self.textbox.setParent(self)
 
         self.__setup_ui()
 

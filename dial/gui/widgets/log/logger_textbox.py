@@ -15,7 +15,7 @@ class LoggerTextboxWidget(logging.Handler, QWidget):
     Widget used for displaying the outputs of a Python logger onto a plain text widget.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         logging.Handler.__init__(self)
         QWidget.__init__(self, parent)
 

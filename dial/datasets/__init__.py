@@ -5,14 +5,20 @@ Modules related to Datasets, types and dataset loading.
 """
 
 from .dataset import Dataset
-from .predefined_dataset_loader import (
-    PREDEFINED_DATASETS,
+from .dataset_loader import (
     BostonHousingLoader,
     Cifar10Loader,
+    DatasetLoader,
     FashionMnistLoader,
     MnistLoader,
-    PredefinedDatasetLoader,
 )
+
+PREDEFINED_DATASETS = {
+    "mnist": MnistLoader(),
+    "fashion-mnist": FashionMnistLoader(),
+    "cifar10": Cifar10Loader(),
+    "boston-housing": BostonHousingLoader(),
+}
 
 __all__ = [
     "Dataset",
@@ -21,5 +27,5 @@ __all__ = [
     "Cifar10Loader",
     "FashionMnistLoader",
     "MnistLoader",
-    "PredefinedDatasetLoader",
+    "DatasetLoader",
 ]

@@ -3,6 +3,6 @@
 from PySide2.QtWidgets import QListView
 
 
-class PredefinedDatasetsListView(QListView):
-    def __init__(self, parent):
+class DatasetsListView(QListView):
+    def __init__(self, parent=None):
         super().__init__(parent)

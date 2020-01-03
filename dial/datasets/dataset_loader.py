@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 """
-Classes for loading predefined datasets.
+Classes for loading datasets.
 """
 
 from abc import ABCMeta, abstractmethod
@@ -14,9 +14,9 @@ from tensorflow.keras.datasets import boston_housing, cifar10, fashion_mnist, mn
 LOGGER = log.get_logger(__name__)
 
 
-class PredefinedDatasetLoader(metaclass=ABCMeta):
+class DatasetLoader(metaclass=ABCMeta):
     """
-    Abstract class for any predefined dataset.
+    Abstract class for loading any dataset.
     """
 
     def __init__(
@@ -55,7 +55,7 @@ class PredefinedDatasetLoader(metaclass=ABCMeta):
         return self.name
 
 
-class MnistLoader(PredefinedDatasetLoader):
+class MnistLoader(DatasetLoader):
     """
     Mnist dataset loader.
     """
@@ -72,7 +72,7 @@ class MnistLoader(PredefinedDatasetLoader):
         return mnist.load_data()
 
 
-class FashionMnistLoader(PredefinedDatasetLoader):
+class FashionMnistLoader(DatasetLoader):
     """
     Fashion Mnist dataset loader.
     """
@@ -109,7 +109,7 @@ class FashionMnistLoader(PredefinedDatasetLoader):
         return self.y_type.categories
 
 
-class Cifar10Loader(PredefinedDatasetLoader):
+class Cifar10Loader(DatasetLoader):
     """
     Cifar10 dataset loader.
     """
@@ -146,7 +146,7 @@ class Cifar10Loader(PredefinedDatasetLoader):
         return self.y_type.categories
 
 
-class BostonHousingLoader(PredefinedDatasetLoader):
+class BostonHousingLoader(DatasetLoader):
     """
     Boston Housing dataset loader.
     """
@@ -161,11 +161,3 @@ class BostonHousingLoader(PredefinedDatasetLoader):
 
     def _load_data(self):
         return boston_housing.load_data()
-
-
-PREDEFINED_DATASETS = {
-    "mnist": MnistLoader(),
-    "fashion-mnist": FashionMnistLoader(),
-    "cifar10": Cifar10Loader(),
-    "boston-housing": BostonHousingLoader(),
-}
