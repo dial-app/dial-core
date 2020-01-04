@@ -5,8 +5,7 @@ Window for all the dataset related operations (Visualization, loading...)
 """
 
 from dial.datasets import DatasetLoader
-from dial.gui.widgets.dataset_table import TrainTestTabs
-from dial.gui.widgets.datasets_list import PredefinedDatasetsListDialog
+from dial.gui.widgets import TrainTestTabs, PredefinedDatasetsListDialog
 from dial.utils import log
 from PySide2.QtWidgets import (
     QFormLayout,
@@ -25,14 +24,15 @@ class DatasetsWindow(QWidget):
     Window for all the dataset related operations (Visualization, loading...)
     """
 
-    def __init__(self, parent):
+    def __init__(self, dataset_table_widget: TrainTestTabs, parent=None):
         super().__init__(parent)
 
         # Widgets
         self.__main_layout = QGridLayout()
         self.__options_layout = QFormLayout()
 
-        self.__train_test_tabs = TrainTestTabs(self)
+        self.__train_test_tabs = dataset_table_widget
+        self.__train_test_tabs.setParent(self)
 
         self.__dataset_name_label = QLabel("")
         self.__dataset_loader_button = QPushButton("More...")

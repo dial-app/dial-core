@@ -2,9 +2,8 @@
 
 """The main window for the program."""
 from dial import __version__
-from dial.gui.mainwindow.mainmenubar import MainMenuBar
-from dial.gui.widgets.log import LoggerDialog
-from dial.gui.widgets.windows import DatasetsWindow
+from .mainmenubar import MainMenuBar
+from dial.gui.widgets import LoggerDialog, DatasetsWindow
 from dial.utils import log
 from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
@@ -21,7 +20,7 @@ class MainWindow(QMainWindow):
         self.__main_menu_bar = MainMenuBar(self)
         self.__tabs_widget = QTabWidget(self)
         self.__logger_dialog = LoggerDialog(parent=self)
-        self.__datasets_window = DatasetsWindow(self)
+        self.__datasets_window = DatasetsWindow(parent=self)
 
         self.__setup_logger_dialog()
         self.__setup_ui()

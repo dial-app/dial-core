@@ -10,17 +10,19 @@ from dial.datasets import PREDEFINED_DATASETS
 
 from . import dialog, model, view
 
+# List of datasets
 DatasetsListModel = providers.Factory(model.DatasetsListModel)
-
-PredefinedDatasetsListModel = providers.Factory(
-    model.DatasetsListModel, datasets_list=list(PREDEFINED_DATASETS.values())
-)
 
 DatasetsListView = providers.Factory(view.DatasetsListView)
 
 DatasetsListDialog = providers.Factory(
     dialog.DatasetsListDialog, model=DatasetsListModel, view=DatasetsListView,
 )
+
+PredefinedDatasetsListModel = providers.Factory(
+    model.DatasetsListModel, datasets_list=list(PREDEFINED_DATASETS.values())
+)
+
 
 PredefinedDatasetsListDialog = providers.Factory(
     DatasetsListDialog, model=PredefinedDatasetsListModel

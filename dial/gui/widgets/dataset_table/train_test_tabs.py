@@ -4,7 +4,8 @@
 """
 
 from dial.datasets import Dataset
-from dial.gui.widgets.dataset_table import DatasetTableModel, DatasetTableView
+from .dataset_table_model import DatasetTableModel
+from .dataset_table_view import DatasetTableView
 from PySide2.QtWidgets import QTabWidget
 
 
@@ -12,7 +13,7 @@ class TrainTestTabs(QTabWidget):
     """
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.__train_model = DatasetTableModel(self)
