@@ -112,6 +112,7 @@ def run(args: argparse.Namespace):
 
     from PySide2.QtWidgets import QApplication
 
+    LOGGER.debug("Command Line Arguments: %s", args)
     LOGGER.info("Dial.")
     LOGGER.info("Started on %s", datetime.now().ctime())
 
