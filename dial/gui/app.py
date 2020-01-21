@@ -105,9 +105,9 @@ def run(args: argparse.Namespace):
     # After this point we have checked all dependencies, versions, and all major
     # systems (PySide2) are initialized and ready to work with.
 
-    from dial.gui.mainwindow import MainWindow
+    from dial.gui.windows import Windows
 
-    main_window = MainWindow()
+    main_window = Windows.Main()
     main_window.show()
 
     from PySide2.QtWidgets import QApplication

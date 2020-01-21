@@ -5,12 +5,12 @@
 from .dataset_table import TrainTestTabs
 from .datasets_list import DatasetsList, PredefinedDatasetsList
 from .log import Logger
-from .windows import Windows
+from .menubars import MenuBars
 
 __all__ = [
     "TrainTestTabs",
     "DatasetsList",
     "PredefinedDatasetsList",
     "Logger",
-    "Windows",
+    "MenuBars",
 ]

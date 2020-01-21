@@ -5,7 +5,7 @@ Menu bar for the main window.
 """
 
 from PySide2.QtCore import Signal
-from PySide2.QtWidgets import QAction, QMenuBar
+from PySide2.QtWidgets import QAction, QMenuBar, QWidget
 
 
 class MainMenuBar(QMenuBar):
@@ -17,7 +17,7 @@ class MainMenuBar(QMenuBar):
     open_predefined_dataset = Signal()
     toggle_log_window = Signal()
 
-    def __init__(self, parent):
+    def __init__(self, parent: QWidget = None):
         super().__init__(parent)
 
         self._create_actions()

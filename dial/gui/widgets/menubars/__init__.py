@@ -4,6 +4,6 @@
 Widgets for displaying a dialog with predefined datasets that can be loaded.
 """
 
-from .containers import DatasetsList, PredefinedDatasetsList
+from .containers import MenuBars
 
-__all__ = ["DatasetsList", "PredefinedDatasetsList"]
+__all__ = ["MenuBars"]
