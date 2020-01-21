@@ -5,7 +5,7 @@
 from .dataset_table import TrainTestTabs
 from .datasets_list import DatasetsListDialog, PredefinedDatasetsListDialog
 from .log import LoggerDialog, LoggerTextboxWidget
-from .windows import DatasetsWindow
+from .windows import Windows
 
 __all__ = [
     "TrainTestTabs",
@@ -13,5 +13,5 @@ __all__ = [
     "PredefinedDatasetsListDialog",
     "LoggerDialog",
     "LoggerTextboxWidget",
-    "DatasetsWindow",
+    "Windows",
 ]

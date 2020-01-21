@@ -27,7 +27,7 @@ class DatasetsWindow(QWidget):
     def __init__(self, dataset_table_widget: TrainTestTabs, parent=None):
         super().__init__(parent)
 
-        # Widgets
+        # Initialize widgets
         self.__main_layout = QGridLayout()
         self.__options_layout = QFormLayout()
 
@@ -40,8 +40,10 @@ class DatasetsWindow(QWidget):
         self.__train_len_label = QLabel("")
         self.__test_len_label = QLabel("")
 
+        # Configure interface
         self.__setup_ui()
 
+        # Connect signals
         self.__dataset_loader_button.clicked.connect(self.load_predefined_dataset)
 
     def __setup_ui(self):
