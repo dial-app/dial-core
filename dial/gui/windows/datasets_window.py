@@ -13,8 +13,8 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
-from dial.datasets import DatasetLoader
 from dial.gui.widgets import PredefinedDatasetsList, TrainTestTabs
+from dial.project import ProjectInstance
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -82,31 +82,37 @@ class DatasetsWindow(QWidget):
         if accepted:
             LOGGER.debug("Dataset selected")
 
+            # Get the selected loader
             dataset_loader = dataset_loader_dialog.selected_loader()
-            self.__set_dataset(dataset_loader)
+
+            # Add the new dataset to the project
+            ProjectInstance().load_dataset(dataset_loader)
+
+            # Update models to reflect the new dataset
+            self.__train_test_tabs.set_train_dataset(ProjectInstance().train_dataset)
+            self.__train_test_tabs.set_test_dataset(ProjectInstance().test_dataset)
+
+            # Update texts and label to match the new dataset
+            self.__update_dataset_text(ProjectInstance())
 
         else:
             LOGGER.debug("Operation cancelled")
 
-    def __set_dataset(self, dataset_loader: DatasetLoader):
+    def __update_dataset_text(self, project):
         """
-        Set a new Dataset, updating the model, view, and labels.
+        Update the texts and labels according to the new project dataset.
         """
-        train, test = dataset_loader.load()
 
-        self.__train_test_tabs.set_train_dataset(train)
-        self.__train_test_tabs.set_test_dataset(test)
-
-        self.__dataset_name_label.setText(str(dataset_loader.name))
-        self.__train_len_label.setText(str(len(train)))
-        self.__test_len_label.setText(str(len(test)))
+        self.__dataset_name_label.setText(str(project.dataset_name))
+        self.__train_len_label.setText(str(len(project.train_dataset)))
+        self.__test_len_label.setText(str(len(project.test_dataset)))
 
         # Logging
-        LOGGER.info("Dataset loaded: %s", dataset_loader.name)
+        LOGGER.info("Dataset loaded: %s", project.dataset_name)
         LOGGER.info(
             "Data types: Input -> %s | Output -> %s",
-            str(dataset_loader.x_type),
-            str(dataset_loader.y_type),
+            str(project.dataset_x_type),
+            str(project.dataset_y_type),
         )
-        LOGGER.info("Train instances: %d", len(train))
-        LOGGER.info("Test instances: %d", len(test))
+        LOGGER.info("Train instances: %d", len(project.train_dataset))
+        LOGGER.info("Test instances: %d", len(project.test_dataset))
