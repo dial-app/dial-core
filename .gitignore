@@ -109,3 +109,6 @@ tags
 *~
 *.temp
 *.lock
+
+# Custom
+*.dial

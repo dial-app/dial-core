@@ -47,6 +47,8 @@ class DatasetsWindow(QWidget):
         # Connect signals
         self.__dataset_loader_button.clicked.connect(self.load_predefined_dataset)
 
+        ProjectInstance().project_changed.connect(self.__update_window_from_project)
+
     def __setup_ui(self):
         splitter = QSplitter()
 
@@ -88,22 +90,19 @@ class DatasetsWindow(QWidget):
             # Add the new dataset to the project
             project = ProjectInstance()
             project.dataset.load_dataset(dataset_loader)
-
-            # Update models to reflect the new dataset
-            self.__train_test_tabs.set_train_dataset(project.dataset.train)
-            self.__train_test_tabs.set_test_dataset(project.dataset.test)
-
-            # Update texts and label to match the new dataset
-            self.__update_dataset_text(project)
-
         else:
             LOGGER.debug("Operation cancelled")
 
-    def __update_dataset_text(self, project):
+    def __update_window_from_project(self, project):
         """
-        Update the texts and labels according to the new project dataset.
+        Update the dataset models, texts and labels according to the new project
+        dataset.
         """
+        # Update the models to use the new train/test datasets
+        self.__train_test_tabs.set_train_dataset(project.dataset.train)
+        self.__train_test_tabs.set_test_dataset(project.dataset.test)
 
+        # Update the labels
         self.__dataset_name_label.setText(str(project.dataset.name))
         self.__train_len_label.setText(str(len(project.dataset.train)))
         self.__test_len_label.setText(str(len(project.dataset.test)))
