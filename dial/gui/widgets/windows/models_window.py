@@ -4,9 +4,9 @@
 Window for all the model related operations (Create/Modify NN architectures)
 """
 
-from dial.utils import log
+from PySide2.QtWidgets import QGridLayout, QWidget
 
-from PySide2.QtWidgets import QWidget, QGridLayout
+from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
 

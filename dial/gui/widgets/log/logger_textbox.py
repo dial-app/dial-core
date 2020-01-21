@@ -6,8 +6,9 @@ Widget used for displaying the outputs of a Python logger onto a plain text widg
 
 import logging
 
-from dial.utils import log
 from PySide2.QtWidgets import QPlainTextEdit, QVBoxLayout, QWidget
+
+from dial.utils import log
 
 
 class LoggerTextboxWidget(logging.Handler, QWidget):

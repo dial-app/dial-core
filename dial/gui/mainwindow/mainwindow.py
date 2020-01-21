@@ -1,12 +1,14 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 """The main window for the program."""
-from dial import __version__
-from .mainmenubar import MainMenuBar
-from dial.gui.widgets import LoggerDialog, Windows
-from dial.utils import log
 from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
+
+from dial import __version__
+from dial.gui.widgets import LoggerDialog, Windows
+from dial.utils import log
+
+from .mainmenubar import MainMenuBar
 
 
 class MainWindow(QMainWindow):

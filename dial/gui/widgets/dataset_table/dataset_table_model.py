@@ -1,9 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from dial.datasets import Dataset
-from dial.utils import Dial
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QPixmapCache
+
+from dial.datasets import Dataset
+from dial.utils import Dial
 
 
 class DatasetTableModel(QAbstractTableModel):

@@ -5,11 +5,12 @@ Delegate that knows how to paint any data that can be loaded to a dataset.
 """
 
 import qimage2ndarray
-from dial.datasets import datatype
-from dial.utils import Dial
 from PySide2.QtCore import QModelIndex, QRect, QSize, Qt
 from PySide2.QtGui import QPainter, QPixmap, QPixmapCache
 from PySide2.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem
+
+from dial.datasets import datatype
+from dial.utils import Dial
 
 
 class DatasetItemDelegate(QStyledItemDelegate):

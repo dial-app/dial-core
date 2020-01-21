@@ -6,6 +6,7 @@ Widgets for displaying a dialog with predefined datasets that can be loaded.
 """
 
 import dependency_injector.providers as providers
+
 from dial.datasets import PREDEFINED_DATASETS
 
 from . import dialog, model, view

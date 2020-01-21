@@ -6,6 +6,7 @@ Dependency Injection containers.
 
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
+
 from dial.gui.widgets import TrainTestTabs
 
 from . import datasets_window, models_window
