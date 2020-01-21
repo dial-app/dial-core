@@ -5,7 +5,7 @@ from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
 
 from dial import __version__
-from dial.gui.widgets import LoggerDialog, Windows
+from dial.gui.widgets import Logger, Windows
 from dial.utils import log
 
 from .mainmenubar import MainMenuBar
@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         super().__init__(parent)
 
         # Initialize logging first (Order is important)
-        self.__logger_dialog = LoggerDialog(parent=self)
+        self.__logger_dialog = Logger.Dialog(parent=self)
         self.__setup_logger_dialog()
 
         # Initialize Widgets
