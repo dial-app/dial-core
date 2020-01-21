@@ -14,7 +14,7 @@ from PySide2.QtWidgets import (
 )
 
 from dial.datasets import DatasetLoader
-from dial.gui.widgets import PredefinedDatasetsListDialog, TrainTestTabs
+from dial.gui.widgets import PredefinedDatasetsList, TrainTestTabs
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -76,7 +76,7 @@ class DatasetsWindow(QWidget):
         """
         Select and load a predefined dataset from a Dialog list.
         """
-        dataset_loader_dialog = PredefinedDatasetsListDialog(parent=self)
+        dataset_loader_dialog = PredefinedDatasetsList.Dialog(parent=self)
 
         LOGGER.debug("Opening dialog to select a predefined dataset...")
 

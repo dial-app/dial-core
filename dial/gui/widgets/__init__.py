@@ -3,14 +3,14 @@
 """Graphic widgets that can be reused on the project. """
 
 from .dataset_table import TrainTestTabs
-from .datasets_list import DatasetsListDialog, PredefinedDatasetsListDialog
+from .datasets_list import DatasetsList, PredefinedDatasetsList
 from .log import Logger
 from .windows import Windows
 
 __all__ = [
     "TrainTestTabs",
-    "DatasetsListDialog",
-    "PredefinedDatasetsListDialog",
+    "DatasetsList",
+    "PredefinedDatasetsList",
     "Logger",
     "Windows",
 ]
