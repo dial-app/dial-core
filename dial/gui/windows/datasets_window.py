@@ -86,14 +86,15 @@ class DatasetsWindow(QWidget):
             dataset_loader = dataset_loader_dialog.selected_loader()
 
             # Add the new dataset to the project
-            ProjectInstance().load_dataset(dataset_loader)
+            project = ProjectInstance()
+            project.dataset.load_dataset(dataset_loader)
 
             # Update models to reflect the new dataset
-            self.__train_test_tabs.set_train_dataset(ProjectInstance().train_dataset)
-            self.__train_test_tabs.set_test_dataset(ProjectInstance().test_dataset)
+            self.__train_test_tabs.set_train_dataset(project.dataset.train)
+            self.__train_test_tabs.set_test_dataset(project.dataset.test)
 
             # Update texts and label to match the new dataset
-            self.__update_dataset_text(ProjectInstance())
+            self.__update_dataset_text(project)
 
         else:
             LOGGER.debug("Operation cancelled")
@@ -103,16 +104,16 @@ class DatasetsWindow(QWidget):
         Update the texts and labels according to the new project dataset.
         """
 
-        self.__dataset_name_label.setText(str(project.dataset_name))
-        self.__train_len_label.setText(str(len(project.train_dataset)))
-        self.__test_len_label.setText(str(len(project.test_dataset)))
+        self.__dataset_name_label.setText(str(project.dataset.name))
+        self.__train_len_label.setText(str(len(project.dataset.train)))
+        self.__test_len_label.setText(str(len(project.dataset.test)))
 
         # Logging
-        LOGGER.info("Dataset loaded: %s", project.dataset_name)
+        LOGGER.info("Dataset loaded: %s", project.dataset.name)
         LOGGER.info(
             "Data types: Input -> %s | Output -> %s",
-            str(project.dataset_x_type),
-            str(project.dataset_y_type),
+            str(project.dataset.x_type),
+            str(project.dataset.y_type),
         )
-        LOGGER.info("Train instances: %d", len(project.train_dataset))
-        LOGGER.info("Test instances: %d", len(project.test_dataset))
+        LOGGER.info("Train instances: %d", len(project.dataset.train))
+        LOGGER.info("Test instances: %d", len(project.dataset.test))
