@@ -5,7 +5,8 @@ from typing import List
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
 from dial.datasets import DatasetLoader
-from dial.utils import Dial, log
+from dial.misc import Dial
+from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
 

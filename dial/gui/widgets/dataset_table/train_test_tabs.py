@@ -7,23 +7,22 @@ from PySide2.QtWidgets import QTabWidget
 
 from dial.datasets import Dataset
 
-from .dataset_table_model import DatasetTableModel
-from .dataset_table_view import DatasetTableView
-
 
 class TrainTestTabs(QTabWidget):
     """
+    Widget for displaying the train/tests list. Each dataset is on its own tab on the
+    widget.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, datasettable_factory, parent=None):
         super().__init__(parent)
 
-        self.__train_model = DatasetTableModel(self)
-        self.__train_view = DatasetTableView(self)
+        self.__train_model = datasettable_factory.Model(parent=self)
+        self.__train_view = datasettable_factory.View(parent=self)
         self.__train_view.setModel(self.__train_model)
 
-        self.__test_model = DatasetTableModel(self)
-        self.__test_view = DatasetTableView(self)
+        self.__test_model = datasettable_factory.Model(parent=self)
+        self.__test_view = datasettable_factory.View(parent=self)
         self.__test_view.setModel(self.__test_model)
 
         self.__setup_ui()

@@ -4,12 +4,9 @@
 Widgets for displaying a dataset content with Train/Test tabs.
 """
 
-import dependency_injector.providers as providers
-
-from . import train_test_tabs
-
-TrainTestTabs = providers.Factory(train_test_tabs.TrainTestTabs)
+from .containers import DatasetTable, TrainTestTabs
 
 __all__ = [
+    "DatasetTable",
     "TrainTestTabs",
 ]

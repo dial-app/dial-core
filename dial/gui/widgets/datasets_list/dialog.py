@@ -15,7 +15,7 @@ from PySide2.QtWidgets import (
 )
 
 from dial.datasets import DatasetLoader
-from dial.utils import Dial
+from dial.misc import Dial
 
 from .model import DatasetsListModel
 from .view import DatasetsListView

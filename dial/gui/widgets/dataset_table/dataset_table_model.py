@@ -4,7 +4,7 @@ from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QPixmapCache
 
 from dial.datasets import Dataset
-from dial.utils import Dial
+from dial.misc import Dial
 
 
 class DatasetTableModel(QAbstractTableModel):
@@ -12,7 +12,7 @@ class DatasetTableModel(QAbstractTableModel):
     Model representing the rows/columns of a dataset.
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent=None):
         super().__init__(parent)
 
         self.__x = None

@@ -10,7 +10,7 @@ from PySide2.QtGui import QPainter, QPixmap, QPixmapCache
 from PySide2.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem
 
 from dial.datasets import datatype
-from dial.utils import Dial
+from dial.misc import Dial
 
 
 class DatasetItemDelegate(QStyledItemDelegate):

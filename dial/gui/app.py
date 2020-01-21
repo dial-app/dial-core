@@ -5,63 +5,14 @@ Starting point for the application GUI.
 """
 
 import argparse
-import importlib
 import signal
 import sys
 from datetime import datetime
-from typing import List, Tuple
 
 from dial import __requirements__
-from dial.utils import log
+from dial.utils import initialization, log
 
 LOGGER = log.get_logger(__name__)
-
-
-def check_python_version():
-    """
-    Check if Python version installed is correct.
-    """
-    # Check correct python version
-    if sys.version_info[0] < 3 or sys.version_info[1] < 6:
-        raise SystemError("Must use Python 3.6 or newer.")
-
-    LOGGER.debug("Python Version: %s", sys.version)
-
-
-def check_module_installed(module_name: str):
-    """
-    Check if PySide2 version installed is correct.
-    """
-    spec = importlib.util.find_spec(module_name)
-
-    if spec is None:
-        raise ImportError(
-            f"{module_name} module not found!\n\nPlease use "
-            f'"pip install --user {module_name}" to install it.'
-        )
-
-    LOGGER.debug("%s module found (%s)", spec.name, spec.origin)
-
-
-def check_required_modules(requirements: List[Tuple[str, str]]):
-    """
-    Check if the required modules are installed.
-    """
-    # Warning: Pillow module is actually imported as "PIL", so we have to change its
-    # name before checking it
-    # Same with "dependency-injector", which is imported name has an underscore
-    # (dependency_injector)
-    module_imported_name = {
-        "Pillow": "PIL",
-        "dependency-injector": "dependency_injector",
-    }
-
-    # Iterate through each module
-    for module_name, _ in __requirements__:
-        try:
-            check_module_installed(module_imported_name[module_name])
-        except KeyError:
-            check_module_installed(module_name)
 
 
 def early_init(args: argparse.Namespace):
@@ -72,10 +23,10 @@ def early_init(args: argparse.Namespace):
     log.init_logs(args)
 
     # Check correct python and module versions
-    check_python_version()
+    initialization.check_python_version()
 
     # Check that all the required modules are installed
-    check_required_modules(__requirements__)
+    initialization.check_required_modules(__requirements__)
 
     # Initialize PySide2
     from PySide2.QtWidgets import QApplication
@@ -102,7 +53,7 @@ def run(args: argparse.Namespace):
         tkinter.showerror(err)
         sys.exit(1)
 
-    # After this point we have checked all dependencies, versions, and all major
+    # After this point we have checked that all dependencies, versions, and all major
     # systems (PySide2) are initialized and ready to work with.
 
     from dial.gui.windows import Windows
