@@ -31,12 +31,12 @@ def check_module_installed(module_name: str):
     spec = importlib.util.find_spec(module_name)
 
     if spec is None:
+        LOGGER.debug("%s module found (%s)", spec.name, spec.origin)
+
         raise ImportError(
             f"{module_name} module not found!\n\nPlease use "
             f'"pip install --user {module_name}" to install it.'
         )
-
-    LOGGER.debug("%s module found (%s)", spec.name, spec.origin)
 
 
 def check_required_modules(requirements: List[Tuple[str, str]]):
