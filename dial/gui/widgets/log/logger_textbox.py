@@ -24,21 +24,30 @@ class LoggerTextboxWidget(logging.Handler, QWidget):
 
         self._textbox = QPlainTextEdit(self)
 
-        self._setup()
+        self.__setup_ui()
 
-    def _setup(self):
+    def __setup_ui(self):
         """
         Setup the widget settings and layout configuration.
         """
 
+        # Log messages window must be readonly
         self._textbox.setReadOnly(True)
 
+        # Add log textbox to layout without margins
         layout = QVBoxLayout()
         layout.setContentsMargins(0, 0, 0, 0)
 
         layout.addWidget(self._textbox)
 
         self.setLayout(layout)
+
+    @property
+    def text(self) -> str:
+        """
+        Return the text content of the logger window.
+        """
+        return self._textbox.toPlainText()
 
     def set_plain_text(self, text: str):
         """
