@@ -6,6 +6,7 @@ from .dataset_table import TrainTestTabs
 from .datasets_list import DatasetsList, PredefinedDatasetsList
 from .log import Logger
 from .menubars import MenuBars
+from .model_table import ModelTable
 
 __all__ = [
     "TrainTestTabs",
@@ -13,4 +14,5 @@ __all__ = [
     "PredefinedDatasetsList",
     "Logger",
     "MenuBars",
+    "ModelTable",
 ]
