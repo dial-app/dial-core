@@ -46,7 +46,6 @@ class DatasetsWindow(QWidget):
 
         # Connect signals
         self.__dataset_loader_button.clicked.connect(self.load_predefined_dataset)
-
         ProjectInstance().project_changed.connect(self.__update_window_from_project)
 
     def __setup_ui(self):

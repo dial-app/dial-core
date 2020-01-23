@@ -46,6 +46,8 @@ class DatasetTableModel(QAbstractTableModel):
         self.__y_type = dataset.y_type
 
         QPixmapCache.clear()
+
+        # Model has been reset, redraw view
         self.modelReset.emit()
 
     def rowCount(self, parent=QModelIndex()):

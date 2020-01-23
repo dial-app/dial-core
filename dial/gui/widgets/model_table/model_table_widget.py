@@ -18,9 +18,16 @@ class ModelTableWidget(QWidget):
         self.__view = modeltable_factory.View(parent=self)
         self.__view.setModel(self.__model)
 
-        self.__layout = QVBoxLayout()
+        self.__main_layout = QVBoxLayout()
 
         self.__setup_ui()
 
     def __setup_ui(self):
-        self.__layout.addWidget(self.__view)
+        self.__main_layout.addWidget(self.__view)
+
+        self.setLayout(self.__main_layout)
+
+    def set_model(self, model):
+        """
+        """
+        self.__model.load_model(model)

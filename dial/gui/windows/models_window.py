@@ -4,7 +4,8 @@
 Window for all the model related operations (Create/Modify NN architectures)
 """
 
-from PySide2.QtWidgets import QVBoxLayout, QWidget
+from PySide2.QtWidgets import QGridLayout, QWidget
+from tensorflow.keras.applications.vgg16 import VGG16
 
 from dial.utils import log
 
@@ -20,18 +21,19 @@ class ModelsWindow(QWidget):
 
         # Initialize widgets
         self.__model_table = model_table
-        self.__model_table.setParent(self)
 
-        self.__main_layout = QVBoxLayout()
+        self.__main_layout = QGridLayout()
 
         # Configure interface
         self.__setup_ui()
 
         # Connect signals
 
-    def __setup_ui(self):
-        self.__main_layout.setContentsMargins(0, 0, 0, 0)
+        # TODO: Remove from here
+        self.__model_table.set_model(VGG16())
 
-        self.__main_layout.addWidget(self.__model_table)
+    def __setup_ui(self):
+        self.__main_layout.addWidget(self.__model_table, 0, 0)
+        self.__main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.__main_layout)

@@ -1,6 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from keras.applications.vgg16 import VGG16
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, Qt
 
 
@@ -12,15 +11,23 @@ class ModelTableModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.__model = VGG16()
+        self.__model = None
 
         self.column_names = ("Type", "Name")
-        self.__row_count = len(self.__model.layers)
+        self.__row_count = 0
         self.__column_count = len(self.column_names)
 
         self.__role_map = {
             Qt.DisplayRole: self.__display_role,
         }
+
+    def load_model(self, model):
+        self.__model = model
+
+        self.__row_count = len(model.layers)
+
+        # Model has been reset, redraw view
+        self.modelReset.emit()
 
     def rowCount(self, parent=QModelIndex()):
         """
