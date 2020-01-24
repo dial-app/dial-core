@@ -20,6 +20,7 @@ pytest = "*"
 pytest-cov = "*"
 pytest-qt = "*"
 pylint = "*"
+tox = "*"
 
 [requires]
 python_version = "3.7"
