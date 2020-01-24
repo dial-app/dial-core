@@ -13,7 +13,7 @@ class ModelTableModel(QAbstractTableModel):
 
         self.__model = None
 
-        self.column_names = ("Type", "Name")
+        self.column_names = ("Type", "Name", "Output Shape", "Param", "Trainable")
         self.__row_count = 0
         self.__column_count = len(self.column_names)
 
@@ -74,6 +74,18 @@ class ModelTableModel(QAbstractTableModel):
         Return the text representation of the cell value.
         """
         if column == 0:
+            return type(self.__model.layers[row]).__name__
+
+        if column == 1:
             return self.__model.layers[row].name
+
+        if column == 2:
+            return str(self.__model.layers[row].get_output_shape_at(0))
+
+        if column == 3:
+            return self.__model.layers[row].count_params()
+
+        if column == 4:
+            return self.__model.layers[row].trainable
 
         return None

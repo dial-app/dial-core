@@ -4,7 +4,7 @@
 """
 
 from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QAction, QHeaderView, QMenu, QTableView
+from PySide2.QtWidgets import QHeaderView, QMenu, QTableView
 
 
 class ModelTableView(QTableView):
@@ -14,15 +14,17 @@ class ModelTableView(QTableView):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        # Actions
-        self.__hide_action = QAction("hue", self)
-
-        self.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        # How are headers going to stretch and resize?
+        self.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.verticalHeader().setSectionResizeMode(QHeaderView.Interactive)
 
+        # Can columns be rearranged?
+        self.horizontalHeader().setSectionsMovable(True)
+
+        # Is a context menu going to be called on right click?
         self.horizontalHeader().setContextMenuPolicy(Qt.CustomContextMenu)
         self.horizontalHeader().customContextMenuRequested.connect(
-            self.show_header_context_menu
+            self.__show_header_context_menu
         )
 
         self.__header_context_menu = None
@@ -55,7 +57,10 @@ class ModelTableView(QTableView):
                 else header.hideSection(index)
             )
 
-    def show_header_context_menu(self, point):
+    def __show_header_context_menu(self, point):
+        """
+        Show a context menu for the horizontal header.
+        """
         if not self.__header_context_menu:
             return
 
