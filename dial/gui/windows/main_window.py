@@ -50,6 +50,10 @@ class MainWindow(QMainWindow):
             self.__datasets_window.load_predefined_dataset
         )
 
+        self.__main_menu_bar.open_predefined_model.connect(
+            self.__models_window.load_predefined_model
+        )
+
         self.__main_menu_bar.quit.connect(QApplication.quit)
         self.__main_menu_bar.toggle_log_window.connect(self.__toggle_log_window)
 

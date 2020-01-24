@@ -5,8 +5,8 @@ Window for all the model related operations (Create/Modify NN architectures)
 """
 
 from PySide2.QtWidgets import QGridLayout, QWidget
-from tensorflow.keras.applications.vgg16 import VGG16
 
+from dial.project import ProjectInstance
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -28,12 +28,17 @@ class ModelsWindow(QWidget):
         self.__setup_ui()
 
         # Connect signals
-
-        # TODO: Remove from here
-        self.__model_table.set_model(VGG16())
+        ProjectInstance().project_changed.connect(self.__update_from_project)
 
     def __setup_ui(self):
         self.__main_layout.addWidget(self.__model_table, 0, 0)
         self.__main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.__main_layout)
+
+    def load_predefined_model(self):
+        LOGGER.debug("Opening dialog to select a predefined model...")
+
+    def __update_from_project(self, project):
+        # self.__model_table.set_model(project.model)
+        pass
