@@ -32,8 +32,8 @@ class Dataset(keras.utils.Sequence):
 
     def __init__(
         self,
-        x_data: List,
-        y_data: List,
+        x_data: np.ndarray,
+        y_data: np.ndarray,
         x_type: DataType,
         y_type: DataType,
         batch_size: int = 32,

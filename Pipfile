@@ -1,0 +1,28 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[packages]
+dial = {editable = true,path = "."}
+tensorflow = ">=2.0.0a0"
+pyside2 = ">=5.12.6"
+pillow = ">=6.2.1"
+qimage2ndarray = ">=1.8"
+dependency-injector = ">=3.14.12"
+
+[dev-packages]
+black = "*"
+isort = "*"
+flake8 = "*"
+mypy = "*"
+pytest = "*"
+pytest-cov = "*"
+pytest-qt = "*"
+pylint = "*"
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true

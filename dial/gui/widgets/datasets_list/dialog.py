@@ -4,6 +4,8 @@
 Dialog window for selecting between predefined datasets.
 """
 
+from typing import Optional
+
 from PySide2.QtCore import QModelIndex, Slot
 from PySide2.QtWidgets import (
     QDialog,
@@ -34,7 +36,7 @@ class DatasetsListDialog(QDialog):
         self.setWindowTitle(" datasets")
 
         # Attributes
-        self.__dataset_loader = None
+        self.__dataset_loader: Optional[DatasetLoader] = None
 
         # Setup MVC
         self.__model = model
@@ -65,7 +67,7 @@ class DatasetsListDialog(QDialog):
 
         self.__view.activated.connect(self.__selected_loader_changed)
 
-    def selected_loader(self) -> DatasetLoader:
+    def selected_loader(self) -> Optional[DatasetLoader]:
         """
         Return the loaded currently selected by the Dialog.
         """

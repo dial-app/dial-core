@@ -4,6 +4,7 @@ import logging
 from argparse import Namespace
 
 import pytest
+
 from dial.utils import log
 
 

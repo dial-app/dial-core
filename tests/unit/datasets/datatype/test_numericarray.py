@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+
 from dial.datasets.datatype import NumericArray
 
 

@@ -9,7 +9,7 @@ import logging
 import logging.config
 import sys
 from io import StringIO
-from typing import NoReturn
+from logging.root import manager
 
 FORMATTER = logging.Formatter(
     "%(asctime)s - %(name)s - %(levelname)s - %(message)s", "%H:%M:%S"
@@ -42,7 +42,7 @@ def get_string_handler() -> logging.StreamHandler:
     return string_handler
 
 
-def add_handler_to_root(handler: logging.Handler) -> NoReturn:
+def add_handler_to_root(handler: logging.Handler):
     """
     Add a new handler to the logger defined as ROOT
     """
@@ -60,7 +60,7 @@ def get_logger(logger_name) -> logging.Logger:
     return logger
 
 
-def init_logs(args: argparse.Namespace) -> NoReturn:
+def init_logs(args: argparse.Namespace):
     """
     Initialize logging system.
     """
@@ -82,7 +82,7 @@ def init_logs(args: argparse.Namespace) -> NoReturn:
     add_handler_to_root(get_string_handler())
 
     # Configure loggers that could already be initialized (module loggers)
-    loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
+    loggers = [logging.getLogger(name) for name in manager.loggerDict]
     for logger in loggers:
         logger.setLevel(LOG_LEVEL)
 

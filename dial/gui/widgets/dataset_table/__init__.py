@@ -4,9 +4,8 @@
 Widgets for displaying a dataset content with Train/Test tabs.
 """
 
-from .containers import DatasetTable, TrainTestTabs
+from .containers import TrainTestTable
 
 __all__ = [
-    "DatasetTable",
-    "TrainTestTabs",
+    "TrainTestTable",
 ]

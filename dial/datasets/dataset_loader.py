@@ -78,26 +78,28 @@ class FashionMnistLoader(DatasetLoader):
     Fashion Mnist dataset loader.
     """
 
+    y_type: datatype.Categorical
+
     def __init__(self):
         super().__init__(
             "Fashion-MNIST",
             "Categorized set of clothing images",
             datatype.ImageArray(),
-            datatype.Categorical(),
+            datatype.Categorical(
+                [
+                    "T-shirt/top",
+                    "Trouser",
+                    "Pullover",
+                    "Dress",
+                    "Coat",
+                    "Sandal",
+                    "Shirt",
+                    "Sneaker",
+                    "Bag",
+                    "Ankle boot",
+                ]
+            ),
         )
-
-        self.y_type.categories = [
-            "T-shirt/top",
-            "Trouser",
-            "Pullover",
-            "Dress",
-            "Coat",
-            "Sandal",
-            "Shirt",
-            "Sneaker",
-            "Bag",
-            "Ankle boot",
-        ]
 
     def _load_data(self):
         return fashion_mnist.load_data()
@@ -115,26 +117,28 @@ class Cifar10Loader(DatasetLoader):
     Cifar10 dataset loader.
     """
 
+    y_type: datatype.Categorical
+
     def __init__(self):
         super().__init__(
             "CIFAR10",
             "Categorized images.",
             datatype.ImageArray(),
-            datatype.Categorical(),
+            datatype.Categorical(
+                [
+                    "airplane",
+                    "automobile",
+                    "bird",
+                    "cat",
+                    "deer",
+                    "dog",
+                    "frog",
+                    "horse",
+                    "ship",
+                    "truck",
+                ]
+            ),
         )
-
-        self.y_type.categories = [
-            "airplane",
-            "automobile",
-            "bird",
-            "cat",
-            "deer",
-            "dog",
-            "frog",
-            "horse",
-            "ship",
-            "truck",
-        ]
 
     def _load_data(self):
         return cifar10.load_data()

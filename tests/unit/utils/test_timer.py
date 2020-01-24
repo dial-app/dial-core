@@ -1,11 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import datetime
-import time
 from unittest.mock import Mock, patch
 
 import dial
-import pytest
 from dial.utils import Timer
 
 

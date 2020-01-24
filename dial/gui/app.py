@@ -50,7 +50,7 @@ def run(args: argparse.Namespace):
 
         from dial.utils import tkinter
 
-        tkinter.showerror(err)
+        tkinter.showerror(str(err))
         sys.exit(1)
 
     # After this point we have checked that all dependencies, versions, and all major

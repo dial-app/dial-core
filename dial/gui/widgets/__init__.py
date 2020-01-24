@@ -2,14 +2,14 @@
 
 """Graphic widgets that can be reused on the project. """
 
-from .dataset_table import TrainTestTabs
+from .dataset_table import TrainTestTable
 from .datasets_list import DatasetsList, PredefinedDatasetsList
 from .log import Logger
 from .menubars import MenuBars
 from .model_table import ModelTable
 
 __all__ = [
-    "TrainTestTabs",
+    "TrainTestTable",
     "DatasetsList",
     "PredefinedDatasetsList",
     "Logger",

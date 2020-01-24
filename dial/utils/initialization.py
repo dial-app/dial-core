@@ -4,8 +4,8 @@
 Functions to check that python versions, libraries... used by the program are correct.
 """
 
-import importlib
 import sys
+from importlib.util import find_spec
 from typing import List, Tuple
 
 from dial.utils import log
@@ -28,7 +28,7 @@ def check_module_installed(module_name: str):
     """
     Check if PySide2 version installed is correct.
     """
-    spec = importlib.util.find_spec(module_name)
+    spec = find_spec(module_name)
 
     if spec is None:
         raise ImportError(

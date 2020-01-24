@@ -13,7 +13,7 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
-from dial.gui.widgets import PredefinedDatasetsList, TrainTestTabs
+from dial.gui.widgets import PredefinedDatasetsList
 from dial.project import ProjectInstance
 from dial.utils import log
 
@@ -25,7 +25,7 @@ class DatasetsWindow(QWidget):
     Window for all the dataset related operations (Visualization, loading...)
     """
 
-    def __init__(self, dataset_table_widget: TrainTestTabs, parent=None):
+    def __init__(self, dataset_table_widget, parent=None):
         super().__init__(parent)
 
         # Initialize widgets

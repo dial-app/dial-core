@@ -5,8 +5,14 @@ dial package installer.
 """
 import setuptools
 
-from dial import (__author__, __description__, __license__, __requirements__,
-                  __url__, __version__)
+from dial import (
+    __author__,
+    __description__,
+    __license__,
+    __requirements__,
+    __url__,
+    __version__,
+)
 
 
 def read_file(file_path):
@@ -32,11 +38,11 @@ setuptools.setup(
     install_requires=["".join(module_desc) for module_desc in __requirements__],
     keywords=["Deep Learning", "UI"],
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
-        "Intended Audience :: Developers",
-        "Topic :: Software Development :: User Interfaces",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-        "Programming Language :: Python :: 3.6",
-        "Programming Language :: Python :: 3.7",
+        "Development Status::2 - Pre-Alpha",
+        "Intended Audience::Developers",
+        "Topic::Software Development::User Interfaces",
+        "License::OSI Approved::GNU General Public License v3 (GPLv3)",
+        "Programming Language::lython::3.6",
+        "Programming Language::Python::3.7",
     ],
 )
