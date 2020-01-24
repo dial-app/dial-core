@@ -9,7 +9,6 @@ import logging
 import logging.config
 import sys
 from io import StringIO
-from logging.root import manager
 
 FORMATTER = logging.Formatter(
     "%(asctime)s - %(name)s - %(levelname)s - %(message)s", "%H:%M:%S"
@@ -82,8 +81,8 @@ def init_logs(args: argparse.Namespace):
     add_handler_to_root(get_string_handler())
 
     # Configure loggers that could already be initialized (module loggers)
-    loggers = [logging.getLogger(name) for name in manager.loggerDict]
-    for logger in loggers:
-        logger.setLevel(LOG_LEVEL)
+    # loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
+    # for logger in loggers:
+    #     logger.setLevel(LOG_LEVEL)
 
     get_logger(__name__).debug("Logging system initialized.")
