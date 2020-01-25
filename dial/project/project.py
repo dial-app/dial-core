@@ -5,10 +5,9 @@
 # except ImportError:
 #     import pickle
 
-from PySide2.QtCore import QObject, Signal
-
 from dial.datasets import DatasetLoader
 from dial.utils import Timer, log
+from PySide2.QtCore import QObject, Signal
 
 LOGGER = log.get_logger(__name__)
 
@@ -18,15 +17,18 @@ class Project(QObject):
     Dial project file.
     """
 
-    project_changed = Signal(QObject)
+    dataset_changed = Signal(QObject)
+    model_changed = Signal(QObject)
 
     def __init__(self):
         super().__init__()
 
         self.file_path = ""
         self.dataset = DatasetInfo()
+        self.model = ModelInfo()
 
-        self.dataset.dataset_changed.connect(lambda: self.project_changed.emit(self))
+        self.dataset.dataset_changed.connect(lambda: self.dataset_changed.emit(self))
+        self.model.model_changed.connect(lambda: self.model_changed.emit(self))
 
     def load(self, file_path):
         with open(file_path, "rb") as _:  # project_file:
@@ -84,3 +86,19 @@ class DatasetInfo(QObject):
         self.y_type = dataset_loader.y_type
 
         self.dataset_changed.emit()
+
+
+class ModelInfo(QObject):
+    model_changed = Signal()
+
+    def __init__(self):
+        super().__init__()
+
+        self.name = "Empty model"
+        self.model = None
+
+    def load_model(self, model_loader):
+        self.name = model_loader.name
+        self.model = model_loader.load()
+
+        self.model_changed.emit()

@@ -4,10 +4,10 @@
 Window for all the model related operations (Create/Modify NN architectures)
 """
 
-from PySide2.QtWidgets import QGridLayout, QWidget
-
+from dial.gui.widgets import PredefinedModelsList
 from dial.project import ProjectInstance
 from dial.utils import log
+from PySide2.QtWidgets import QGridLayout, QWidget
 
 LOGGER = log.get_logger(__name__)
 
@@ -28,7 +28,7 @@ class ModelsWindow(QWidget):
         self.__setup_ui()
 
         # Connect signals
-        ProjectInstance().project_changed.connect(self.__update_from_project)
+        ProjectInstance().model_changed.connect(self.__update_from_project)
 
     def __setup_ui(self):
         self.__main_layout.addWidget(self.__model_table, 0, 0)
@@ -37,8 +37,22 @@ class ModelsWindow(QWidget):
         self.setLayout(self.__main_layout)
 
     def load_predefined_model(self):
+        model_loader_dialog = PredefinedModelsList.Dialog(parent=self)
+
         LOGGER.debug("Opening dialog to select a predefined model...")
 
+        accepted = model_loader_dialog.exec_()
+
+        if accepted:
+            LOGGER.debug("Model selected")
+
+            model_loader = model_loader_dialog.selected_loader()
+
+            project = ProjectInstance()
+            project.model.load_model(model_loader)
+        else:
+            LOGGER.debug("Operation cancelled")
+
     def __update_from_project(self, project):
-        # self.__model_table.set_model(project.model)
-        pass
+        LOGGER.debug("Updating model from project")
+        self.__model_table.set_model(project.model.model)

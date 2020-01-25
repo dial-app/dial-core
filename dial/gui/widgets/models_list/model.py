@@ -10,26 +10,20 @@ from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 LOGGER = log.get_logger(__name__)
 
 
-class DatasetsListModel(QAbstractListModel):
-    def __init__(self, datasets_list: List[DatasetLoader] = None, parent=None):
+class ModelsListModel(QAbstractListModel):
+    def __init__(self, models_list=None, parent=None):
         super().__init__(parent)
 
-        self.__datasets_list = datasets_list
-
-        LOGGER.debug(
-            "Initializing model with %d entries: %s",
-            len(self.__datasets_list),
-            self.__datasets_list,
-        )
+        self.__models_list = models_list
 
     def rowCount(self, parent=QModelIndex()):
-        return len(self.__datasets_list)
+        return len(self.__models_list)
 
     def data(self, index, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
-            return f"{self.__datasets_list[index.row()]}"
+            return f"{self.__models_list[index.row()]}"
 
         if role == Dial.RawRole:
-            return self.__datasets_list[index.row()]
+            return self.__models_list[index.row()]
 
         return None
