@@ -4,28 +4,8 @@
 Modules related to Datasets, types and dataset loading.
 """
 
+from .container import PredefinedDatasetLoaders
 from .dataset import Dataset
-from .dataset_loader import (
-    BostonHousingLoader,
-    Cifar10Loader,
-    DatasetLoader,
-    FashionMnistLoader,
-    MnistLoader,
-)
+from .dataset_loader import DatasetLoader
 
-PREDEFINED_DATASETS = {
-    "mnist": MnistLoader(),
-    "fashion-mnist": FashionMnistLoader(),
-    "cifar10": Cifar10Loader(),
-    "boston-housing": BostonHousingLoader(),
-}
-
-__all__ = [
-    "Dataset",
-    "PREDEFINED_DATASETS",
-    "BostonHousingLoader",
-    "Cifar10Loader",
-    "FashionMnistLoader",
-    "MnistLoader",
-    "DatasetLoader",
-]
+__all__ = ["Dataset", "PredefinedDatasetLoaders", "DatasetLoader"]

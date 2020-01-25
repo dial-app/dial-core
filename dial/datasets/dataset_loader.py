@@ -9,8 +9,10 @@ from typing import List, Tuple
 
 from tensorflow.keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
-from dial.datasets import Dataset, datatype
+from dial.datasets import datatype
 from dial.utils import Timer, log
+
+from .dataset import Dataset
 
 LOGGER = log.get_logger(__name__)
 

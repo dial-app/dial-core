@@ -7,7 +7,7 @@ Dependency Injection containers.
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-from dial.datasets import PREDEFINED_DATASETS
+from dial.datasets import PredefinedDatasetLoaders
 
 from . import dialog, model, view
 
@@ -29,7 +29,10 @@ class PredefinedDatasetsList(containers.DeclarativeContainer):
     """
 
     Model = providers.Factory(
-        model.DatasetsListModel, datasets_list=list(PREDEFINED_DATASETS.values())
+        model.DatasetsListModel,
+        datasets_list=[
+            loader() for loader in PredefinedDatasetLoaders.providers.values()
+        ],
     )
 
     Dialog = providers.Factory(DatasetsList.Dialog, model=Model)
