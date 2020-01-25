@@ -31,6 +31,7 @@ python_version = "3.7"
 allow_prereleases = true
 
 [scripts]
+lint = "pipenv run pre-commit run --all"
 tests = "pipenv run pytest --cov"
 build = "pipenv run python setup.py sdist bdist bdist_wheel"
 deploy = "pipenv run twine upload dist/*"
