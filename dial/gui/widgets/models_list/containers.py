@@ -6,6 +6,7 @@ Dependency Injection containers.
 
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
+
 from dial.models import PredefinedModels
 
 from . import dialog, model, view

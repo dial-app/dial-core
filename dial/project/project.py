@@ -5,9 +5,10 @@
 # except ImportError:
 #     import pickle
 
+from PySide2.QtCore import QObject, Signal
+
 from dial.datasets import DatasetLoader
 from dial.utils import Timer, log
-from PySide2.QtCore import QObject, Signal
 
 LOGGER = log.get_logger(__name__)
 

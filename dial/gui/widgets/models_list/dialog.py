@@ -4,9 +4,6 @@
 Dialog window for selecting between predefined datasets.
 """
 
-from typing import Optional
-
-from dial.misc import Dial
 from PySide2.QtCore import QModelIndex, Slot
 from PySide2.QtWidgets import (
     QDialog,
@@ -16,6 +13,8 @@ from PySide2.QtWidgets import (
     QLabel,
     QVBoxLayout,
 )
+
+from dial.misc import Dial
 
 from .model import ModelsListModel
 from .view import ModelsListView

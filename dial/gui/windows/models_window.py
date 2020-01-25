@@ -4,10 +4,11 @@
 Window for all the model related operations (Create/Modify NN architectures)
 """
 
+from PySide2.QtWidgets import QGridLayout, QWidget
+
 from dial.gui.widgets import PredefinedModelsList
 from dial.project import ProjectInstance
 from dial.utils import log
-from PySide2.QtWidgets import QGridLayout, QWidget
 
 LOGGER = log.get_logger(__name__)
 

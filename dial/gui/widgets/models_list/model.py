@@ -1,11 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import List
+from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
-from dial.datasets import DatasetLoader
 from dial.misc import Dial
 from dial.utils import log
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
 LOGGER = log.get_logger(__name__)
 

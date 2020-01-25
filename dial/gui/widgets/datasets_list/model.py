@@ -2,16 +2,17 @@
 
 from typing import List
 
+from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
+
 from dial.datasets import DatasetLoader
 from dial.misc import Dial
 from dial.utils import log
-from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
 LOGGER = log.get_logger(__name__)
 
 
 class DatasetsListModel(QAbstractListModel):
-    def __init__(self, datasets_list: List[DatasetLoader] = None, parent=None):
+    def __init__(self, datasets_list: List[DatasetLoader], parent=None):
         super().__init__(parent)
 
         self.__datasets_list = datasets_list

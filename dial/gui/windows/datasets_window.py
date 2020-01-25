@@ -4,9 +4,6 @@
 Window for all the dataset related operations (Visualization, loading...)
 """
 
-from dial.gui.widgets import PredefinedDatasetsList
-from dial.project import ProjectInstance
-from dial.utils import log
 from PySide2.QtWidgets import (
     QFormLayout,
     QGridLayout,
@@ -15,6 +12,10 @@ from PySide2.QtWidgets import (
     QSplitter,
     QWidget,
 )
+
+from dial.gui.widgets import PredefinedDatasetsList
+from dial.project import ProjectInstance
+from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
 

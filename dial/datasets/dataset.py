@@ -20,8 +20,9 @@ image...)
 from typing import List, Tuple
 
 import numpy as np
-from dial.datasets.datatype import DataType
 from tensorflow import keras
+
+from dial.datasets.datatype import DataType
 
 
 class Dataset(keras.utils.Sequence):

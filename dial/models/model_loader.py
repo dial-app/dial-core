@@ -5,11 +5,10 @@ Classes for loading models.
 """
 
 from abc import ABCMeta, abstractmethod
-from typing import List, Tuple
 
-from dial.datasets import Dataset, datatype
-from dial.utils import Timer, log
 from tensorflow.keras.applications import vgg16
+
+from dial.utils import Timer, log
 
 LOGGER = log.get_logger(__name__)
 
