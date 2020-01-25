@@ -7,7 +7,7 @@ from .datasets_list import DatasetsList, PredefinedDatasetsList
 from .log import Logger
 from .menubars import MenuBars
 from .model_table import ModelTable
-from .models_list import ModelsList, PredefinedModelsList
+from .models_list import ModelLoadersList, PredefinedModelLoadersList
 
 __all__ = [
     "TrainTestTable",
@@ -16,6 +16,6 @@ __all__ = [
     "Logger",
     "MenuBars",
     "ModelTable",
-    "ModelsList",
-    "PredefinedModelsList",
+    "ModelLoadersList",
+    "PredefinedModelLoadersList",
 ]

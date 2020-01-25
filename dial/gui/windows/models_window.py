@@ -6,7 +6,7 @@ Window for all the model related operations (Create/Modify NN architectures)
 
 from PySide2.QtWidgets import QGridLayout, QWidget
 
-from dial.gui.widgets import PredefinedModelsList
+from dial.gui.widgets import PredefinedModelLoadersList
 from dial.project import ProjectInstance
 from dial.utils import log
 
@@ -38,7 +38,7 @@ class ModelsWindow(QWidget):
         self.setLayout(self.__main_layout)
 
     def load_predefined_model(self):
-        model_loader_dialog = PredefinedModelsList.Dialog(parent=self)
+        model_loader_dialog = PredefinedModelLoadersList.Dialog(parent=self)
 
         LOGGER.debug("Opening dialog to select a predefined model...")
 

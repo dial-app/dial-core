@@ -8,7 +8,7 @@ from dial.utils import log
 LOGGER = log.get_logger(__name__)
 
 
-class ModelsListModel(QAbstractListModel):
+class ModelLoadersListModel(QAbstractListModel):
     def __init__(self, models_list=None, parent=None):
         super().__init__(parent)
 

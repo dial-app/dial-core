@@ -7,8 +7,9 @@ Dependency Injection containers.
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-from .model_loader import VGG16Loader
+from .model_loader import VGG16Loader, XceptionLoader
 
-PredefinedModels = containers.DynamicContainer()
+PredefinedModelLoaders = containers.DynamicContainer()
 
-PredefinedModels.VGG16 = providers.Factory(VGG16Loader)
+PredefinedModelLoaders.VGG16 = providers.Factory(VGG16Loader)
+PredefinedModelLoaders.Xception = providers.Factory(XceptionLoader)

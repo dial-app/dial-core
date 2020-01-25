@@ -7,30 +7,30 @@ Dependency Injection containers.
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-from dial.models import PredefinedModels
+from dial.models import PredefinedModelLoaders
 
 from . import dialog, model, view
 
 
-class ModelsList(containers.DeclarativeContainer):
+class ModelLoadersList(containers.DeclarativeContainer):
     """
     Container for creating widgets with a list of datasets.
     """
 
-    Model = providers.Factory(model.ModelsListModel)
-    View = providers.Factory(view.ModelsListView)
+    Model = providers.Factory(model.ModelLoadersListModel)
+    View = providers.Factory(view.ModelLoadersListView)
 
-    Dialog = providers.Factory(dialog.ModelsListDialog, model=Model, view=View,)
+    Dialog = providers.Factory(dialog.ModelLoadersListDialog, model=Model, view=View,)
 
 
-class PredefinedModelsList(containers.DeclarativeContainer):
+class PredefinedModelLoadersList(containers.DeclarativeContainer):
     """
-    Container for creating a list with a list of predefined datasets.
+    Container for creating a list with a list of predefined models.
     """
 
     Model = providers.Factory(
-        model.ModelsListModel,
-        models_list=[loader() for loader in PredefinedModels.providers.values()],
+        model.ModelLoadersListModel,
+        models_list=[loader() for loader in PredefinedModelLoaders.providers.values()],
     )
 
-    Dialog = providers.Factory(ModelsList.Dialog, model=Model)
+    Dialog = providers.Factory(ModelLoadersList.Dialog, model=Model)

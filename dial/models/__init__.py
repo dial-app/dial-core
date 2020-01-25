@@ -1,5 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from .containers import PredefinedModels
+from .containers import PredefinedModelLoaders
 
-__all__ = ["PredefinedModels"]
+__all__ = ["PredefinedModelLoaders"]

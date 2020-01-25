@@ -16,17 +16,17 @@ from PySide2.QtWidgets import (
 
 from dial.misc import Dial
 
-from .model import ModelsListModel
-from .view import ModelsListView
+from .model import ModelLoadersListModel
+from .view import ModelLoadersListView
 
 
-class ModelsListDialog(QDialog):
+class ModelLoadersListDialog(QDialog):
     """
     Dialog window for selecting between different models.
     """
 
     def __init__(
-        self, model: ModelsListModel, view: ModelsListView, parent=None,
+        self, model: ModelLoadersListModel, view: ModelLoadersListView, parent=None,
     ):
         super().__init__(parent)
 

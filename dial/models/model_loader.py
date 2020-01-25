@@ -6,7 +6,7 @@ Classes for loading models.
 
 from abc import ABCMeta, abstractmethod
 
-from tensorflow.keras.applications import vgg16
+from tensorflow.keras.applications import vgg16, xception
 
 from dial.utils import Timer, log
 
@@ -46,3 +46,13 @@ class VGG16Loader(ModelLoader):
 
     def _load_data(self):
         return vgg16.VGG16()
+
+
+class XceptionLoader(ModelLoader):
+    def __init__(self):
+        super().__init__(
+            "Xception", "XCeption V1 model, with weights pre-trained on ImageNet"
+        )
+
+    def _load_data(self):
+        return xception.Xception()
