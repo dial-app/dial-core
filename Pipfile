@@ -27,3 +27,7 @@ python_version = "3.7"
 
 [pipenv]
 allow_prereleases = true
+
+[scripts]
+build = "pipenv run python setup.py sdist bdist bdist_wheel"
+deploy = "pipenv run twine upload dist/*"

@@ -38,11 +38,11 @@ setuptools.setup(
     install_requires=["".join(module_desc) for module_desc in __requirements__],
     keywords=["Deep Learning", "UI"],
     classifiers=[
-        "Development Status::2 - Pre-Alpha",
-        "Intended Audience::Developers",
-        "Topic::Software Development::User Interfaces",
-        "License::OSI Approved::GNU General Public License v3 (GPLv3)",
-        "Programming Language::lython::3.6",
-        "Programming Language::Python::3.7",
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "Topic :: Software Development :: User Interfaces",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
     ],
 )
