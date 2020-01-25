@@ -21,6 +21,7 @@ pytest-cov = "*"
 pytest-qt = "*"
 pylint = "*"
 tox = "*"
+twine = "*"
 
 [requires]
 python_version = "3.7"
