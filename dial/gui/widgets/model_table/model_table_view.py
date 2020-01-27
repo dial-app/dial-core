@@ -4,6 +4,7 @@
 """
 
 from PySide2.QtCore import Qt
+from PySide2.QtGui import QContextMenuEvent
 from PySide2.QtWidgets import QHeaderView, QMenu, QTableView
 
 
@@ -56,6 +57,16 @@ class ModelTableView(QTableView):
                 if toggled
                 else header.hideSection(index)
             )
+
+    def contextMenuEvent(self, event: QContextMenuEvent):
+        print("Called")
+        print(event.pos())
+        menu = QMenu(self)
+
+        menu.popup(event.pos())
+
+        row_index = self.rowAt(event.y())
+        print(f"Selected row: {row_index}")
 
     def __show_header_context_menu(self, point):
         """

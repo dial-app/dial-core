@@ -1,6 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from enum import IntEnum
+
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, Qt
+
+from dial.misc import Dial
 
 
 class ModelTableModel(QAbstractTableModel):
@@ -8,17 +12,25 @@ class ModelTableModel(QAbstractTableModel):
     Model representing the layers/structure of a model (neural network)
     """
 
+    class Column(IntEnum):
+        Type = 0
+        Name = 1
+        OutputShape = 2
+        Param = 3
+        Trainable = 4
+
     def __init__(self, parent=None):
         super().__init__(parent)
 
         self.__model = None
 
-        self.column_names = ("Type", "Name", "Output Shape", "Param", "Trainable")
         self.__row_count = 0
-        self.__column_count = len(self.column_names)
+        self.__column_count = len(self.Column)
 
         self.__role_map = {
+            Dial.RawRole: self.__raw_role,
             Qt.DisplayRole: self.__display_role,
+            Qt.CheckStateRole: self.__checkstate_role,
         }
 
     def load_model(self, model):
@@ -41,6 +53,15 @@ class ModelTableModel(QAbstractTableModel):
         """
         return self.__column_count
 
+    def flags(self, index: QModelIndex):
+        if not index.isValid():
+            return Qt.ItemIsEnabled
+
+        if index.column() == self.Column.Trainable:
+            return super().flags(index) | Qt.ItemIsUserCheckable
+
+        return Qt.ItemIsEnabled
+
     def headerData(self, section, orientation, role):
         """
         Return the name of the headers
@@ -51,11 +72,11 @@ class ModelTableModel(QAbstractTableModel):
 
         # Column header must have their respective names
         if orientation == Qt.Horizontal:
-            return self.column_names[section]
+            return str(self.Column(section).name)
 
         # Row header will have the row number as name
         if orientation == Qt.Vertical:
-            return f"{section}"
+            return str(section)
 
         return None
 
@@ -65,27 +86,39 @@ class ModelTableModel(QAbstractTableModel):
         """
 
         if role in self.__role_map:
-            return self.__role_map[role](index.row(), index.column())
+            return self.__role_map[role](index)
 
         return None
 
-    def __display_role(self, row: int, column: int):
+    def __display_role(self, index: QModelIndex):
         """
         Return the text representation of the cell value.
         """
-        if column == 0:
-            return type(self.__model.layers[row]).__name__
+        if index.column() == self.Column.Trainable:
+            return ""
 
-        if column == 1:
-            return self.__model.layers[row].name
+        return str(index.data(Dial.RawRole))
 
-        if column == 2:
-            return str(self.__model.layers[row].get_output_shape_at(0))
+    def __raw_role(self, index: QModelIndex):
+        if index.column() == self.Column.Type:
+            return type(self.__model.layers[index.row()]).__name__
 
-        if column == 3:
-            return self.__model.layers[row].count_params()
+        if index.column() == self.Column.Name:
+            return self.__model.layers[index.row()].name
 
-        if column == 4:
-            return self.__model.layers[row].trainable
+        if index.column() == self.Column.OutputShape:
+            return self.__model.layers[index.row()].get_output_shape_at(0)
+
+        if index.column() == self.Column.Param:
+            return self.__model.layers[index.row()].count_params()
+
+        if index.column() == self.Column.Trainable:
+            return self.__model.layers[index.row()].trainable
+
+        return None
+
+    def __checkstate_role(self, index: QModelIndex):
+        if index.flags() & Qt.ItemIsUserCheckable:
+            return Qt.Checked if index.data(Dial.RawRole) else Qt.Unchecked
 
         return None
