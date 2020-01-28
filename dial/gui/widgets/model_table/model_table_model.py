@@ -90,6 +90,16 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
+    def setData(self, index: QModelIndex, value, role):
+        if not index.isValid():
+            return False
+
+        if role == Qt.CheckStateRole:
+            if index.column() == self.Column.Trainable:
+                self.__model.layers[index.row()].trainable = value
+
+        return True
+
     def __display_role(self, index: QModelIndex):
         """
         Return the text representation of the cell value.
