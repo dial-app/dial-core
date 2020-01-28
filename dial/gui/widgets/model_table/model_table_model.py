@@ -22,7 +22,7 @@ class ModelTableModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.__model = None
+        self.__layers = None
 
         self.__row_count = 0
         self.__column_count = len(self.Column)
@@ -34,9 +34,9 @@ class ModelTableModel(QAbstractTableModel):
         }
 
     def load_model(self, model):
-        self.__model = model
+        self.__layers = [l for l in model.layers]
 
-        self.__row_count = len(model.layers)
+        self.__row_count = len(self.__layers)
 
         # Model has been reset, redraw view
         self.modelReset.emit()
@@ -99,11 +99,11 @@ class ModelTableModel(QAbstractTableModel):
 
         if role == Qt.CheckStateRole:
             if index.column() == self.Column.Trainable:
-                self.__model.layers[index.row()].trainable = value
+                self.__layers[index.row()].trainable = value
 
         if role == Qt.EditRole:
             if index.column() == self.Column.Name:
-                self.__model.layers[index.row()]._name = value
+                self.__layers[index.row()]._name = value
 
         return True
 
@@ -118,19 +118,19 @@ class ModelTableModel(QAbstractTableModel):
 
     def __raw_role(self, index: QModelIndex):
         if index.column() == self.Column.Type:
-            return type(self.__model.layers[index.row()]).__name__
+            return type(self.__layers[index.row()]).__name__
 
         if index.column() == self.Column.Name:
-            return self.__model.layers[index.row()].name
+            return self.__layers[index.row()].name
 
         if index.column() == self.Column.OutputShape:
-            return self.__model.layers[index.row()].get_output_shape_at(0)
+            return self.__layers[index.row()].get_output_shape_at(0)
 
         if index.column() == self.Column.Param:
-            return self.__model.layers[index.row()].count_params()
+            return self.__layers[index.row()].count_params()
 
         if index.column() == self.Column.Trainable:
-            return self.__model.layers[index.row()].trainable
+            return self.__layers[index.row()].trainable
 
         return None
 
