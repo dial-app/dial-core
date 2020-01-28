@@ -15,10 +15,12 @@ class DatasetTableModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.__x = None
-        self.__y = None
+        self.__x = []
+        self.__y = []
         self.__x_type = None
         self.__y_type = None
+
+        self.__dataset = None
 
         self.__row_count = 0
         self.__column_count = 2
@@ -39,9 +41,10 @@ class DatasetTableModel(QAbstractTableModel):
         """
         Load new Dataset data to the model.
         """
-        self.__row_count = min(self.__max_row_count, len(dataset))
+        self.__dataset = dataset
 
-        self.__x, self.__y = dataset.head(self.rowCount())
+        self.__x = []
+        self.__y = []
         self.__x_type = dataset.x_type
         self.__y_type = dataset.y_type
 
@@ -80,10 +83,48 @@ class DatasetTableModel(QAbstractTableModel):
 
         return None
 
+    def canFetchMore(self, parent: QModelIndex) -> bool:
+        if parent.isValid():
+            return False
+
+        if not self.__dataset:
+            return False
+
+        return self.__row_count < len(self.__dataset)
+
+    def fetchMore(self, parent: QModelIndex):
+        if parent.isValid():
+            return False
+
+        remainder = len(self.__dataset) - self.__row_count
+        items_to_fetch = min(remainder, self.__max_row_count)
+
+        if items_to_fetch <= 0:
+            return
+
+        self.insertRows(self.__row_count, items_to_fetch)
+
+    def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
+        self.beginInsertRows(parent, row, row + count - 1)
+
+        x_set, y_set = self.__dataset.items(start=row, end=row + count)
+
+        self.__x[row:row] = x_set
+        self.__y[row:row] = y_set
+
+        self.__row_count += count
+
+        self.endInsertRows()
+
+        return True
+
     def data(self, index: QModelIndex, role=Qt.DisplayRole):
         """
         Return the corresponding data depending on the specified role.
         """
+
+        if not index.isValid():
+            return None
 
         if role in self.__role_map:
             return self.__role_map[role](index.row(), index.column())

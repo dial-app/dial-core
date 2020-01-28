@@ -55,7 +55,7 @@ class Dataset(keras.utils.Sequence):
     @property
     def shuffled(self) -> bool:
         """
-        Toggle if the dataset will be shuffled. TODO: Reshuffle after each epoch?
+        Check if the dataset is shuffled (dataset items randomly sorted)
         """
         return self.__shuffled
 
@@ -64,18 +64,29 @@ class Dataset(keras.utils.Sequence):
         self.__shuffled = toggle
 
         if self.__shuffled:
-            np.random.shuffle(self.__indexes)
+            self.shuffle()
         else:
             self.__indexes = np.arange(self.__x.shape[0])
+
+    def shuffle(self):
+        self.__shuffled = True
+        np.random.shuffle(self.__indexes)
 
     def head(self, n_items: int = 10) -> Tuple[List, List]:
         """
         Returns the first `n` items on the dataset.
         """
-        indexes = self.__indexes[:n_items]
+        return self.items(0, n_items + 1)
 
-        x_head, y_head = self.__preprocess_data(self.__x[indexes], self.__y[indexes])
-        return x_head, y_head
+    def items(self, start: int, end: int,) -> Tuple[List, List]:
+        """
+        Return the `n` elements between start and end as a tuple of (x, y) items
+        Range is EXCLUSIVE [start, end)
+        """
+        indexes = self.__indexes[start:end]
+
+        x_set, y_set = self.__preprocess_data(self.__x[indexes], self.__y[indexes])
+        return x_set, y_set
 
     def __len__(self) -> int:
         """
