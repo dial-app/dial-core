@@ -60,6 +60,9 @@ class ModelTableModel(QAbstractTableModel):
         if index.column() == self.Column.Trainable:
             return super().flags(index) | Qt.ItemIsUserCheckable
 
+        if index.column() == self.Column.Name:
+            return super().flags(index) | Qt.ItemIsEditable
+
         return Qt.ItemIsEnabled
 
     def headerData(self, section, orientation, role):
@@ -97,6 +100,10 @@ class ModelTableModel(QAbstractTableModel):
         if role == Qt.CheckStateRole:
             if index.column() == self.Column.Trainable:
                 self.__model.layers[index.row()].trainable = value
+
+        if role == Qt.EditRole:
+            if index.column() == self.Column.Name:
+                self.__model.layers[index.row()]._name = value
 
         return True
 
