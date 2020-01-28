@@ -7,7 +7,7 @@ Dependency Injection containers.
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-from dial.gui.widgets import Logger, MenuBars, ModelTable, TrainTestTable
+from dial.gui.widgets import LayersTree, Logger, MenuBars, ModelTable, TrainTestTable
 
 from . import datasets_window, main_window, models_window
 
@@ -22,7 +22,9 @@ class Windows(containers.DeclarativeContainer):
     )
 
     Models = providers.Factory(
-        models_window.ModelsWindow, model_table=ModelTable.Widget
+        models_window.ModelsWindow,
+        layers_tree=LayersTree.Widget,
+        model_table=ModelTable.Widget,
     )
 
     Main = providers.Factory(

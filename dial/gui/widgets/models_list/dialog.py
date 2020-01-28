@@ -14,8 +14,6 @@ from PySide2.QtWidgets import (
     QVBoxLayout,
 )
 
-from dial.misc import Dial
-
 from .model import ModelLoadersListModel
 from .view import ModelLoadersListView
 
@@ -89,7 +87,7 @@ class ModelLoadersListDialog(QDialog):
         """
         Slot called when a user clicks on any list item.
         """
-        self.__model_loader = index.data(Dial.RawRole)
+        self.__model_loader = index.internalPointer()
 
         self.__update_description(self.__model_loader)
 

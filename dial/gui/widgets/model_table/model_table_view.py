@@ -59,8 +59,6 @@ class ModelTableView(QTableView):
             )
 
     def contextMenuEvent(self, event: QContextMenuEvent):
-        print("Called")
-        print(event.pos())
         menu = QMenu(self)
 
         menu.popup(event.pos())

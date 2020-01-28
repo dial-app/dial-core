@@ -17,7 +17,6 @@ from PySide2.QtWidgets import (
 )
 
 from dial.datasets import DatasetLoader
-from dial.misc import Dial
 
 from .model import DatasetsListModel
 from .view import DatasetsListView
@@ -97,7 +96,7 @@ class DatasetsListDialog(QDialog):
         """
         Slot called when a user clicks on any list item.
         """
-        self.__dataset_loader = index.data(Dial.RawRole)
+        self.__dataset_loader = index.internalPointer()
 
         self.__update_description(self.__dataset_loader)
 

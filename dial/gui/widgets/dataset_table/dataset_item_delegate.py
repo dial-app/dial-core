@@ -54,7 +54,7 @@ class DatasetItemDelegate(QStyledItemDelegate):
 
         if not QPixmapCache.find(pix_name, pix):
             # Get image raw array
-            raw_data = index.data(Dial.RawRole)
+            raw_data = index.internalPointer()
 
             # Load pix from raw array
             pix = QPixmap.fromImage(qimage2ndarray.array2qimage(raw_data))

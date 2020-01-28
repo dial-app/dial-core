@@ -33,7 +33,6 @@ class DatasetTableModel(QAbstractTableModel):
 
         self.__role_map = {
             Qt.DisplayRole: self.__display_role,
-            Dial.RawRole: self.__data_raw_role,
             Dial.TypeRole: self.__data_type_role,
         }
 
@@ -131,6 +130,15 @@ class DatasetTableModel(QAbstractTableModel):
 
         return None
 
+    def index(self, row, column, parent):
+        if column == 0:
+            return self.createIndex(row, column, self.__x[row])
+
+        if column == 1:
+            return self.createIndex(row, column, self.__y[row])
+
+        return QModelIndex()
+
     def __display_role(self, row: int, column: int):
         """
         Return the text representation of the cell value.
@@ -140,18 +148,6 @@ class DatasetTableModel(QAbstractTableModel):
 
         if column == 1:
             return self.__y_type.display(self.__y[row])
-
-        return None
-
-    def __data_raw_role(self, row: int, column: int):
-        """
-        Return the raw value of the cell.
-        """
-        if column == 0:
-            return self.__x[row]
-
-        if column == 1:
-            return self.__y[row]
 
         return None
 

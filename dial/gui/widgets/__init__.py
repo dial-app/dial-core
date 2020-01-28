@@ -4,6 +4,7 @@
 
 from .dataset_table import TrainTestTable
 from .datasets_list import DatasetsList, PredefinedDatasetsList
+from .layers_tree import LayersTree
 from .log import Logger
 from .menubars import MenuBars
 from .model_table import ModelTable
@@ -16,6 +17,7 @@ __all__ = [
     "Logger",
     "MenuBars",
     "ModelTable",
+    "LayersTree",
     "ModelLoadersList",
     "PredefinedModelLoadersList",
 ]

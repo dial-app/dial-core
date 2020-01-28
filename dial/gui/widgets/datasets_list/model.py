@@ -5,7 +5,6 @@ from typing import List
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
 from dial.datasets import DatasetLoader
-from dial.misc import Dial
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -26,11 +25,11 @@ class DatasetsListModel(QAbstractListModel):
     def rowCount(self, parent=QModelIndex()):
         return len(self.__datasets_list)
 
+    def index(self, row, column=0, parent=QModelIndex()):
+        return self.createIndex(row, column, self.__datasets_list[row])
+
     def data(self, index, role=Qt.DisplayRole):
         if role == Qt.DisplayRole:
             return f"{self.__datasets_list[index.row()]}"
-
-        if role == Dial.RawRole:
-            return self.__datasets_list[index.row()]
 
         return None

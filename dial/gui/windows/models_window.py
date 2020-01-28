@@ -17,11 +17,12 @@ class ModelsWindow(QWidget):
     """
     """
 
-    def __init__(self, model_table, parent=None):
+    def __init__(self, layers_tree, model_table, parent=None):
         super().__init__(parent)
 
         # Initialize widgets
         self.__model_table = model_table
+        self.__layers_tree = layers_tree
 
         self.__main_layout = QGridLayout()
 
@@ -32,7 +33,8 @@ class ModelsWindow(QWidget):
         ProjectInstance().model_changed.connect(self.__update_from_project)
 
     def __setup_ui(self):
-        self.__main_layout.addWidget(self.__model_table, 0, 0)
+        self.__main_layout.addWidget(self.__layers_tree, 0, 0)
+        self.__main_layout.addWidget(self.__model_table, 0, 1)
         self.__main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.__main_layout)
