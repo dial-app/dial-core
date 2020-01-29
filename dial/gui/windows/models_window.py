@@ -4,7 +4,7 @@
 Window for all the model related operations (Create/Modify NN architectures)
 """
 
-from PySide2.QtWidgets import QGridLayout, QWidget
+from PySide2.QtWidgets import QHBoxLayout, QSplitter, QWidget
 
 from dial.gui.widgets import PredefinedModelLoadersList
 from dial.project import ProjectInstance
@@ -17,14 +17,16 @@ class ModelsWindow(QWidget):
     """
     """
 
-    def __init__(self, layers_tree, model_table, parent=None):
+    def __init__(self, layers_tree: QWidget, model_table: QWidget, parent=None):
         super().__init__(parent)
 
         # Initialize widgets
         self.__model_table = model_table
+        self.__model_table.setParent(self)
         self.__layers_tree = layers_tree
+        self.__layers_tree.setParent(self)
 
-        self.__main_layout = QGridLayout()
+        self.__main_layout = QHBoxLayout()
 
         # Configure interface
         self.__setup_ui()
@@ -33,8 +35,14 @@ class ModelsWindow(QWidget):
         ProjectInstance().model_changed.connect(self.__update_from_project)
 
     def __setup_ui(self):
-        self.__main_layout.addWidget(self.__layers_tree, 0, 0)
-        self.__main_layout.addWidget(self.__model_table, 0, 1)
+        splitter = QSplitter()
+
+        self.__model_table.sizePolicy().setHorizontalStretch(5)
+
+        splitter.addWidget(self.__layers_tree)
+        splitter.addWidget(self.__model_table)
+
+        self.__main_layout.addWidget(splitter)
         self.__main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.__main_layout)

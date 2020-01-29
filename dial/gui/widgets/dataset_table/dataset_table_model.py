@@ -33,7 +33,7 @@ class DatasetTableModel(QAbstractTableModel):
 
         self.__role_map = {
             Qt.DisplayRole: self.__display_role,
-            Dial.TypeRole: self.__data_type_role,
+            Dial.TypeRole.value: self.__data_type_role,
         }
 
     def load_dataset(self, dataset: Dataset):

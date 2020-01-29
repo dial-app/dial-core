@@ -30,7 +30,7 @@ class DatasetItemDelegate(QStyledItemDelegate):
         Paint the element according to its type.
         """
         # Get the data type (Image, Numeric...)
-        data_type = index.data(Dial.TypeRole)
+        data_type = index.data(Dial.TypeRole.value)
 
         # Draw image
         if isinstance(data_type, datatype.ImageArray):
@@ -86,7 +86,7 @@ class DatasetItemDelegate(QStyledItemDelegate):
         alignment = Qt.AlignCenter
 
         # Get the datatype
-        data_type = index.data(Dial.TypeRole)
+        data_type = index.data(Dial.TypeRole.value)
 
         # Align arrays to left
         if isinstance(data_type, datatype.NumericArray):
