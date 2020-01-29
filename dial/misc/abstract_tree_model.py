@@ -12,7 +12,7 @@ class AbstractTreeNode:
     """
 
     def __init__(self, values: List[Any], parent: "AbstractTreeNode" = None):
-        self.__values = values
+        self.values = values
         self.parent = parent
         self.leaves: List["AbstractTreeNode"] = []
 
@@ -38,12 +38,12 @@ class AbstractTreeNode:
 
     def column_value(self, column: int) -> Optional[Any]:
         try:
-            return self.__values[column]
+            return self.values[column]
         except IndexError:
             return None
 
     def columns_count(self) -> int:
-        return len(self.__values)
+        return len(self.values)
 
 
 class AbstractTreeModel(QAbstractItemModel):

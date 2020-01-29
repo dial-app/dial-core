@@ -1,8 +1,18 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import IntEnum
+from typing import List
 
-from PySide2.QtCore import QAbstractTableModel, QModelIndex, Qt
+from PySide2.QtCore import (
+    QAbstractTableModel,
+    QByteArray,
+    QDataStream,
+    QIODevice,
+    QMimeData,
+    QModelIndex,
+    Qt,
+)
+from tensorflow import keras
 
 from dial.misc import Dial
 
@@ -55,7 +65,7 @@ class ModelTableModel(QAbstractTableModel):
 
     def flags(self, index: QModelIndex):
         if not index.isValid():
-            return Qt.ItemIsEnabled
+            return Qt.ItemIsEnabled | Qt.ItemIsDropEnabled
 
         if index.column() == self.Column.Trainable:
             return super().flags(index) | Qt.ItemIsUserCheckable
@@ -63,7 +73,7 @@ class ModelTableModel(QAbstractTableModel):
         if index.column() == self.Column.Name:
             return super().flags(index) | Qt.ItemIsEditable
 
-        return Qt.ItemIsEnabled
+        return Qt.ItemIsEnabled | Qt.ItemIsDropEnabled
 
     def headerData(self, section, orientation, role):
         """
@@ -93,9 +103,6 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
-    def supportedDragActions(self):
-        return Qt.CopyAction
-
     def setData(self, index: QModelIndex, value, role):
         if not index.isValid():
             return False
@@ -107,6 +114,49 @@ class ModelTableModel(QAbstractTableModel):
         if role == Qt.EditRole:
             if index.column() == self.Column.Name:
                 self.__layers[index.row()]._name = value
+
+        return True
+
+    def supportedDragActions(self):
+        return Qt.CopyAction
+
+    def mimeTypes(self) -> List[str]:
+        return ["application/layer"]
+
+    def dropMimeData(
+        self, data: QMimeData, action, row: int, column: int, parent: QModelIndex
+    ):
+        if action == Qt.IgnoreAction:
+            return True
+
+        if not data.hasFormat("application/layer"):
+            return False
+
+        # if column > 0:
+        #     return False
+
+        # Get row number where the data will be inserted
+        # if row != -1:
+        #     begin_row = row
+        # elif parent.isValid():
+        #     begin_row = parent.row
+        # else:
+        #     begin_row = self.rowCount()
+
+        # Decode data
+        encoded_data: QByteArray = data.data("application/layer")
+        stream = QDataStream(encoded_data, QIODevice.ReadOnly)
+
+        items = []
+        rows = 0
+
+        while not stream.atEnd():
+            layer_dict = stream.readQVariant()
+            layer = keras.layers.deserialize(layer_dict)
+            items.append(layer)
+            rows += 1
+
+        print(items)
 
         return True
 
