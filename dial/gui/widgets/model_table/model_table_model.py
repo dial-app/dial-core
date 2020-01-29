@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import IntEnum
-from typing import List
+from typing import List, Optional
 
 from PySide2.QtCore import (
     QAbstractTableModel,
@@ -25,28 +25,22 @@ class ModelTableModel(QAbstractTableModel):
     class Column(IntEnum):
         Type = 0
         Name = 1
-        OutputShape = 2
+        Units = 2
         Param = 3
         Trainable = 4
 
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.__layers = None
-
-        self.__row_count = 0
-        self.__column_count = len(self.Column)
+        self.__layers = []
 
         self.__role_map = {
-            Dial.RawRole: self.__raw_role,
             Qt.DisplayRole: self.__display_role,
             Qt.CheckStateRole: self.__checkstate_role,
         }
 
     def load_model(self, model):
         self.__layers = [l for l in model.layers]
-
-        self.__row_count = len(self.__layers)
 
         # Model has been reset, redraw view
         self.modelReset.emit()
@@ -55,13 +49,13 @@ class ModelTableModel(QAbstractTableModel):
         """
         Return the number of rows.
         """
-        return self.__row_count
+        return len(self.__layers)
 
     def columnCount(self, parent=QModelIndex()):
         """
         Return the number of columns.
         """
-        return self.__column_count
+        return len(self.Column)
 
     def flags(self, index: QModelIndex):
         if not index.isValid():
@@ -73,7 +67,7 @@ class ModelTableModel(QAbstractTableModel):
         if index.column() == self.Column.Name:
             return super().flags(index) | Qt.ItemIsEditable
 
-        return Qt.ItemIsEnabled | Qt.ItemIsDropEnabled
+        return Qt.ItemIsEnabled
 
     def headerData(self, section, orientation, role):
         """
@@ -121,7 +115,10 @@ class ModelTableModel(QAbstractTableModel):
         return Qt.CopyAction
 
     def mimeTypes(self) -> List[str]:
-        return ["application/layer"]
+        return [Dial.KerasLayerDictMIME.value]
+
+    def index(self, row, column, parent):
+        return self.createIndex(row, column, self.__layers[row])
 
     def dropMimeData(
         self, data: QMimeData, action, row: int, column: int, parent: QModelIndex
@@ -129,66 +126,75 @@ class ModelTableModel(QAbstractTableModel):
         if action == Qt.IgnoreAction:
             return True
 
-        if not data.hasFormat("application/layer"):
+        if not data.hasFormat(Dial.KerasLayerDictMIME.value):
             return False
 
-        # if column > 0:
-        #     return False
-
         # Get row number where the data will be inserted
-        # if row != -1:
-        #     begin_row = row
-        # elif parent.isValid():
-        #     begin_row = parent.row
-        # else:
-        #     begin_row = self.rowCount()
+        if row != -1:
+            begin_row = row
+        elif parent.isValid():
+            begin_row = parent.row
+        else:
+            begin_row = self.rowCount()
 
         # Decode data
-        encoded_data: QByteArray = data.data("application/layer")
+        encoded_data: QByteArray = data.data(Dial.KerasLayerDictMIME.value)
         stream = QDataStream(encoded_data, QIODevice.ReadOnly)
 
         items = []
-        rows = 0
 
         while not stream.atEnd():
             layer_dict = stream.readQVariant()
             layer = keras.layers.deserialize(layer_dict)
             items.append(layer)
-            rows += 1
 
-        print(items)
+        self.insertRows(begin_row, len(items), self.createIndex(begin_row, 0, items))
 
         return True
 
-    def __display_role(self, index: QModelIndex):
+    def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
+        # TODO: Insert several rows?
+        self.layoutAboutToBeChanged.emit()
+        self.beginInsertRows(parent, row, row + count - 1)
+
+        self.__layers[row:row] = parent.internalPointer()
+
+        print(self.__layers)
+
+        self.endInsertRows()
+        self.layoutChanged.emit()
+
+        return True
+
+    def __display_role(self, index: QModelIndex) -> Optional[str]:
         """
         Return the text representation of the cell value.
         """
+        if not index.isValid():
+            return None
+
+        if index.column() == self.Column.Type:
+            return str(type(self.__layers[index.row()]).__name__)
+
+        if index.column() == self.Column.Name:
+            return str(self.__layers[index.row()].name)
+
+        if index.column() == self.Column.Units:
+            return str(self.__layers[index.row()].units)
+
         if index.column() == self.Column.Trainable:
             return ""
 
-        return str(index.data(Dial.RawRole))
-
-    def __raw_role(self, index: QModelIndex):
-        if index.column() == self.Column.Type:
-            return type(self.__layers[index.row()]).__name__
-
-        if index.column() == self.Column.Name:
-            return self.__layers[index.row()].name
-
-        if index.column() == self.Column.OutputShape:
-            return self.__layers[index.row()].get_output_shape_at(0)
-
-        if index.column() == self.Column.Param:
-            return self.__layers[index.row()].count_params()
-
-        if index.column() == self.Column.Trainable:
-            return self.__layers[index.row()].trainable
+        # if index.column() == self.Column.Param:
+        #     return str(self.__layers[index.row()].count_params())
 
         return None
 
     def __checkstate_role(self, index: QModelIndex):
+        if not index.isValid():
+            return None
+
         if index.flags() & Qt.ItemIsUserCheckable:
-            return Qt.Checked if index.data(Dial.RawRole) else Qt.Unchecked
+            return Qt.Checked if index.internalPointer() else Qt.Unchecked
 
         return None

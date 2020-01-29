@@ -13,7 +13,7 @@ from PySide2.QtCore import (
 from PySide2.QtWidgets import QWidget
 from tensorflow import keras
 
-from dial.misc import AbstractTreeModel, AbstractTreeNode
+from dial.misc import AbstractTreeModel, AbstractTreeNode, Dial
 
 
 class LayerNode(AbstractTreeNode):
@@ -63,7 +63,7 @@ class LayersTreeModel(AbstractTreeModel):
         return super().flags(index)
 
     def mimeTypes(self) -> List[str]:
-        return ["application/layer"]
+        return [Dial.KerasLayerDictMIME.value]
 
     def mimeData(self, indexes):
         mime_data = QMimeData()
@@ -79,6 +79,6 @@ class LayersTreeModel(AbstractTreeModel):
                     {"class_name": layer_node.name, "config": layer_node.config}
                 )
 
-        mime_data.setData("application/layer", encoded_data)
+        mime_data.setData(Dial.KerasLayerDictMIME.value, encoded_data)
 
         return mime_data
