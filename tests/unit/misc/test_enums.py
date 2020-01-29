@@ -7,7 +7,11 @@ from dial.misc import Dial
 
 
 @pytest.mark.parametrize(
-    "enum, value", [(Dial.RawRole, Qt.UserRole), (Dial.TypeRole, Qt.UserRole + 1)]
+    "enum, value",
+    [
+        (Dial.TypeRole, Qt.UserRole),
+        (Dial.KerasLayerDictMIME, "application/keras.layer"),
+    ],
 )
 def test_enum_values(enum, value):
-    assert enum == value
+    assert enum.value == value
