@@ -9,3 +9,5 @@ from PySide2.QtWidgets import QTreeView
 class LayersTreeView(QTreeView):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.setDragEnabled(True)

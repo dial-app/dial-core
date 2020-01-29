@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from PySide2.QtCore import QModelIndex
+from PySide2.QtCore import QModelIndex, Qt
 from PySide2.QtWidgets import QWidget
 
 from dial.misc import AbstractTreeModel, AbstractTreeNode
@@ -41,3 +41,12 @@ class LayersTreeModel(AbstractTreeModel):
         title_node.append(LayerNode("Activation"))
 
         self.root_node.append(title_node)
+
+    def flags(self, index: QModelIndex):
+        if not index.isValid():
+            return Qt.ItemIsEnabled
+
+        if isinstance(index.internalPointer(), LayerNode):
+            return super().flags(index) | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled
+
+        return super().flags(index)

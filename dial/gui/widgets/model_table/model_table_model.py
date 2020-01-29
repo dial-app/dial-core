@@ -93,6 +93,9 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
+    def supportedDragActions(self):
+        return Qt.CopyAction
+
     def setData(self, index: QModelIndex, value, role):
         if not index.isValid():
             return False

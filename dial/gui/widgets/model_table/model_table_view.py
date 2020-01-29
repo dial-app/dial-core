@@ -19,7 +19,7 @@ class ModelTableView(QTableView):
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
         self.verticalHeader().setSectionResizeMode(QHeaderView.Interactive)
 
-        # Can columns be rearranged?
+        # Columns can be rearranged in any order
         self.horizontalHeader().setSectionsMovable(True)
 
         # Is a context menu going to be called on right click?
@@ -27,6 +27,10 @@ class ModelTableView(QTableView):
         self.horizontalHeader().customContextMenuRequested.connect(
             self.__show_header_context_menu
         )
+
+        # Model cccepts drops
+        self.setAcceptDrops(True)
+        self.setDropIndicatorShown(True)
 
         self.__header_context_menu = None
 
