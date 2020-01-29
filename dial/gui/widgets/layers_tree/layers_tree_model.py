@@ -1,68 +1,43 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtCore import QAbstractItemModel, QModelIndex, Qt
+from typing import Optional
+
+from PySide2.QtCore import QModelIndex
+from PySide2.QtWidgets import QWidget
+
+from dial.misc import AbstractTreeModel, AbstractTreeNode
 
 
-class TreeNode:
-    def __init__(self, parent, row):
-        self.name = "heu"
-        self.parent = parent
-        self.row = row
-        self.leaves = []
+class LayerNode(AbstractTreeNode):
+    def __init__(self, name, parent: AbstractTreeNode = None):
+        super().__init__([name], parent)
+
+    @property
+    def name(self) -> Optional[str]:
+        return self.__values[0]
 
 
-class LayersTreeModel(QAbstractItemModel):
-    """
-    Model representing a list of all the layers that can be use to compose neural
-    network models.
-    """
+class TitleNode(AbstractTreeNode):
+    def __init__(self, name, parent: AbstractTreeNode = None):
+        super().__init__([name], parent)
 
-    def __init__(self, parent=None):
+    @property
+    def name(self) -> str:
+        return self.__values[0]
+
+
+class LayersTreeModel(AbstractTreeModel):
+    def __init__(self, parent: QWidget):
         super().__init__(parent)
 
-        a = TreeNode(parent=None, row=0)
-        TreeNode(parent=a, row=0)
-        TreeNode(parent=a, row=1)
-        self.root_nodes = [TreeNode(parent=None, row=0), a]
+        self.setup_model_data()
 
-    def index(self, row, column, parent):
-        if not parent.isValid():
-            return self.createIndex(row, column, self.root_nodes[row])
-
-        parent_node = parent.internalPointer()
-        return self.createIndex(row, column, parent_node.leaves[row])
-
-    def parent(self, index):
-        if not index.isValid():
-            return QModelIndex()
-
-        node = index.internalPointer()
-
-        if node.parent is None:
-            return QModelIndex()
-        else:
-            return self.createIndex(node.parent.row, 0, node.parent)
-
-    def reset(self):
-        self.root_nodes = [TreeNode(parent=None, row=0)]
-        super().reset(self)
-
-    def rowCount(self, parent):
-        if not parent.isValid():
-            return len(self.root_nodes)
-
-        node = parent.internalPointer()
-        return len(node.leaves)
-
-    def columnCount(self, parent):
+    def columnCount(self, parent=QModelIndex()):
         return 1
 
-    def data(self, index, role):
-        if not index.isValid():
-            return None
+    def setup_model_data(self):
+        title_node = TitleNode("BasicLayers")
+        title_node.append(LayerNode("Dense"))
+        title_node.append(LayerNode("Activation"))
 
-        node = index.internalPointer()
-        if role == Qt.DisplayRole and index.column() == 0:
-            return node.name
-
-        return None
+        self.root_node.append(title_node)
