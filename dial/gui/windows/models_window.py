@@ -4,7 +4,8 @@
 Window for all the model related operations (Create/Modify NN architectures)
 """
 
-from PySide2.QtWidgets import QHBoxLayout, QSplitter, QWidget
+from PySide2.QtCore import Qt
+from PySide2.QtWidgets import QDockWidget, QMainWindow, QWidget
 
 from dial.gui.widgets import PredefinedModelLoadersList
 from dial.project import ProjectInstance
@@ -13,7 +14,7 @@ from dial.utils import log
 LOGGER = log.get_logger(__name__)
 
 
-class ModelsWindow(QWidget):
+class ModelsWindow(QMainWindow):
     """
     """
 
@@ -23,10 +24,11 @@ class ModelsWindow(QWidget):
         # Initialize widgets
         self.__model_table = model_table
         self.__model_table.setParent(self)
+
         self.__layers_tree = layers_tree
         self.__layers_tree.setParent(self)
 
-        self.__main_layout = QHBoxLayout()
+        self.__dock_layers_tree = QDockWidget(self)
 
         # Configure interface
         self.__setup_ui()
@@ -35,17 +37,18 @@ class ModelsWindow(QWidget):
         ProjectInstance().model_changed.connect(self.__update_from_project)
 
     def __setup_ui(self):
-        splitter = QSplitter()
+        # Configure dock widget with layers tree
+        self.__dock_layers_tree.setWidget(self.__layers_tree)
+        self.__dock_layers_tree.setFeatures(
+            QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable
+        )
+        self.__dock_layers_tree.setWindowTitle("Layers")
+        # self.__dock_layers_tree.setContentsMargins(0, 0, 0, 0)
+        # self.__dock_layers_tree.setTitleBarWidget(QWidget())
 
-        self.__model_table.sizePolicy().setHorizontalStretch(5)
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.__dock_layers_tree)
 
-        splitter.addWidget(self.__layers_tree)
-        splitter.addWidget(self.__model_table)
-
-        self.__main_layout.addWidget(splitter)
-        self.__main_layout.setContentsMargins(0, 0, 0, 0)
-
-        self.setLayout(self.__main_layout)
+        self.setCentralWidget(self.__model_table)
 
     def load_predefined_model(self):
         model_loader_dialog = PredefinedModelLoadersList.Dialog(parent=self)
