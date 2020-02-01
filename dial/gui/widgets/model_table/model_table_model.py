@@ -30,6 +30,7 @@ class ModelTableModel(QAbstractTableModel):
         Name = 1
         Units = 2
         Trainable = 3
+        Activation = 4
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -67,6 +68,9 @@ class ModelTableModel(QAbstractTableModel):
             return super().flags(index) | Qt.ItemIsUserCheckable
 
         if index.column() == self.Column.Type:
+            return super().flags(index)
+
+        if index.column() == self.Column.Activation:
             return super().flags(index)
 
         return super().flags(index) | Qt.ItemIsEditable
@@ -204,6 +208,9 @@ class ModelTableModel(QAbstractTableModel):
 
         if index.column() == self.Column.Units:
             return str(layer.units)
+
+        if index.column() == self.Column.Activation:
+            return str(layer.activation.__name__)
 
         # if index.column() == self.Column.Trainable:
         #     return ""
