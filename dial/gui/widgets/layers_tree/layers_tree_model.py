@@ -17,15 +17,17 @@ from dial.misc import AbstractTreeModel, AbstractTreeNode, Dial
 
 
 class LayerNode(AbstractTreeNode):
-    def __init__(self, layer_type, parent: AbstractTreeNode = None):
-        super().__init__([layer_type.__name__, layer_type(10).get_config()], parent)
+    def __init__(self, name, layer, parent: AbstractTreeNode = None):
+        super().__init__(
+            [name, layer], parent,
+        )
 
     @property
     def name(self) -> Optional[str]:
         return self.values[0]
 
     @property
-    def config(self):
+    def layer(self):
         return self.values[1]
 
 
@@ -48,10 +50,15 @@ class LayersTreeModel(AbstractTreeModel):
         return 1
 
     def setup_model_data(self):
-        title_node = TitleNode("Basic Layers")
-        title_node.append(LayerNode(keras.layers.Dense))
+        basic_layers = TitleNode("Basic Layers")
+        basic_layers.append(LayerNode("Dense", keras.layers.Dense(10)))
 
-        self.root_node.append(title_node)
+        activation_layers = TitleNode("Activation Layers")
+        activation_layers.append(LayerNode("Linear", keras.layers.Activation("linear")))
+        activation_layers.append(LayerNode("ELU", keras.layers.Activation("elu")))
+
+        self.root_node.append(basic_layers)
+        self.root_node.append(activation_layers)
 
     def flags(self, index: QModelIndex):
         if not index.isValid():
@@ -75,9 +82,7 @@ class LayersTreeModel(AbstractTreeModel):
             if index.isValid():
                 layer_node = index.internalPointer()
 
-                stream.writeQVariant(
-                    {"class_name": layer_node.name, "config": layer_node.config}
-                )
+                stream.writeQVariant(layer_node.layer)
 
         mime_data.setData(Dial.KerasLayerDictMIME.value, encoded_data)
 

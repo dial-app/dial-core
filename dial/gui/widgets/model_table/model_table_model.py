@@ -12,7 +12,6 @@ from PySide2.QtCore import (
     QModelIndex,
     Qt,
 )
-from tensorflow import keras
 
 from dial.misc import Dial
 from dial.utils import log
@@ -162,8 +161,7 @@ class ModelTableModel(QAbstractTableModel):
         items = []
 
         while not stream.atEnd():
-            layer_dict = stream.readQVariant()
-            layer = keras.layers.deserialize(layer_dict)
+            layer = stream.readQVariant()
             items.append(layer)
 
         LOGGER.debug("Values to insert: %s", len(items))
@@ -200,17 +198,21 @@ class ModelTableModel(QAbstractTableModel):
 
         layer = index.internalPointer()
 
-        if index.column() == self.Column.Type:
-            return str(type(layer).__name__)
+        try:
+            if index.column() == self.Column.Type:
+                return str(type(layer).__name__)
 
-        if index.column() == self.Column.Name:
-            return str(layer.name)
+            if index.column() == self.Column.Name:
+                return str(layer.name)
 
-        if index.column() == self.Column.Units:
-            return str(layer.units)
+            if index.column() == self.Column.Units:
+                return str(layer.units)
 
-        if index.column() == self.Column.Activation:
-            return str(layer.activation.__name__)
+            if index.column() == self.Column.Activation:
+                return str(layer.activation.__name__)
+
+        except AttributeError:
+            pass
 
         # if index.column() == self.Column.Trainable:
         #     return ""
