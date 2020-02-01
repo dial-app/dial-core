@@ -17,7 +17,13 @@ class MainWindow(QMainWindow):
     """
 
     def __init__(
-        self, datasets_window, models_window, menubar, logger_dialog, parent=None
+        self,
+        datasets_window,
+        models_window,
+        compile_window,
+        menubar,
+        logger_dialog,
+        parent=None,
     ):
         super().__init__(parent)
 
@@ -37,6 +43,9 @@ class MainWindow(QMainWindow):
 
         self.__models_window = models_window
         self.__models_window.setParent(self)
+
+        self.__compile_window = compile_window
+        self.__compile_window.setParent(self)
 
         # Configure ui
         self.__setup_ui()
@@ -76,6 +85,7 @@ class MainWindow(QMainWindow):
         # Configure Tabs widget
         self.__tabs_widget.addTab(self.__datasets_window, "Datasets")
         self.__tabs_widget.addTab(self.__models_window, "Models")
+        self.__tabs_widget.addTab(self.__compile_window, "Compile")
 
     def sizeHint(self):
         return QSize(800, 600)
