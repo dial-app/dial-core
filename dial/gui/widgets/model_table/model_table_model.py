@@ -69,6 +69,9 @@ class ModelTableModel(QAbstractTableModel):
 
         return Qt.ItemIsEnabled
 
+    def index(self, row, column, parent):
+        return self.createIndex(row, column, self.__layers[row])
+
     def headerData(self, section, orientation, role):
         """
         Return the name of the headers
@@ -95,19 +98,27 @@ class ModelTableModel(QAbstractTableModel):
         if role in self.__role_map:
             return self.__role_map[role](index)
 
+        if role == Qt.TextAlignmentRole:
+            return Qt.AlignCenter
+
         return None
 
     def setData(self, index: QModelIndex, value, role):
         if not index.isValid():
             return False
 
+        layer = index.internalPointer()
+
         if role == Qt.CheckStateRole:
             if index.column() == self.Column.Trainable:
-                self.__layers[index.row()].trainable = value
+                layer.trainable = bool(value)
 
         if role == Qt.EditRole:
             if index.column() == self.Column.Name:
-                self.__layers[index.row()]._name = value
+                layer._name = str(value)
+
+        print(value)
+        print(index.internalPointer().trainable)
 
         return True
 
@@ -116,9 +127,6 @@ class ModelTableModel(QAbstractTableModel):
 
     def mimeTypes(self) -> List[str]:
         return [Dial.KerasLayerDictMIME.value]
-
-    def index(self, row, column, parent):
-        return self.createIndex(row, column, self.__layers[row])
 
     def dropMimeData(
         self, data: QMimeData, action, row: int, column: int, parent: QModelIndex
@@ -173,17 +181,19 @@ class ModelTableModel(QAbstractTableModel):
         if not index.isValid():
             return None
 
+        layer = index.internalPointer()
+
         if index.column() == self.Column.Type:
-            return str(type(self.__layers[index.row()]).__name__)
+            return str(type(layer).__name__)
 
         if index.column() == self.Column.Name:
-            return str(self.__layers[index.row()].name)
+            return str(layer.name)
 
         if index.column() == self.Column.Units:
-            return str(self.__layers[index.row()].units)
+            return str(layer.units)
 
-        if index.column() == self.Column.Trainable:
-            return ""
+        # if index.column() == self.Column.Trainable:
+        #     return ""
 
         # if index.column() == self.Column.Param:
         #     return str(self.__layers[index.row()].count_params())
@@ -195,6 +205,6 @@ class ModelTableModel(QAbstractTableModel):
             return None
 
         if index.flags() & Qt.ItemIsUserCheckable:
-            return Qt.Checked if index.internalPointer() else Qt.Unchecked
+            return Qt.Checked if index.internalPointer().trainable else Qt.Unchecked
 
         return None
