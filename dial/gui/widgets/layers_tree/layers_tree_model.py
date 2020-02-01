@@ -56,6 +56,10 @@ class LayersTreeModel(AbstractTreeModel):
         activation_layers = TitleNode("Activation Layers")
         activation_layers.append(LayerNode("Linear", keras.layers.Activation("linear")))
         activation_layers.append(LayerNode("ELU", keras.layers.Activation("elu")))
+        activation_layers.append(LayerNode("ReLU", keras.layers.Activation("relu")))
+        activation_layers.append(
+            LayerNode("Sigmoid", keras.layers.Activation("sigmoid"))
+        )
 
         self.root_node.append(basic_layers)
         self.root_node.append(activation_layers)
