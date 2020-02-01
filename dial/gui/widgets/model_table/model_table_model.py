@@ -15,6 +15,9 @@ from PySide2.QtCore import (
 from tensorflow import keras
 
 from dial.misc import Dial
+from dial.utils import log
+
+LOGGER = log.get_logger(__name__)
 
 
 class ModelTableModel(QAbstractTableModel):
@@ -26,8 +29,7 @@ class ModelTableModel(QAbstractTableModel):
         Type = 0
         Name = 1
         Units = 2
-        Param = 3
-        Trainable = 4
+        Trainable = 3
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -64,10 +66,10 @@ class ModelTableModel(QAbstractTableModel):
         if index.column() == self.Column.Trainable:
             return super().flags(index) | Qt.ItemIsUserCheckable
 
-        if index.column() == self.Column.Name:
-            return super().flags(index) | Qt.ItemIsEditable
+        if index.column() == self.Column.Type:
+            return super().flags(index)
 
-        return Qt.ItemIsEnabled
+        return super().flags(index) | Qt.ItemIsEditable
 
     def index(self, row, column, parent):
         return self.createIndex(row, column, self.__layers[row])
@@ -117,8 +119,10 @@ class ModelTableModel(QAbstractTableModel):
             if index.column() == self.Column.Name:
                 layer._name = str(value)
 
-        print(value)
-        print(index.internalPointer().trainable)
+            if index.column() == self.Column.Units:
+                layer.units = int(value)
+
+        LOGGER.info("New layer config: %s", layer.get_config())
 
         return True
 
@@ -145,6 +149,8 @@ class ModelTableModel(QAbstractTableModel):
         else:
             begin_row = self.rowCount()
 
+        LOGGER.debug("Adding a new row at index %s...", begin_row)
+
         # Decode data
         encoded_data: QByteArray = data.data(Dial.KerasLayerDictMIME.value)
         stream = QDataStream(encoded_data, QIODevice.ReadOnly)
@@ -156,6 +162,9 @@ class ModelTableModel(QAbstractTableModel):
             layer = keras.layers.deserialize(layer_dict)
             items.append(layer)
 
+        LOGGER.debug("Values to insert: %s", len(items))
+        LOGGER.debug(items)
+
         self.insertRows(begin_row, len(items), self.createIndex(begin_row, 0, items))
 
         return True
@@ -163,13 +172,17 @@ class ModelTableModel(QAbstractTableModel):
     def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
         # TODO: Insert several rows?
         self.layoutAboutToBeChanged.emit()
+
+        LOGGER.debug("Insert rows BEGIN: row %s, %s items", row, count)
+        LOGGER.debug("Previous model size: %s", self.rowCount())
         self.beginInsertRows(parent, row, row + count - 1)
 
         self.__layers[row:row] = parent.internalPointer()
 
-        print(self.__layers)
-
         self.endInsertRows()
+        LOGGER.debug("Insert rows END")
+        LOGGER.debug("New model size: %s", self.rowCount())
+
         self.layoutChanged.emit()
 
         return True
