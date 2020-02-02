@@ -54,9 +54,10 @@ class MainWindow(QMainWindow):
         # Configure ui
         self.__setup_ui()
 
-        # Connect signals
         project_manager = DialProjectManager()
+        self.__main_menu_bar.addMenu(project_manager.projects_menu)
 
+        # Connect signals
         self.__main_menu_bar.new_project.connect(project_manager.new_project)
         self.__main_menu_bar.open_project.connect(project_manager.open_project)
         self.__main_menu_bar.save_project.connect(project_manager.save_project)

@@ -19,6 +19,7 @@ class Project:
     def __init__(self, default_dataset_info, default_model_info):
         super().__init__()
 
+        self.name = "Empty project"
         self.file_path = ""
         self.dataset = default_dataset_info
         self.model = default_model_info

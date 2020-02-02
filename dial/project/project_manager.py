@@ -26,25 +26,27 @@ class ProjectManager:
     def active(self):
         return self.__active
 
-    @active.setter
-    def active(self, i):
+    def set_active_project(self, index):
         try:
-            self.__active = self.__projects[i]
+            self.__active = self.__projects[index]
 
-            LOGGER.debug(
-                "Active project changed: %s (%s)",
-                self.__projects.index(self.__active),
-                self.__active,
+            LOGGER.info(
+                "Active project changed: %s(%s)", index, self.__active,
             )
 
         except IndexError:
             pass
 
+    def __len__(self):
+        return len(self.__projects)
+
     def new_project(self):
-        self.__projects.append(deepcopy(self.__default_project))
+        new_project = deepcopy(self.__default_project)
+
+        self.__projects.append(new_project)
 
         # Activate the currently created project
-        self.active = len(self.__projects) - 1
+        self.set_active_project(self.__projects.index(new_project))
 
         LOGGER.info("New project created")
 

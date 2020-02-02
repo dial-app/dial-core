@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from PySide2.QtCore import QObject, Slot
-from PySide2.QtWidgets import QFileDialog, QWidget
+from PySide2.QtWidgets import QAction, QActionGroup, QFileDialog, QMenu, QWidget
 
 from dial.utils import log
 
@@ -20,9 +20,23 @@ class ProjectManagerQt(QObject, ProjectManager):
         QObject.__init__(self, parent)
         ProjectManager.__init__(self, default_project)
 
+        self.__projects_menu = QMenu("Projects")
+        self.__project_actions_group = QActionGroup(self)
+        self.__project_actions_group.setExclusive(True)
+
+        # Add a project action for the default project
+        project_action = self.__add_project_to_menu(self.active.name, len(self) - 1)
+        project_action.setChecked(True)
+
+    @property
+    def projects_menu(self):
+        return self.__projects_menu
+
     @Slot()
     def new_project(self):
         super().new_project()
+
+        self.__add_project_to_menu(self.active.name, len(self) - 1)
 
     @Slot()
     def open_project(self):
@@ -61,3 +75,14 @@ class ProjectManagerQt(QObject, ProjectManager):
             super().save_project_as(file_path)
         else:
             LOGGER.info("Invalid file path. Saving cancelled.")
+
+    def __add_project_to_menu(self, name, index) -> QAction:
+        project_action = QAction(name, self)
+        project_action.setCheckable(True)
+
+        project_action.triggered.connect(lambda: self.set_active_project(index))
+
+        self.__project_actions_group.addAction(project_action)
+        self.__projects_menu.addAction(project_action)
+
+        return project_action
