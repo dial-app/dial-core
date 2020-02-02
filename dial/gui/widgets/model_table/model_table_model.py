@@ -34,7 +34,7 @@ class ModelTableModel(QAbstractTableModel):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        self.__layers = None
+        self.__layers = []
 
         self.__role_map = {
             Qt.DisplayRole: self.__display_role,

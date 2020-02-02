@@ -19,8 +19,4 @@ ProjectManager = providers.Factory(
     project_manager.ProjectManager, default_project=Project
 )
 
-ProjectManagerSingleton = providers.Singleton(
-    project_manager.ProjectManager, default_project=Project
-)
-
 DialProjectManager = providers.Singleton(ProjectManagerQt, default_project=Project)
