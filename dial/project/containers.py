@@ -7,6 +7,7 @@ Dependency Injection containers.
 import dependency_injector.providers as providers
 
 from . import project, project_manager
+from .qt import ProjectManagerQt
 
 Project = providers.Factory(
     project.Project,
@@ -21,3 +22,5 @@ ProjectManager = providers.Factory(
 ProjectManagerSingleton = providers.Singleton(
     project_manager.ProjectManager, default_project=Project
 )
+
+DialProjectManager = providers.Singleton(ProjectManagerQt, default_project=Project)

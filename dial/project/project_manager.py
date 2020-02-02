@@ -31,7 +31,7 @@ class ProjectManager:
         try:
             self.__active = self.__projects[i]
 
-            LOGGER.info(
+            LOGGER.debug(
                 "Active project changed: %s (%s)",
                 self.__projects.index(self.__active),
                 self.__active,
@@ -45,3 +45,14 @@ class ProjectManager:
 
         # Activate the currently created project
         self.active = len(self.__projects) - 1
+
+        LOGGER.info("New project created")
+
+    def open_project(self, file_path):
+        LOGGER.info("Opening a new project... %s", file_path)
+
+    def save_project(self):
+        LOGGER.info("Saving currently active project...")
+
+    def save_project_as(self, file_path):
+        LOGGER.info("Saving currently active project as... %s", file_path)

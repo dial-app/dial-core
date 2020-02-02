@@ -42,8 +42,8 @@ class MainMenuBar(QMenuBar):
         self._open_project_act.triggered.connect(self.open_project)
 
         self._save_project_act = QAction("Save project", self)
-        self._open_project_act.setShortcut(QKeySequence.Save)
-        self._open_project_act.triggered.connect(self.save_project)
+        self._save_project_act.setShortcut(QKeySequence.Save)
+        self._save_project_act.triggered.connect(self.save_project)
 
         self._save_project_as_act = QAction("Save project as...", self)
         self._save_project_as_act.triggered.connect(self.save_project_as)
