@@ -8,7 +8,6 @@ from PySide2.QtCore import Qt
 from PySide2.QtWidgets import QDockWidget, QMainWindow, QWidget
 
 from dial.gui.widgets import PredefinedModelLoadersList
-from dial.project import ProjectInstance
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -34,7 +33,7 @@ class ModelsWindow(QMainWindow):
         self.__setup_ui()
 
         # Connect signals
-        ProjectInstance().model_changed.connect(self.__update_from_project)
+        # ProjectInstance().model_changed.connect(self.__update_from_project)
 
     def __setup_ui(self):
         # Configure dock widget with layers tree
@@ -60,10 +59,10 @@ class ModelsWindow(QMainWindow):
         if accepted:
             LOGGER.debug("Model selected")
 
-            model_loader = model_loader_dialog.selected_loader()
+            # model_loader = model_loader_dialog.selected_loader()
 
-            project = ProjectInstance()
-            project.model.load_model(model_loader)
+            # project = ProjectInstance()
+            # project.model.load_model(model_loader)
         else:
             LOGGER.debug("Operation cancelled")
 

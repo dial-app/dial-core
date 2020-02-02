@@ -5,31 +5,23 @@
 # except ImportError:
 #     import pickle
 
-from PySide2.QtCore import QObject, Signal
-
 from dial.datasets import DatasetLoader
 from dial.utils import Timer, log
 
 LOGGER = log.get_logger(__name__)
 
 
-class Project(QObject):
+class Project:
     """
     Dial project file.
     """
 
-    dataset_changed = Signal(QObject)
-    model_changed = Signal(QObject)
-
-    def __init__(self):
+    def __init__(self, default_dataset_info, default_model_info):
         super().__init__()
 
         self.file_path = ""
-        self.dataset = DatasetInfo()
-        self.model = ModelInfo()
-
-        self.dataset.dataset_changed.connect(lambda: self.dataset_changed.emit(self))
-        self.model.model_changed.connect(lambda: self.model_changed.emit(self))
+        self.dataset = default_dataset_info
+        self.model = default_model_info
 
     def load(self, file_path):
         with open(file_path, "rb") as _:  # project_file:
@@ -42,8 +34,6 @@ class Project(QObject):
 
             self.file_path = file_path
             LOGGER.info("New project file path is %s", self.file_path)
-
-            self.project_changed.emit(self)
 
     def save_as(self, file_path):
         self.file_path = file_path
@@ -62,9 +52,7 @@ class Project(QObject):
             LOGGER.info("Project saved in %s ms", timer.elapsed())
 
 
-class DatasetInfo(QObject):
-    dataset_changed = Signal()
-
+class DatasetInfo:
     def __init__(self):
         super().__init__()
 
@@ -86,20 +74,21 @@ class DatasetInfo(QObject):
         self.x_type = dataset_loader.x_type
         self.y_type = dataset_loader.y_type
 
-        self.dataset_changed.emit()
 
-
-class ModelInfo(QObject):
-    model_changed = Signal()
-
+class ModelInfo:
     def __init__(self):
         super().__init__()
 
         self.name = "Empty model"
-        self.model = None
+        # self.model = None
+        self.layers = []
+        self.compiled = False
 
     def load_model(self, model_loader):
-        self.name = model_loader.name
-        self.model = model_loader.load()
+        pass
+        # self.name = model_loader.name
+        # self.model = model_loader.load()
+        # self.layers = self.model.layers
+        # self.compiled = True
 
-        self.model_changed.emit()
+        # self.model_changed.emit()

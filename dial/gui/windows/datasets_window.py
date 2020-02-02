@@ -14,7 +14,6 @@ from PySide2.QtWidgets import (
 )
 
 from dial.gui.widgets import PredefinedDatasetsList
-from dial.project import ProjectInstance
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -46,7 +45,7 @@ class DatasetsWindow(QWidget):
 
         # Connect signals
         self.__dataset_loader_button.clicked.connect(self.load_predefined_dataset)
-        ProjectInstance().dataset_changed.connect(self.__update_window_from_project)
+        # ProjectInstance().dataset_changed.connect(self.__update_window_from_project)
 
     def __setup_ui(self):
         splitter = QSplitter()
@@ -84,11 +83,13 @@ class DatasetsWindow(QWidget):
             LOGGER.debug("Dataset selected")
 
             # Get the selected loader
-            dataset_loader = dataset_loader_dialog.selected_loader()
+            # TODO: Replace
+            # dataset_loader = dataset_loader_dialog.selected_loader()
 
             # Add the new dataset to the project
-            project = ProjectInstance()
-            project.dataset.load_dataset(dataset_loader)
+
+            # project = ProjectInstance()
+            # project.dataset.load_dataset(dataset_loader)
         else:
             LOGGER.debug("Operation cancelled")
 

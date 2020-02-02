@@ -5,7 +5,7 @@ from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QFileDialog, QMainWindow, QTabWidget
 
 from dial import __version__
-from dial.project import ProjectInstance
+from dial.project import ProjectManagerSingleton
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -18,6 +18,7 @@ class MainWindow(QMainWindow):
 
     def __init__(
         self,
+        project_manager,
         datasets_window,
         models_window,
         compile_window,
@@ -31,6 +32,9 @@ class MainWindow(QMainWindow):
         self.__logger_dialog = logger_dialog
 
         self.__setup_logger_dialog()
+
+        # Initialize components
+        self.__project_manager = project_manager
 
         # Initialize widgets
         self.__main_menu_bar = menubar
@@ -51,6 +55,9 @@ class MainWindow(QMainWindow):
         self.__setup_ui()
 
         # Connect signals
+        project_manager = ProjectManagerSingleton()
+
+        self.__main_menu_bar.new_project.connect(project_manager.new_project)
         self.__main_menu_bar.open_project.connect(self.__open_project)
         self.__main_menu_bar.save_project.connect(self.__save_project)
         self.__main_menu_bar.save_project_as.connect(self.__save_project_as)
@@ -103,13 +110,15 @@ class MainWindow(QMainWindow):
         LOGGER.info("File path selected for opening: %s", file_path)
 
         if file_path:
-            ProjectInstance().load(file_path)
+            pass
+            # ProjectInstance().load(file_path)
         else:
             LOGGER.info("Invalid file path. Loading cancelled.")
 
     def __save_project(self):
         try:
-            ProjectInstance().save()
+            pass
+            # ProjectInstance().save()
         except ValueError:
             LOGGER.warning("Project doesn't have a file path set!")
             self.__save_project_as()
@@ -124,6 +133,7 @@ class MainWindow(QMainWindow):
         LOGGER.info("File path selected for saving: %s", file_path)
 
         if file_path:
-            ProjectInstance().save_as(file_path)
+            pass
+            # ProjectInstance().save_as(file_path)
         else:
             LOGGER.info("Invalid file path. Saving cancelled.")

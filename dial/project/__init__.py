@@ -2,6 +2,6 @@
 
 """Project related modules (load/save Dial projects)"""
 
-from .containers import Project, ProjectInstance
+from .containers import Project, ProjectManager, ProjectManagerSingleton
 
-__all__ = ["ProjectInstance", "Project"]
+__all__ = ["Project", "ProjectManager", "ProjectManagerSingleton"]

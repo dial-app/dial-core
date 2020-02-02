@@ -14,6 +14,7 @@ class MainMenuBar(QMenuBar):
     Top menu bar for the main window.
     """
 
+    new_project = Signal()
     open_project = Signal()
     save_project = Signal()
     save_project_as = Signal()
@@ -32,6 +33,10 @@ class MainMenuBar(QMenuBar):
         self.__create_menus()
 
     def __create_actions(self):
+        self._new_project_act = QAction("New project", self)
+        self._new_project_act.setShortcut(QKeySequence.New)
+        self._new_project_act.triggered.connect(self.new_project)
+
         self._open_project_act = QAction("Open project", self)
         self._open_project_act.setShortcut(QKeySequence.Open)
         self._open_project_act.triggered.connect(self.open_project)
@@ -61,6 +66,7 @@ class MainMenuBar(QMenuBar):
     def __create_menus(self):
         # File menu
         self._file_menu = self.addMenu("&File")
+        self._file_menu.addAction(self._new_project_act)
         self._file_menu.addAction(self._open_project_act)
         self._file_menu.addAction(self._save_project_act)
         self._file_menu.addAction(self._save_project_as_act)

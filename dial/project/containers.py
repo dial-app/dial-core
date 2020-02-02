@@ -6,8 +6,18 @@ Dependency Injection containers.
 
 import dependency_injector.providers as providers
 
-from . import project
+from . import project, project_manager
 
-Project = providers.Factory(project.Project)
+Project = providers.Factory(
+    project.Project,
+    default_dataset_info=project.DatasetInfo,
+    default_model_info=project.ModelInfo,
+)
 
-ProjectInstance = providers.Singleton(Project)
+ProjectManager = providers.Factory(
+    project_manager.ProjectManager, default_project=Project
+)
+
+ProjectManagerSingleton = providers.Singleton(
+    project_manager.ProjectManager, default_project=Project
+)
