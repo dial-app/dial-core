@@ -35,3 +35,5 @@ lint = "pipenv run pre-commit run --all"
 tests = "pipenv run pytest --cov"
 build = "pipenv run python setup.py sdist bdist bdist_wheel"
 deploy = "pipenv run twine upload dist/*"
+
+cloc = "cloc --exclude-dir='.mypy_cache' dial"
