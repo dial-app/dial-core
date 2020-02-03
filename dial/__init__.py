@@ -6,7 +6,7 @@ __author__ = "David Afonso"
 __license__ = "GPL"
 __maintainer__ = __author__
 __url__ = "https://github.com/davafons/dial"
-__version__ = "0.2a0"
+__version__ = "0.3a0"
 __description__ = "A Deep Learning GUI-based Framework"
 
 __requirements__ = [
