@@ -1,14 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-# try:
-#     import cPickle as pickle
-# except ImportError:
-#     import pickle
-
 from dial.datasets import DatasetLoader
-from dial.utils import Timer, log
-
-LOGGER = log.get_logger(__name__)
 
 
 class Project:
@@ -23,34 +15,6 @@ class Project:
         self.file_path = ""
         self.dataset = default_dataset_info
         self.model = default_model_info
-
-    def load(self, file_path):
-        with open(file_path, "rb") as _:  # project_file:
-            LOGGER.info("Loading project...")
-            with Timer() as timer:
-                pass
-                # TODO: Load object from file
-
-            LOGGER.info("Project loaded in %s ms", timer.elapsed())
-
-            self.file_path = file_path
-            LOGGER.info("New project file path is %s", self.file_path)
-
-    def save_as(self, file_path):
-        self.file_path = file_path
-        self.save()
-
-    def save(self):
-        if not self.file_path:
-            raise ValueError("File path for saving the project can't be empty.")
-
-        with open(self.file_path, "wb") as _:  # project_file:
-            LOGGER.info("Saving project...")
-            with Timer() as timer:
-                pass
-                # TODO: Save object to file
-
-            LOGGER.info("Project saved in %s ms", timer.elapsed())
 
 
 class DatasetInfo:

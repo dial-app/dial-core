@@ -57,24 +57,31 @@ class ProjectManagerQt(QObject, ProjectManager):
     def save_project(self):
         try:
             super().save_project()
+
         except ValueError:
             LOGGER.warning("Project doesn't have a file path set!")
-            self.__save_project_as()
+
+            self.save_project_as()
 
     @Slot()
     def save_project_as(self):
         LOGGER.debug("Opening dialog for picking a save file...")
 
-        file_path = QFileDialog.getSaveFileName(
+        selected_file_path = QFileDialog.getSaveFileName(
             QWidget(), "Save Dial project", "~", "Dial Files (*.dial)"
         )[0]
 
-        LOGGER.info("File path selected for saving: %s", file_path)
+        LOGGER.info("File path selected for saving: %s", selected_file_path)
 
-        if file_path:
-            super().save_project_as(file_path)
+        if selected_file_path:
+            super().save_project_as(selected_file_path)
+
         else:
             LOGGER.info("Invalid file path. Saving cancelled.")
+
+    def set_active_project(self, index):
+        super().set_active_project(index)
+        # self.__project_actions_group.actions()[index].setChecked(True)
 
     def __add_project_to_menu(self, name, index) -> QAction:
         project_action = QAction(name, self)

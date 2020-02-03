@@ -1,9 +1,13 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+try:
+    import cPickle as pickle
+except ImportError:
+    import pickle  # type: ignore
 
 from copy import deepcopy
 
-from dial.utils import log
+from dial.utils import Timer, log
 
 from .project import Project
 
@@ -40,21 +44,51 @@ class ProjectManager:
     def __len__(self):
         return len(self.__projects)
 
-    def new_project(self):
-        new_project = deepcopy(self.__default_project)
+    def new_project(self, new_project=None):
+        self.__add_new_project(new_project)
+
+        LOGGER.info("New project created!")
+
+    def open_project(self, file_path):
+        LOGGER.info("Opening a new project... %s", file_path)
+
+        with open(file_path, "rb") as project_file:
+            LOGGER.info("Loading project...")
+            with Timer() as timer:
+                project_in = pickle.load(project_file)
+
+                self.__add_new_project(project_in)
+
+            LOGGER.info("Project loaded in %s ms", timer.elapsed())
+
+            project_in.file_path = file_path
+            LOGGER.info("New project file path is %s", file_path)
+
+            self.new_project(new_project=project_in)
+
+    def save_project(self):
+        if not self.__active.file_path:
+            raise ValueError("Project doesn't has a file_path set!")
+
+        with open(self.__active.file_path, "wb") as project_file:
+            LOGGER.info("Saving project: %s", self.__active.file_path)
+
+            with Timer() as timer:
+                pickle.dump(self.__active, project_file)
+
+            LOGGER.info("Project saved in %s ms", timer.elapsed())
+
+    def save_project_as(self, file_path):
+        self.__active.file_path = file_path
+        LOGGER.info("New file path for the project: %s", file_path)
+
+        self.save_project()
+
+    def __add_new_project(self, new_project=None):
+        if not new_project:  # Add a new default project
+            new_project = deepcopy(self.__default_project)
 
         self.__projects.append(new_project)
 
         # Activate the currently created project
         self.set_active_project(self.__projects.index(new_project))
-
-        LOGGER.info("New project created")
-
-    def open_project(self, file_path):
-        LOGGER.info("Opening a new project... %s", file_path)
-
-    def save_project(self):
-        LOGGER.info("Saving currently active project...")
-
-    def save_project_as(self, file_path):
-        LOGGER.info("Saving currently active project as... %s", file_path)
