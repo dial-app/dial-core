@@ -47,7 +47,7 @@ class DatasetsWindow(QWidget):
 
         # Connect signals
         self.__dataset_loader_button.clicked.connect(
-            self.__project_manager.load_dataset
+            self.__project_manager.load_predefined_dataset
         )
         self.__project_manager.dataset_changed.connect(
             self.__update_window_from_project

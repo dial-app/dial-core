@@ -63,14 +63,12 @@ class MainWindow(QMainWindow):
         self.__main_menu_bar.save_project.connect(project_manager.save_project)
         self.__main_menu_bar.save_project_as.connect(project_manager.save_project_as)
 
-        # TODO: Think: Connect to project_manager instead of windows??
         self.__main_menu_bar.open_predefined_dataset.connect(
-            self.__project_manager.load_dataset
+            self.__project_manager.load_predefined_dataset
         )
 
-        # TODO: ^^^^
         self.__main_menu_bar.open_predefined_model.connect(
-            self.__models_window.load_predefined_model
+            self.__project_manager.load_predefined_model
         )
 
         self.__main_menu_bar.quit.connect(QApplication.quit)

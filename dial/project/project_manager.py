@@ -47,6 +47,9 @@ class ProjectManager:
     def load_dataset(self, dataset_loader):
         self.active.dataset.load_dataset(dataset_loader)
 
+    def load_model(self, model_loader):
+        self.active.model.load_model(model_loader)
+
     def new_project(self, new_project=None):
         self.__add_new_project(new_project)
 

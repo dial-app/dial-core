@@ -50,10 +50,7 @@ class ModelInfo:
         self.compiled = False
 
     def load_model(self, model_loader):
-        pass
-        # self.name = model_loader.name
+        self.name = model_loader.name
         # self.model = model_loader.load()
-        # self.layers = self.model.layers
-        # self.compiled = True
-
-        # self.model_changed.emit()
+        self.layers = []
+        self.compiled = True

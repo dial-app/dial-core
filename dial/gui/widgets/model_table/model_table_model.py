@@ -41,8 +41,8 @@ class ModelTableModel(QAbstractTableModel):
             Qt.CheckStateRole: self.__checkstate_role,
         }
 
-    def load_model(self, model):
-        self.__layers = [l for l in model.layers]
+    def load_model(self, layers):
+        self.__layers = layers
 
         # Model has been reset, redraw view
         self.modelReset.emit()

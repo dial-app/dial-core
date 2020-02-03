@@ -3,7 +3,7 @@
 from PySide2.QtCore import QObject, Signal, Slot
 from PySide2.QtWidgets import QAction, QActionGroup, QFileDialog, QMenu, QWidget
 
-from dial.gui.widgets import PredefinedDatasetsList
+from dial.gui.widgets import PredefinedDatasetsList, PredefinedModelLoadersList
 from dial.utils import log
 
 from ..project import Project
@@ -18,6 +18,7 @@ class ProjectManagerQt(QObject, ProjectManager):
     """
 
     dataset_changed = Signal(Project)
+    model_changed = Signal(Project)
 
     project_changed = Signal(Project)
 
@@ -44,10 +45,10 @@ class ProjectManagerQt(QObject, ProjectManager):
         LOGGER.debug("'whole_project_changed' slot triggered")
 
         self.dataset_changed.emit(project)
+        self.model_changed.emit(project)
 
-    @Slot("DatasetLoader")
-    def load_dataset(self):
-        # TODO: Rename to predefined?
+    @Slot()
+    def load_predefined_dataset(self):
         dataset_loader_dialog = PredefinedDatasetsList.Dialog()
 
         LOGGER.debug("Opening dialog to select a predefined dataset...")
@@ -61,6 +62,23 @@ class ProjectManagerQt(QObject, ProjectManager):
             super().load_dataset(dataset_loader)
 
             self.dataset_changed.emit(self.active)
+        else:
+            LOGGER.debug("Operation cancelled")
+
+    @Slot()
+    def load_predefined_model(self):
+        model_loader_dialog = PredefinedModelLoadersList.Dialog(parent=self)
+
+        LOGGER.debug("Opening dialog to select a predefined model...")
+
+        accepted = model_loader_dialog.exec_()
+
+        if accepted:
+            LOGGER.debug("Model selected")
+
+            model_loader = model_loader_dialog.selected_loader()
+
+            super().load_model(model_loader)
         else:
             LOGGER.debug("Operation cancelled")
 
