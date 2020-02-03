@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from dial.datasets import DatasetLoader
+from dial.datasets import Dataset, DatasetLoader
 
 
 class Project:
@@ -23,8 +23,8 @@ class DatasetInfo:
 
         self.name = "Empty Dataset"
         self.brief = "..."
-        self.train = None
-        self.test = None
+        self.train = Dataset()
+        self.test = Dataset()
         self.x_type = None
         self.y_type = None
 

@@ -9,10 +9,11 @@ import dependency_injector.providers as providers
 from . import project, project_manager
 from .qt import ProjectManagerQt
 
+DatasetInfo = providers.Factory(project.DatasetInfo)
+ModelInfo = providers.Factory(project.ModelInfo)
+
 Project = providers.Factory(
-    project.Project,
-    default_dataset_info=project.DatasetInfo,
-    default_model_info=project.ModelInfo,
+    project.Project, default_dataset_info=DatasetInfo, default_model_info=ModelInfo,
 )
 
 ProjectManager = providers.Factory(

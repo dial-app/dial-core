@@ -5,6 +5,9 @@ from PySide2.QtGui import QPixmapCache
 
 from dial.datasets import Dataset
 from dial.misc import Dial
+from dial.utils import log
+
+LOGGER = log.get_logger(__name__)
 
 
 class DatasetTableModel(QAbstractTableModel):
@@ -22,9 +25,6 @@ class DatasetTableModel(QAbstractTableModel):
 
         self.__dataset = None
 
-        self.__row_count = 0
-        self.__column_count = 2
-
         self.__max_row_count = 100
 
         self.column_names = ("Input", "Output")
@@ -40,6 +40,9 @@ class DatasetTableModel(QAbstractTableModel):
         """
         Load new Dataset data to the model.
         """
+
+        LOGGER.debug("Loading new dataset to DatasetTableModel...")
+
         self.__dataset = dataset
 
         self.__x = []
@@ -56,13 +59,13 @@ class DatasetTableModel(QAbstractTableModel):
         """
         Return the number of rows.
         """
-        return self.__row_count
+        return len(self.__x)
 
     def columnCount(self, parent=QModelIndex()):
         """
         Return the number of columns.
         """
-        return self.__column_count
+        return len(self.column_names)
 
     def headerData(self, section, orientation, role):
         """
@@ -89,19 +92,19 @@ class DatasetTableModel(QAbstractTableModel):
         if not self.__dataset:
             return False
 
-        return self.__row_count < len(self.__dataset)
+        return self.rowCount() < len(self.__dataset)
 
     def fetchMore(self, parent: QModelIndex):
         if parent.isValid():
             return False
 
-        remainder = len(self.__dataset) - self.__row_count
+        remainder = len(self.__dataset) - self.rowCount()
         items_to_fetch = min(remainder, self.__max_row_count)
 
         if items_to_fetch <= 0:
             return
 
-        self.insertRows(self.__row_count, items_to_fetch)
+        self.insertRows(self.rowCount(), items_to_fetch)
 
     def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
         self.beginInsertRows(parent, row, row + count - 1)
@@ -110,8 +113,6 @@ class DatasetTableModel(QAbstractTableModel):
 
         self.__x[row:row] = x_set
         self.__y[row:row] = y_set
-
-        self.__row_count += count
 
         self.endInsertRows()
 

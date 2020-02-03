@@ -44,6 +44,9 @@ class ProjectManager:
     def __len__(self):
         return len(self.__projects)
 
+    def load_dataset(self, dataset_loader):
+        self.active.dataset.load_dataset(dataset_loader)
+
     def new_project(self, new_project=None):
         self.__add_new_project(new_project)
 
@@ -64,13 +67,11 @@ class ProjectManager:
             project_in.file_path = file_path
             LOGGER.info("New project file path is %s", file_path)
 
-            self.new_project(new_project=project_in)
-
     def save_project(self):
         if not self.__active.file_path:
             raise ValueError("Project doesn't has a file_path set!")
 
-        with open(self.__active.file_path, "wb") as project_file:
+        with open(self.active.file_path, "wb") as project_file:
             LOGGER.info("Saving project: %s", self.__active.file_path)
 
             with Timer() as timer:
@@ -79,7 +80,7 @@ class ProjectManager:
             LOGGER.info("Project saved in %s ms", timer.elapsed())
 
     def save_project_as(self, file_path):
-        self.__active.file_path = file_path
+        self.active.file_path = file_path
         LOGGER.info("New file path for the project: %s", file_path)
 
         self.save_project()

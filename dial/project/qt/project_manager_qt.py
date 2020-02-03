@@ -1,8 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtCore import QObject, Slot
+from PySide2.QtCore import QObject, Signal, Slot
 from PySide2.QtWidgets import QAction, QActionGroup, QFileDialog, QMenu, QWidget
 
+from dial.gui.widgets import PredefinedDatasetsList
 from dial.utils import log
 
 from ..project import Project
@@ -16,6 +17,10 @@ class ProjectManagerQt(QObject, ProjectManager):
     Project manager with Qt Signals and Dialogs for the project operations.
     """
 
+    dataset_changed = Signal(Project)
+
+    project_changed = Signal(Project)
+
     def __init__(self, default_project: Project, parent=None):
         QObject.__init__(self, parent)
         ProjectManager.__init__(self, default_project)
@@ -28,15 +33,44 @@ class ProjectManagerQt(QObject, ProjectManager):
         project_action = self.__add_project_to_menu(self.active.name, len(self) - 1)
         project_action.setChecked(True)
 
+        self.project_changed.connect(self.whole_project_changed)
+
     @property
     def projects_menu(self):
         return self.__projects_menu
+
+    @Slot(Project)
+    def whole_project_changed(self, project):
+        LOGGER.debug("'whole_project_changed' slot triggered")
+
+        self.dataset_changed.emit(project)
+
+    @Slot("DatasetLoader")
+    def load_dataset(self):
+        # TODO: Rename to predefined?
+        dataset_loader_dialog = PredefinedDatasetsList.Dialog()
+
+        LOGGER.debug("Opening dialog to select a predefined dataset...")
+
+        accepted = dataset_loader_dialog.exec_()
+
+        if accepted:
+            LOGGER.debug("Dataset selected")
+            dataset_loader = dataset_loader_dialog.selected_loader()
+
+            super().load_dataset(dataset_loader)
+
+            self.dataset_changed.emit(self.active)
+        else:
+            LOGGER.debug("Operation cancelled")
 
     @Slot()
     def new_project(self):
         super().new_project()
 
         self.__add_project_to_menu(self.active.name, len(self) - 1)
+
+        self.project_changed.emit(self.active)
 
     @Slot()
     def open_project(self):
@@ -50,6 +84,11 @@ class ProjectManagerQt(QObject, ProjectManager):
 
         if file_path:
             super().open_project(file_path)
+
+            self.__add_project_to_menu(self.active.name, len(self) - 1)
+            self.__project_actions_group.actions()[-1].setChecked(True)
+
+            self.project_changed.emit(self.active)
         else:
             LOGGER.info("Invalid file path. Loading cancelled.")
 
@@ -81,7 +120,8 @@ class ProjectManagerQt(QObject, ProjectManager):
 
     def set_active_project(self, index):
         super().set_active_project(index)
-        # self.__project_actions_group.actions()[index].setChecked(True)
+
+        self.project_changed.emit(self.active)
 
     def __add_project_to_menu(self, name, index) -> QAction:
         project_action = QAction(name, self)

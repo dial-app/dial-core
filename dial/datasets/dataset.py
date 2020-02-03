@@ -22,7 +22,7 @@ from typing import List, Tuple
 import numpy as np
 from tensorflow import keras
 
-from dial.datasets.datatype import DataType
+from dial.datasets.datatype import DataType, NumericArray
 
 
 class Dataset(keras.utils.Sequence):
@@ -32,13 +32,26 @@ class Dataset(keras.utils.Sequence):
 
     def __init__(
         self,
-        x_data: np.ndarray,
-        y_data: np.ndarray,
-        x_type: DataType,
-        y_type: DataType,
+        x_data: np.ndarray = None,
+        y_data: np.ndarray = None,
+        x_type: DataType = None,
+        y_type: DataType = None,
         batch_size: int = 32,
         shuffled: bool = False,
     ):
+
+        if not x_data:
+            x_data = np.empty(0)
+
+        if not y_data:
+            y_data = np.empty(0)
+
+        if not x_type:
+            x_type = NumericArray()
+
+        if not y_type:
+            y_type = NumericArray()
+
         # Data arrays
         self.__x, self.__y = x_data, y_data
 

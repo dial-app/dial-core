@@ -13,7 +13,6 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
-from dial.gui.widgets import PredefinedDatasetsList
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -24,8 +23,11 @@ class DatasetsWindow(QWidget):
     Window for all the dataset related operations (Visualization, loading...)
     """
 
-    def __init__(self, dataset_table_widget, parent=None):
+    def __init__(self, project_manager, dataset_table_widget, parent=None):
         super().__init__(parent)
+
+        # Initialize components
+        self.__project_manager = project_manager
 
         # Initialize widgets
         self.__main_layout = QGridLayout()
@@ -44,8 +46,12 @@ class DatasetsWindow(QWidget):
         self.__setup_ui()
 
         # Connect signals
-        self.__dataset_loader_button.clicked.connect(self.load_predefined_dataset)
-        # ProjectInstance().dataset_changed.connect(self.__update_window_from_project)
+        self.__dataset_loader_button.clicked.connect(
+            self.__project_manager.load_dataset
+        )
+        self.__project_manager.dataset_changed.connect(
+            self.__update_window_from_project
+        )
 
     def __setup_ui(self):
         splitter = QSplitter()
@@ -69,30 +75,6 @@ class DatasetsWindow(QWidget):
 
         self.setLayout(self.__main_layout)
 
-    def load_predefined_dataset(self):
-        """
-        Select and load a predefined dataset from a Dialog list.
-        """
-        dataset_loader_dialog = PredefinedDatasetsList.Dialog(parent=self)
-
-        LOGGER.debug("Opening dialog to select a predefined dataset...")
-
-        accepted = dataset_loader_dialog.exec_()
-
-        if accepted:
-            LOGGER.debug("Dataset selected")
-
-            # Get the selected loader
-            # TODO: Replace
-            # dataset_loader = dataset_loader_dialog.selected_loader()
-
-            # Add the new dataset to the project
-
-            # project = ProjectInstance()
-            # project.dataset.load_dataset(dataset_loader)
-        else:
-            LOGGER.debug("Operation cancelled")
-
     def __update_window_from_project(self, project):
         """
         Update the dataset models, texts and labels according to the new project
@@ -114,5 +96,6 @@ class DatasetsWindow(QWidget):
             str(project.dataset.x_type),
             str(project.dataset.y_type),
         )
+
         LOGGER.info("Train instances: %d", len(project.dataset.train))
         LOGGER.info("Test instances: %d", len(project.dataset.test))

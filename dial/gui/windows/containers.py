@@ -19,11 +19,14 @@ class Windows(containers.DeclarativeContainer):
     """
 
     Datasets = providers.Factory(
-        datasets_window.DatasetsWindow, dataset_table_widget=TrainTestTable.Widget
+        datasets_window.DatasetsWindow,
+        project_manager=DialProjectManager,
+        dataset_table_widget=TrainTestTable.Widget,
     )
 
     Models = providers.Factory(
         models_window.ModelsWindow,
+        project_manager=DialProjectManager,
         layers_tree=LayersTree.Widget,
         model_table=ModelTable.Widget,
     )

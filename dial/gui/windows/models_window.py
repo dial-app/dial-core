@@ -17,8 +17,13 @@ class ModelsWindow(QMainWindow):
     """
     """
 
-    def __init__(self, layers_tree: QWidget, model_table: QWidget, parent=None):
+    def __init__(
+        self, project_manager, layers_tree: QWidget, model_table: QWidget, parent=None
+    ):
         super().__init__(parent)
+
+        # Initialize components
+        self.__project_manager = project_manager
 
         # Initialize widgets
         self.__model_table = model_table
@@ -42,8 +47,6 @@ class ModelsWindow(QMainWindow):
             QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable
         )
         self.__dock_layers_tree.setWindowTitle("Layers")
-        # self.__dock_layers_tree.setContentsMargins(0, 0, 0, 0)
-        # self.__dock_layers_tree.setTitleBarWidget(QWidget())
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.__dock_layers_tree)
 

@@ -65,7 +65,7 @@ class MainWindow(QMainWindow):
 
         # TODO: Think: Connect to project_manager instead of windows??
         self.__main_menu_bar.open_predefined_dataset.connect(
-            self.__datasets_window.load_predefined_dataset
+            self.__project_manager.load_dataset
         )
 
         # TODO: ^^^^
