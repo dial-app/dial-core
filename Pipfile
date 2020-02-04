@@ -6,6 +6,7 @@ verify_ssl = true
 [packages]
 dial = {editable = true,path = "."}
 tensorflow = ">=2.0.0a0"
+tensorboard = ">=2.0.1"
 pyside2 = ">=5.12.6"
 pillow = ">=6.2.1"
 qimage2ndarray = ">=1.8.0"
