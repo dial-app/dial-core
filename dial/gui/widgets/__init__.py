@@ -9,6 +9,7 @@ from .log import Logger
 from .menubars import MenuBars
 from .model_table import ModelTable
 from .models_list import ModelLoadersList, PredefinedModelLoadersList
+from .parameters_form import ParametersFormFactory
 
 __all__ = [
     "TrainTestTable",
@@ -20,4 +21,5 @@ __all__ = [
     "LayersTree",
     "ModelLoadersList",
     "PredefinedModelLoadersList",
+    "ParametersFormFactory",
 ]

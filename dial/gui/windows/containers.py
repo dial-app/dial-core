@@ -7,7 +7,14 @@ Dependency Injection containers.
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-from dial.gui.widgets import LayersTree, Logger, MenuBars, ModelTable, TrainTestTable
+from dial.gui.widgets import (
+    LayersTree,
+    Logger,
+    MenuBars,
+    ModelTable,
+    ParametersFormFactory,
+    TrainTestTable,
+)
 from dial.project import DialProjectManager
 
 from . import compile_window, datasets_window, main_window, models_window
@@ -31,7 +38,11 @@ class Windows(containers.DeclarativeContainer):
         model_table=ModelTable.Widget,
     )
 
-    Compile = providers.Factory(compile_window.CompileWindow)
+    Compile = providers.Factory(
+        compile_window.CompileWindow,
+        project_manager=DialProjectManager,
+        parameters_form=ParametersFormFactory,
+    )
 
     Main = providers.Factory(
         main_window.MainWindow,

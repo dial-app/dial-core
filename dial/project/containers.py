@@ -11,9 +11,13 @@ from .qt import ProjectManagerQt
 
 DatasetInfo = providers.Factory(project.DatasetInfo)
 ModelInfo = providers.Factory(project.ModelInfo)
+ParametersInfo = providers.Factory(project.ParametersInfo)
 
 Project = providers.Factory(
-    project.Project, default_dataset_info=DatasetInfo, default_model_info=ModelInfo,
+    project.Project,
+    default_dataset_info=DatasetInfo,
+    default_model_info=ModelInfo,
+    default_parameters_info=ParametersInfo,
 )
 
 ProjectManager = providers.Factory(
