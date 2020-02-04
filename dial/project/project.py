@@ -55,7 +55,7 @@ class ModelInfo:
 
 class ParametersInfo:
     def __init__(self):
-        self.loss = "binary_crossentropy"
+        self.loss_function = "binary_crossentropy"
         self.optimizer = "adam"
 
         self.epochs = 1

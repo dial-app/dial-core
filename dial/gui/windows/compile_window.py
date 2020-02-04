@@ -30,6 +30,16 @@ class CompileWindow(QWidget):
             lambda value: self.__project_manager.change_parameter("epochs", value)
         )
 
+        self.__parameters_form.loss_function_changed.connect(
+            lambda value: self.__project_manager.change_parameter(
+                "loss_function", value
+            )
+        )
+
+        self.__parameters_form.optimizer_changed.connect(
+            lambda value: self.__project_manager.change_parameter("optimizer", value)
+        )
+
     def __setup_ui(self):
         self.__main_layout.setContentsMargins(100, 100, 100, 100)
 
