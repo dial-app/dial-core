@@ -54,6 +54,9 @@ class ProjectManager:
         self.active.parameters.change_parameter(key, value)
         LOGGER.info("New %s value: %s", key, value)
 
+    def compile_model(self):
+        self.active.compile_model()
+
     def new_project(self, new_project=None):
         self.__add_new_project(new_project)
 

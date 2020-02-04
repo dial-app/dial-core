@@ -5,13 +5,14 @@ Form for changing the parameters used for the training process.
 """
 
 from PySide2.QtCore import Qt, Signal
-from PySide2.QtWidgets import QComboBox, QFormLayout, QSpinBox, QWidget
+from PySide2.QtWidgets import QComboBox, QFormLayout, QPushButton, QSpinBox, QWidget
 
 
 class ParametersForm(QWidget):
     epoch_value_changed = Signal(int)
     loss_function_changed = Signal(str)
     optimizer_changed = Signal(str)
+    compile_model = Signal()
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -30,6 +31,8 @@ class ParametersForm(QWidget):
         self.__optimizer_combobox = QComboBox()
         self.__optimizer_combobox.addItems(["adam", "sgd"])
 
+        self.__compile_button = QPushButton("Compile model")
+
         # Configure interface
         self.__setup_ui()
 
@@ -46,6 +49,8 @@ class ParametersForm(QWidget):
             lambda value: self.optimizer_changed.emit(value)
         )
 
+        self.__compile_button.clicked.connect(lambda: self.compile_model.emit())
+
     def __setup_ui(self):
         self.__main_layout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         self.__main_layout.setFormAlignment(Qt.AlignHCenter)
@@ -54,5 +59,6 @@ class ParametersForm(QWidget):
         self.__main_layout.addRow("Epochs", self.__epoch_spinbox)
         self.__main_layout.addRow("Loss functions", self.__loss_function_combobox)
         self.__main_layout.addRow("Optimizers", self.__optimizer_combobox)
+        self.__main_layout.addWidget(self.__compile_button)
 
         self.setLayout(self.__main_layout)

@@ -66,6 +66,14 @@ class Dataset(keras.utils.Sequence):
         self.batch_size = batch_size
 
     @property
+    def input_shape(self):
+        return self.__x.shape
+
+    @property
+    def output_shape(self):
+        return self.__y.shape
+
+    @property
     def shuffled(self) -> bool:
         """
         Check if the dataset is shuffled (dataset items randomly sorted)

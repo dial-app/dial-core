@@ -17,7 +17,7 @@ from dial.gui.widgets import (
 )
 from dial.project import DialProjectManager
 
-from . import compile_window, datasets_window, main_window, models_window
+from . import compile_window, datasets_window, main_window, models_window, train_window
 
 
 class Windows(containers.DeclarativeContainer):
@@ -44,12 +44,17 @@ class Windows(containers.DeclarativeContainer):
         parameters_form=ParametersFormFactory,
     )
 
+    Train = providers.Factory(
+        train_window.TrainWindow, project_manager=DialProjectManager
+    )
+
     Main = providers.Factory(
         main_window.MainWindow,
         project_manager=DialProjectManager,
         datasets_window=Datasets,
         models_window=Models,
         compile_window=Compile,
+        train_window=Train,
         menubar=MenuBars.Main,
         logger_dialog=Logger.Dialog,
     )
