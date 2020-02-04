@@ -3,7 +3,7 @@
 """
 """
 
-from PySide2.QtWidgets import QGridLayout, QWidget
+from PySide2.QtWidgets import QPushButton, QVBoxLayout, QWidget
 
 
 class TrainWindow(QWidget):
@@ -17,10 +17,19 @@ class TrainWindow(QWidget):
         self.__project_manager = project_manager
 
         # Initialize widgets
-        self.__main_layout = QGridLayout()
+        self.__main_layout = QVBoxLayout()
+
+        self.__train_button = QPushButton("Start training")
 
         # Configure interface
         self.__setup_ui()
 
+        # Connect signals
+        self.__train_button.clicked.connect(
+            lambda: self.__project_manager.train_model()
+        )
+
     def __setup_ui(self):
         self.setLayout(self.__main_layout)
+
+        self.__main_layout.addWidget(self.__train_button)

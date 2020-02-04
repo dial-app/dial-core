@@ -26,23 +26,34 @@ class Project:
     def compile_model(self):
         self.model.model = Sequential()
 
+        # Input shape = (batch_size, ..., input_shape)
         input_shape = (
             self.dataset.train.batch_size,
-            *self.dataset.train.input_shape,
+            self.dataset.train.input_shape[1],
+            self.dataset.train.input_shape[2],
         )
 
-        LOGGER.info("Debug shape %s", input_shape)
+        LOGGER.info("Input shape %s", input_shape)
 
         self.model.model.add(Input(input_shape))
 
-        for layer in self.model.layers:
-            self.model.model.add(layer)
+        [self.model.model.add(layer) for layer in self.model.layers]
 
-        LOGGER.info("Model compiled")
+        LOGGER.info(self.model.model.summary())
 
-        print(self.model.model.summary())
+        self.model.model.compile(
+            optimizer=self.parameters.optimizer,
+            loss=self.parameters.loss_function,
+            metrics=["accuracy"],
+        )
 
+        LOGGER.info("Model compiled!")
         self.model.compiled = True
+
+    def train_model(self):
+        self.model.model.fit_generator(
+            self.dataset.train, epochs=self.parameters.epochs
+        )
 
 
 class DatasetInfo:
