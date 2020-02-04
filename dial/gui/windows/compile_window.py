@@ -40,6 +40,10 @@ class CompileWindow(QWidget):
             lambda value: self.__project_manager.change_parameter("optimizer", value)
         )
 
+        self.__parameters_form.compile_model.connect(
+            lambda: self.__project_manager.compile_model()
+        )
+
     def __setup_ui(self):
         self.__main_layout.setContentsMargins(100, 100, 100, 100)
 
