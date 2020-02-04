@@ -3,7 +3,8 @@
 from PySide2.QtCore import QObject, Signal, Slot
 from PySide2.QtWidgets import QAction, QActionGroup, QFileDialog, QMenu, QWidget
 
-from dial.gui.widgets import PredefinedDatasetsList, PredefinedModelLoadersList
+from dial.gui.widgets.datasets_list import PredefinedDatasetsList
+from dial.gui.widgets.models_list import PredefinedModelLoadersList
 from dial.utils import log
 
 from ..project import Project

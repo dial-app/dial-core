@@ -50,6 +50,10 @@ class ProjectManager:
     def load_model(self, model_loader):
         self.active.model.load_model(model_loader)
 
+    def change_parameter(self, key, value):
+        self.active.parameters.change_parameter(key, value)
+        LOGGER.info("New %s value: %s", key, value)
+
     def new_project(self, new_project=None):
         self.__add_new_project(new_project)
 

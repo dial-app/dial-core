@@ -8,19 +8,18 @@ class Project:
     Dial project file.
     """
 
-    def __init__(self, default_dataset_info, default_model_info):
-        super().__init__()
-
+    def __init__(
+        self, default_dataset_info, default_model_info, default_parameters_info
+    ):
         self.name = "Empty project"
         self.file_path = ""
         self.dataset = default_dataset_info
         self.model = default_model_info
+        self.parameters = default_parameters_info
 
 
 class DatasetInfo:
     def __init__(self):
-        super().__init__()
-
         self.name = "Empty Dataset"
         self.brief = "..."
         self.train = Dataset()
@@ -42,8 +41,6 @@ class DatasetInfo:
 
 class ModelInfo:
     def __init__(self):
-        super().__init__()
-
         self.name = "Empty model"
         # self.model = None
         self.layers = []
@@ -54,3 +51,20 @@ class ModelInfo:
         # self.model = model_loader.load()
         self.layers = []
         self.compiled = True
+
+
+class ParametersInfo:
+    def __init__(self):
+        self.loss_function = "binary_crossentropy"
+        self.optimizer = "adam"
+
+        self.epochs = 1
+
+        self.metrics = ["accuracy"]
+
+    def change_parameter(self, key, value):
+        # Check if the attribute called "key" exists. Raise AttributeError if not found
+        getattr(self, key, value)
+
+        # If attribute was found, set a new value
+        setattr(self, key, value)
