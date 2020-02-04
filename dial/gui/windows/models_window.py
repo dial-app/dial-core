@@ -39,6 +39,8 @@ class ModelsWindow(QMainWindow):
         # Connect signals
         self.__project_manager.model_changed.connect(self.__update_from_project)
 
+        self.__update_from_project(self.__project_manager.active)
+
     def __setup_ui(self):
         # Configure dock widget with layers tree
         self.__dock_layers_tree.setWidget(self.__layers_tree)
@@ -52,4 +54,4 @@ class ModelsWindow(QMainWindow):
         self.setCentralWidget(self.__model_table)
 
     def __update_from_project(self, project):
-        self.__model_table.set_model(project.model.layers)
+        self.__model_table.set_model(project.model)

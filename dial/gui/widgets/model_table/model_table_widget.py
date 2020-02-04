@@ -30,4 +30,4 @@ class ModelTableWidget(QWidget):
     def set_model(self, model):
         """
         """
-        self.__model.load_model(model)
+        self.__model.load_layers(model.layers)

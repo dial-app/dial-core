@@ -40,16 +40,16 @@ class Dataset(keras.utils.Sequence):
         shuffled: bool = False,
     ):
 
-        if not x_data:
+        if x_data is None:
             x_data = np.empty(0)
 
-        if not y_data:
+        if y_data is None:
             y_data = np.empty(0)
 
-        if not x_type:
+        if x_type is None:
             x_type = NumericArray()
 
-        if not y_type:
+        if y_type is None:
             y_type = NumericArray()
 
         # Data arrays

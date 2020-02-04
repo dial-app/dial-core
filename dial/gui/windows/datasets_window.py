@@ -53,6 +53,8 @@ class DatasetsWindow(QWidget):
             self.__update_window_from_project
         )
 
+        self.__update_window_from_project(self.__project_manager.active)
+
     def __setup_ui(self):
         splitter = QSplitter()
 
