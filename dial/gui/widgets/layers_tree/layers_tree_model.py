@@ -17,10 +17,16 @@ from dial.misc import AbstractTreeModel, AbstractTreeNode, Dial
 
 
 class LayerNode(AbstractTreeNode):
-    def __init__(self, name, layer, parent: AbstractTreeNode = None):
+    def __init__(
+        self, display_name, layer, layer_name=None, parent: AbstractTreeNode = None
+    ):
         super().__init__(
-            [name, layer], parent,
+            [display_name, layer], parent,
         )
+
+        # Set an specific name for the layer
+        if layer_name:
+            layer._name = layer_name
 
     @property
     def name(self) -> Optional[str]:
@@ -51,14 +57,25 @@ class LayersTreeModel(AbstractTreeModel):
 
     def setup_model_data(self):
         basic_layers = TitleNode("Basic Layers")
-        basic_layers.append(LayerNode("Dense", keras.layers.Dense(10)))
+        basic_layers.append(
+            LayerNode("Dense", keras.layers.Dense(10), layer_name="dense")
+        )
 
         activation_layers = TitleNode("Activation Layers")
-        activation_layers.append(LayerNode("Linear", keras.layers.Activation("linear")))
-        activation_layers.append(LayerNode("ELU", keras.layers.Activation("elu")))
-        activation_layers.append(LayerNode("ReLU", keras.layers.Activation("relu")))
+
         activation_layers.append(
-            LayerNode("Sigmoid", keras.layers.Activation("sigmoid"))
+            LayerNode("Linear", keras.layers.Activation("linear"), layer_name="linear")
+        )
+        activation_layers.append(
+            LayerNode("ELU", keras.layers.Activation("elu"), layer_name="elu")
+        )
+        activation_layers.append(
+            LayerNode("ReLU", keras.layers.Activation("relu"), layer_name="relu")
+        )
+        activation_layers.append(
+            LayerNode(
+                "Sigmoid", keras.layers.Activation("sigmoid"), layer_name="sigmoid"
+            )
         )
 
         self.root_node.append(basic_layers)
