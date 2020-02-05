@@ -86,7 +86,7 @@ class LayersTreeModel(AbstractTreeModel):
             return Qt.ItemIsEnabled
 
         if isinstance(index.internalPointer(), LayerNode):
-            return super().flags(index) | Qt.ItemIsDragEnabled | Qt.ItemIsDropEnabled
+            return super().flags(index) | Qt.ItemIsDragEnabled
 
         return super().flags(index)
 

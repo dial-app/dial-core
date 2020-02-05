@@ -5,7 +5,7 @@
 
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QContextMenuEvent
-from PySide2.QtWidgets import QHeaderView, QMenu, QTableView
+from PySide2.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QTableView
 
 
 class ModelTableView(QTableView):
@@ -21,6 +21,7 @@ class ModelTableView(QTableView):
 
         # Columns can be rearranged in any order
         self.horizontalHeader().setSectionsMovable(True)
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
         # Is a context menu going to be called on right click?
         self.horizontalHeader().setContextMenuPolicy(Qt.CustomContextMenu)
@@ -32,7 +33,15 @@ class ModelTableView(QTableView):
         self.setAcceptDrops(True)
         self.setDropIndicatorShown(True)
 
+        # Model can be dragged
+        self.setDragEnabled(True)
+
         self.__header_context_menu = None
+
+    def dragEnterEvent(self, event):
+        print("drag enter event")
+        event.setDropAction(Qt.MoveAction)
+        event.accept()
 
     def setModel(self, model):
         # Assign model to view by calling the parent method
@@ -65,10 +74,15 @@ class ModelTableView(QTableView):
     def contextMenuEvent(self, event: QContextMenuEvent):
         menu = QMenu(self)
 
-        menu.popup(event.pos())
+        menu.popup(event.globalPos())
+        menu.addAction("Remove layer", lambda: self.deleteSelectedRows())
 
-        row_index = self.rowAt(event.y())
-        print(f"Selected row: {row_index}")
+    def deleteSelectedRows(self):
+        # When a row is deleted, the new row index is the last row index - 1
+        # That's why we have an i variable on this loop, which represents the amount of
+        # rows that have been deleted
+        for i, row_index in enumerate(self.selectedIndexes()):
+            self.model().removeRow(row_index.row() - i, row_index)
 
     def __show_header_context_menu(self, point):
         """
