@@ -36,6 +36,8 @@ class ModelTableModel(QAbstractTableModel):
 
         self.__layers = []
 
+        self.__layer_name_occurencies = {}
+
         self.__role_map = {
             Qt.DisplayRole: self.__display_role,
             Qt.CheckStateRole: self.__checkstate_role,
@@ -177,9 +179,21 @@ class ModelTableModel(QAbstractTableModel):
 
         LOGGER.debug("Insert rows BEGIN: row %s, %s items", row, count)
         LOGGER.debug("Previous model size: %s", self.rowCount())
+
         self.beginInsertRows(parent, row, row + count - 1)
 
-        self.__layers[row:row] = parent.internalPointer()
+        new_layers = parent.internalPointer()
+
+        # A suffix is added to each layer to make the names unique.
+        # So, the first time a layer with name "A" is added, it will be called "A_1",
+        # the second time "A_2", the third time "A_3"...
+        for layer in new_layers:
+            self.__layer_name_occurencies.setdefault(layer.name, 0)
+            self.__layer_name_occurencies[layer.name] += 1
+
+            layer._name += f"_{self.__layer_name_occurencies[layer.name]}"
+
+        self.__layers[row:row] = new_layers
 
         self.endInsertRows()
         LOGGER.debug("Insert rows END")
