@@ -1,4 +1,7 @@
-<!--- Provide a general summary of the issue in the Title above -->
+---
+name: Bug Report 🐞
+about: Something isn't working as expected? Here is the right place to report.
+---
 
 ## Description
 <!--- Provide a more detailed introduction to the issue itself, and why you consider it to be a bug -->
