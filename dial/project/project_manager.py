@@ -61,8 +61,11 @@ class ProjectManager:
     def compile_model(self):
         self.active.compile_model()
 
-    def train_model(self):
-        self.active.train_model()
+    def start_training_model(self):
+        self.active.start_training_model_async()
+
+    def stop_training_model(self):
+        self.active.stop_training_model()
 
     def new_project(self, new_project=None):
         self.__add_new_project(new_project)

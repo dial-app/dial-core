@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import threading
 from enum import Enum
 
 from tensorflow.keras.layers import Input
@@ -9,6 +10,9 @@ from dial.datasets import Dataset, DatasetLoader
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
+
+
+training_thread = None
 
 
 class Project:
@@ -30,6 +34,7 @@ class Project:
         self.parameters = default_parameters_info
 
         self.training_status = self.TrainingStatus.Stopped
+        # self.training_thread = threading.Thread(target=self.__train_model_async)
 
     def compile_model(self):
         self.model.model = Sequential()
@@ -45,7 +50,7 @@ class Project:
         # Add the rest of the layers
         [self.model.model.add(layer) for layer in self.model.layers]
 
-        LOGGER.info(self.model.model.summary())
+        self.model.model.summary(print_fn=LOGGER.info)
 
         self.model.model.compile(
             optimizer=self.parameters.optimizer,
@@ -56,12 +61,28 @@ class Project:
         LOGGER.info("Model compiled!")
         self.model.compiled = True
 
-    def train_model_async(self):
+    def start_training_model_async(self):
+        LOGGER.info("Start training the model...")
+
+        global training_thread
+
+        if self.training_status == self.TrainingStatus.Stopped:
+            training_thread = threading.Thread(target=self.__train_model_async)
+            training_thread.start()
+
+            self.TrainingStatus = self.TrainingStatus.Running
+
+    def stop_training_model(self):
+        LOGGER.info("Training stopped...l")
+
+        self.TrainingStatus = self.TrainingStatus.Stopped
+
+    def __train_model_async(self):
         self.model.model.fit(
             self.dataset.train, epochs=self.parameters.epochs,
         )
 
-        self.TrainingStatus = self.TrainingStatus.Running
+        self.TrainingStatus = self.TrainingStatus.Stopped
 
 
 class DatasetInfo:
