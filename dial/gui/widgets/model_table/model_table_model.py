@@ -137,6 +137,9 @@ class ModelTableModel(QAbstractTableModel):
         return True
 
     def supportedDragActions(self):
+        return Qt.MoveAction
+
+    def supportedDropActions(self):
         return Qt.CopyAction | Qt.MoveAction
 
     def mimeTypes(self) -> List[str]:
@@ -167,11 +170,13 @@ class ModelTableModel(QAbstractTableModel):
         if not data.hasFormat(Dial.KerasLayerDictMIME.value):
             return False
 
+        print(action)
+
         # Get row number where the data will be inserted
         if row != -1:
             begin_row = row
         elif parent.isValid():
-            begin_row = parent.row
+            begin_row = parent.row()
         else:
             begin_row = self.rowCount()
 
@@ -195,8 +200,6 @@ class ModelTableModel(QAbstractTableModel):
         return True
 
     def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
-        self.layoutAboutToBeChanged.emit()
-
         LOGGER.debug("Insert rows BEGIN: row %s, %s items", row, count)
         LOGGER.debug("Previous model size: %s", self.rowCount())
 
@@ -220,21 +223,15 @@ class ModelTableModel(QAbstractTableModel):
         LOGGER.debug("Insert rows END")
         LOGGER.debug("New model size: %s", self.rowCount())
 
-        self.layoutChanged.emit()
-
         return True
 
     def removeRows(self, row: int, count: int, index=QModelIndex()) -> bool:
-        self.layoutAboutToBeChanged.emit()
-
         if not index.isValid():
             return False
 
         LOGGER.debug("Remove rows BEGIN: row %s, %s items", row, count)
         LOGGER.debug("Previous model size: %s", self.rowCount())
         self.beginRemoveRows(QModelIndex(), row, row + count - 1)
-
-        # TODO: Properly handle multiple rows?
 
         # Remove the layer name from the unique names counter
         # layer_name = index.internalPointer().name.split("_")[0]
@@ -247,7 +244,34 @@ class ModelTableModel(QAbstractTableModel):
         LOGGER.debug("Remove rows END")
         LOGGER.debug("New model size: %s", self.rowCount())
 
-        self.layoutChanged.emit()
+        return True
+
+    def moveRows(
+        self,
+        source_parent: QModelIndex,
+        source_row: int,
+        count: int,
+        destination_parent: QModelIndex,
+        destination_child: int,
+    ):
+        LOGGER.debug(
+            "Move rows BEGIN: row %s, %s items to %s",
+            source_row,
+            count,
+            destination_child,
+        )
+        self.beginMoveRows(
+            source_parent,
+            source_row,
+            source_row + count - 1,
+            destination_parent,
+            destination_child,
+        )
+
+        print(source_row)
+        print(destination_child)
+
+        self.endMoveRows()
 
         return True
 
