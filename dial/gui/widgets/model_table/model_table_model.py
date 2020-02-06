@@ -65,19 +65,24 @@ class ModelTableModel(QAbstractTableModel):
         if not index.isValid():
             return Qt.ItemIsEnabled | Qt.ItemIsDropEnabled
 
+        general_flags = super().flags(index) | Qt.ItemIsDragEnabled
+
         if index.column() == self.Column.Trainable:
-            return super().flags(index) | Qt.ItemIsUserCheckable
+            return general_flags | Qt.ItemIsUserCheckable
 
         if index.column() == self.Column.Type:
-            return super().flags(index)
+            return general_flags
 
         if index.column() == self.Column.Activation:
-            return super().flags(index)
+            return general_flags
 
-        return super().flags(index) | Qt.ItemIsEditable
+        return general_flags | Qt.ItemIsEditable
 
     def index(self, row, column, parent):
-        return self.createIndex(row, column, self.__layers[row])
+        try:
+            return self.createIndex(row, column, self.__layers[row])
+        except IndexError:
+            return QModelIndex()
 
     def headerData(self, section, orientation, role):
         """
@@ -132,10 +137,26 @@ class ModelTableModel(QAbstractTableModel):
         return True
 
     def supportedDragActions(self):
-        return Qt.CopyAction
+        return Qt.CopyAction | Qt.MoveAction
 
     def mimeTypes(self) -> List[str]:
         return [Dial.KerasLayerDictMIME.value]
+
+    def mimeData(self, indexes):
+        mime_data = QMimeData()
+        encoded_data = QByteArray()
+
+        stream = QDataStream(encoded_data, QIODevice.WriteOnly)
+
+        for index in indexes:
+            if index.isValid():
+                layer = index.internalPointer()
+
+                stream.writeQVariant(layer)
+
+        mime_data.setData(Dial.KerasLayerDictMIME.value, encoded_data)
+
+        return mime_data
 
     def dropMimeData(
         self, data: QMimeData, action, row: int, column: int, parent: QModelIndex
@@ -174,13 +195,12 @@ class ModelTableModel(QAbstractTableModel):
         return True
 
     def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
-        # TODO: Insert several rows?
         self.layoutAboutToBeChanged.emit()
 
         LOGGER.debug("Insert rows BEGIN: row %s, %s items", row, count)
         LOGGER.debug("Previous model size: %s", self.rowCount())
 
-        self.beginInsertRows(parent, row, row + count - 1)
+        self.beginInsertRows(QModelIndex(), row, row + count - 1)
 
         new_layers = parent.internalPointer()
 
@@ -188,15 +208,43 @@ class ModelTableModel(QAbstractTableModel):
         # So, the first time a layer with name "A" is added, it will be called "A_1",
         # the second time "A_2", the third time "A_3"...
         for layer in new_layers:
-            self.__layer_name_occurencies.setdefault(layer.name, 0)
-            self.__layer_name_occurencies[layer.name] += 1
+            layer_name = layer.name.split("_")[0]
+            self.__layer_name_occurencies.setdefault(layer_name, 0)
+            self.__layer_name_occurencies[layer_name] += 1
 
-            layer._name += f"_{self.__layer_name_occurencies[layer.name]}"
+            layer._name = f"{layer_name}_{self.__layer_name_occurencies[layer_name]}"
 
         self.__layers[row:row] = new_layers
 
         self.endInsertRows()
         LOGGER.debug("Insert rows END")
+        LOGGER.debug("New model size: %s", self.rowCount())
+
+        self.layoutChanged.emit()
+
+        return True
+
+    def removeRows(self, row: int, count: int, index=QModelIndex()) -> bool:
+        self.layoutAboutToBeChanged.emit()
+
+        if not index.isValid():
+            return False
+
+        LOGGER.debug("Remove rows BEGIN: row %s, %s items", row, count)
+        LOGGER.debug("Previous model size: %s", self.rowCount())
+        self.beginRemoveRows(QModelIndex(), row, row + count - 1)
+
+        # TODO: Properly handle multiple rows?
+
+        # Remove the layer name from the unique names counter
+        # layer_name = index.internalPointer().name.split("_")[0]
+        # self.__layer_name_occurencies[layer_name] -= 1
+
+        # Remove rows from the layers array
+        del self.__layers[row : row + count]
+
+        self.endRemoveRows()
+        LOGGER.debug("Remove rows END")
         LOGGER.debug("New model size: %s", self.rowCount())
 
         self.layoutChanged.emit()
