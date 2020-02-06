@@ -15,7 +15,7 @@ class ImageArray(DataType):
     """
 
     def process(self, data: np.ndarray) -> np.ndarray:
-        return data
+        return data.flatten()
 
-    def display(self, data: np.ndarray) -> str:
-        return np.array2string(data, precision=4, suppress_small=True, separator=", ")
+    def display(self, data: np.ndarray):
+        return data

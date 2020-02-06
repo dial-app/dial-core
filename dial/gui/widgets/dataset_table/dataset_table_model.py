@@ -109,7 +109,7 @@ class DatasetTableModel(QAbstractTableModel):
     def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
         self.beginInsertRows(parent, row, row + count - 1)
 
-        x_set, y_set = self.__dataset.items(start=row, end=row + count)
+        x_set, y_set = self.__dataset.items(start=row, end=row + count, op="display")
 
         self.__x[row:row] = x_set
         self.__y[row:row] = y_set
@@ -145,10 +145,10 @@ class DatasetTableModel(QAbstractTableModel):
         Return the text representation of the cell value.
         """
         if column == 0:
-            return self.__x_type.display(self.__x[row])
+            return self.__x[row]
 
         if column == 1:
-            return self.__y_type.display(self.__y[row])
+            return self.__y[row]
 
         return None
 

@@ -1,9 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from numbers import Integral
-from typing import List, Union
+from typing import List
 
-import numpy as np
+from tensorflow import keras
 
 from .datatype import DataType
 
@@ -21,17 +20,8 @@ class Categorical(DataType):
 
         self.categories = categories
 
-    def process(self, data: Union[list, tuple, np.ndarray, Integral]) -> Integral:
-        # Sometimes, categorical data can be passed as an array of 1 element
-        if isinstance(data, (list, tuple, np.ndarray)):
-            return data[0]
-
-        if isinstance(data, Integral):
-            return data
-
-        raise ValueError(
-            f"Expected an Integral or List[int] object, not {type(data).__name__}"
-        )
+    def process(self, data) -> List[int]:
+        return keras.utils.to_categorical(data, len(self.categories))
 
     def display(self, data: int) -> str:
         if self.categories is not None:

@@ -38,11 +38,6 @@ class ModelTableView(QTableView):
 
         self.__header_context_menu = None
 
-    def dragEnterEvent(self, event):
-        print("drag enter event")
-        event.setDropAction(Qt.MoveAction)
-        event.accept()
-
     def setModel(self, model):
         # Assign model to view by calling the parent method
         super().setModel(model)
