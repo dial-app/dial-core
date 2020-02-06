@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from enum import Enum
+
 from tensorflow.keras.layers import Input
 from tensorflow.keras.models import Sequential
 
@@ -14,6 +16,10 @@ class Project:
     Dial project file.
     """
 
+    class TrainingStatus(Enum):
+        Running = 1
+        Stopped = 2
+
     def __init__(
         self, default_dataset_info, default_model_info, default_parameters_info
     ):
@@ -23,20 +29,20 @@ class Project:
         self.model = default_model_info
         self.parameters = default_parameters_info
 
+        self.training_status = self.TrainingStatus.Stopped
+
     def compile_model(self):
         self.model.model = Sequential()
 
-        # Input shape = (batch_size, ..., input_shape)
-        input_shape = (
-            self.dataset.train.batch_size,
-            self.dataset.train.input_shape[1],
-            self.dataset.train.input_shape[2],
-        )
+        input_shape = self.dataset.train.input_shape
 
         LOGGER.info("Input shape %s", input_shape)
+        LOGGER.info("Batch size: %s", self.dataset.train.batch_size)
 
+        # Add an Input layer first
         self.model.model.add(Input(input_shape))
 
+        # Add the rest of the layers
         [self.model.model.add(layer) for layer in self.model.layers]
 
         LOGGER.info(self.model.model.summary())
@@ -50,10 +56,12 @@ class Project:
         LOGGER.info("Model compiled!")
         self.model.compiled = True
 
-    def train_model(self):
-        self.model.model.fit_generator(
-            self.dataset.train, epochs=self.parameters.epochs
+    def train_model_async(self):
+        self.model.model.fit(
+            self.dataset.train, epochs=self.parameters.epochs,
         )
+
+        self.TrainingStatus = self.TrainingStatus.Running
 
 
 class DatasetInfo:

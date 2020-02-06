@@ -51,6 +51,10 @@ class ProjectManager:
         self.active.model.load_model(model_loader)
 
     def change_parameter(self, key, value):
+        if key == "batch_size":  # TODO: CHANGE
+            self.active.dataset.train.batch_size = value
+            self.active.dataset.test.batch_size = value
+
         self.active.parameters.change_parameter(key, value)
         LOGGER.info("New %s value: %s", key, value)
 

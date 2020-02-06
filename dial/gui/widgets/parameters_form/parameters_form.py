@@ -12,6 +12,7 @@ class ParametersForm(QWidget):
     epoch_value_changed = Signal(int)
     loss_function_changed = Signal(str)
     optimizer_changed = Signal(str)
+    batch_size_changed = Signal(int)
     compile_model = Signal()
 
     def __init__(self, parent=None):
@@ -25,11 +26,15 @@ class ParametersForm(QWidget):
 
         self.__loss_function_combobox = QComboBox()
         self.__loss_function_combobox.addItems(
-            ["mean_squared_error", "binary_crossentrompy"]
+            ["mean_squared_error", "binary_crossentropy", "categorical_crossentropy"]
         )
 
         self.__optimizer_combobox = QComboBox()
-        self.__optimizer_combobox.addItems(["adam", "sgd"])
+        self.__optimizer_combobox.addItems(["adam", "sgd", "rmsprop"])
+
+        self.__batch_size_spinbox = QSpinBox()
+        self.__batch_size_spinbox.setRange(1, 99999999)
+        self.__batch_size_spinbox.setValue(32)
 
         self.__compile_button = QPushButton("Compile model")
 
@@ -49,6 +54,10 @@ class ParametersForm(QWidget):
             lambda value: self.optimizer_changed.emit(value)
         )
 
+        self.__batch_size_spinbox.valueChanged.connect(
+            lambda value: self.batch_size_changed.emit(value)
+        )
+
         self.__compile_button.clicked.connect(lambda: self.compile_model.emit())
 
     def __setup_ui(self):
@@ -59,6 +68,7 @@ class ParametersForm(QWidget):
         self.__main_layout.addRow("Epochs", self.__epoch_spinbox)
         self.__main_layout.addRow("Loss functions", self.__loss_function_combobox)
         self.__main_layout.addRow("Optimizers", self.__optimizer_combobox)
+        self.__main_layout.addRow("Batch Size", self.__batch_size_spinbox)
         self.__main_layout.addWidget(self.__compile_button)
 
         self.setLayout(self.__main_layout)

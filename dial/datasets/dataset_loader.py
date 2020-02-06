@@ -68,7 +68,7 @@ class MnistLoader(DatasetLoader):
             "MNIST",
             "Handwritten digit numbers",
             datatype.ImageArray(),
-            datatype.Numeric(),
+            datatype.Categorical(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]),
         )
 
     def _load_data(self):
