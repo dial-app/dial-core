@@ -82,29 +82,46 @@ class LayersTreeModel(AbstractTreeModel):
         self.root_node.append(activation_layers)
 
     def flags(self, index: QModelIndex):
+        """
+        Flag items depending on its type.
+
+        For example, only items of type LayerNode can be dragged.
+        """
         if not index.isValid():
             return Qt.ItemIsEnabled
 
-        if isinstance(index.internalPointer(), LayerNode):
-            return super().flags(index) | Qt.ItemIsDragEnabled
+        general_flags = super().flags(index)
 
-        return super().flags(index)
+        if isinstance(index.internalPointer(), LayerNode):
+            return general_flags | Qt.ItemIsDragEnabled
+
+        return general_flags
 
     def mimeTypes(self) -> List[str]:
-        return [Dial.KerasLayerDictMIME.value]
+        """
+        MIME Types supported by this model. In this case, the only supported MIME type
+        is the one representing a list of Keras Layer.
+        """
+        return [Dial.KerasLayerListMIME.value]
 
-    def mimeData(self, indexes):
+    def mimeData(self, indexes: List[QModelIndex]) -> QMimeData:
+        """
+        Returns a serialized object representing a List of Keras Layer. Used for
+        drag/drop operations, for example.
+        """
         mime_data = QMimeData()
-        encoded_data = QByteArray()
 
+        # Serializer
+        encoded_data = QByteArray()
         stream = QDataStream(encoded_data, QIODevice.WriteOnly)
 
+        # Write all the layers corresponding to the indexes
         for index in indexes:
             if index.isValid():
-                layer_node = index.internalPointer()
+                layer = index.internalPointer().layer
+                stream.writeQVariant(layer)
 
-                stream.writeQVariant(layer_node.layer)
-
-        mime_data.setData(Dial.KerasLayerDictMIME.value, encoded_data)
+        # Store the serialized data on the MIME data
+        mime_data.setData(Dial.KerasLayerListMIME.value, encoded_data)
 
         return mime_data

@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import IntEnum
-from typing import List, Optional
+from typing import Any, List, Optional
 
 from PySide2.QtCore import (
     QAbstractTableModel,
@@ -21,7 +21,11 @@ LOGGER = log.get_logger(__name__)
 
 class ModelTableModel(QAbstractTableModel):
     """
-    Model representing the layers/structure of a model (neural network)
+    Model used for composing the layers that form a Neural Network Model.
+
+    Layer attributes (units, activations...) can be modified from this model. It also
+    allows adding layers through a drop event (layers must have "Dial.KerasLayerMIME"
+    MIME type)
     """
 
     class Column(IntEnum):
@@ -36,6 +40,7 @@ class ModelTableModel(QAbstractTableModel):
 
         self.__layers = []
 
+        # Count the nº of occurencies of a layer name (To avoid name duplications)
         self.__layer_name_occurencies = {}
 
         self.__role_map = {
@@ -44,6 +49,9 @@ class ModelTableModel(QAbstractTableModel):
         }
 
     def load_layers(self, layers):
+        """
+        Set a new `layers` array.
+        """
         self.__layers = layers
 
         # Model has been reset, redraw view
@@ -62,33 +70,49 @@ class ModelTableModel(QAbstractTableModel):
         return len(self.Column)
 
     def flags(self, index: QModelIndex):
+        """
+        Flag items depending of its column.
+
+        By default, all layers will be dragable (To allow moving layers)
+
+        Some layers will have special flags (Like displaying a checkbox instead of text)
+
+        Also, some layers will be editable.
+        """
         if not index.isValid():
-            return Qt.ItemIsEnabled | Qt.ItemIsDropEnabled
+            return Qt.ItemIsDropEnabled
 
         general_flags = super().flags(index) | Qt.ItemIsDragEnabled
+
+        if index.column() == self.Column.Name:
+            return general_flags | Qt.ItemIsEditable
+
+        if index.column() == self.Column.Units:
+            return general_flags | Qt.ItemIsEditable
 
         if index.column() == self.Column.Trainable:
             return general_flags | Qt.ItemIsUserCheckable
 
-        if index.column() == self.Column.Type:
-            return general_flags
+        return general_flags
 
-        if index.column() == self.Column.Activation:
-            return general_flags
-
-        return general_flags | Qt.ItemIsEditable
-
-    def index(self, row, column, parent):
-        try:
-            return self.createIndex(row, column, self.__layers[row])
-        except IndexError:
+    def index(self, row: int, column: int, parent: QModelIndex) -> QModelIndex:
+        """
+        Get a `QModelIndex` representing a layer item in row X. The same layer is
+        returned for all valid columns.
+        """
+        if not self.hasIndex(row, column, parent):
             return QModelIndex()
 
-    def headerData(self, section, orientation, role):
-        """
-        Return the name of the headers
-        """
+        return self.createIndex(row, column, self.__layers[row])
 
+    def headerData(
+        self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole
+    ):
+        """
+        Return the name of the headers.
+        Horizontal header   -> Column names
+        Vertical header     -> Row nº
+        """
         if role != Qt.DisplayRole:
             return None
 
@@ -102,20 +126,23 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
-    def data(self, index: QModelIndex, role=Qt.DisplayRole):
+    def data(self, index: QModelIndex, role: int = Qt.DisplayRole):
         """
         Return the corresponding data depending on the specified role.
         """
-
         if role in self.__role_map:
             return self.__role_map[role](index)
 
+        # Center align all text
         if role == Qt.TextAlignmentRole:
             return Qt.AlignCenter
 
         return None
 
-    def setData(self, index: QModelIndex, value, role):
+    def setData(self, index: QModelIndex, value: Any, role: int = Qt.EditRole):
+        """
+        Sets `value` on the `index` depending on the specified role.
+        """
         if not index.isValid():
             return False
 
@@ -136,76 +163,107 @@ class ModelTableModel(QAbstractTableModel):
 
         return True
 
-    def supportedDragActions(self):
+    def supportedDragAcKerasLayerMIMEtions(self) -> Qt.DropActions:
+        """
+        Returns the supported drag actions for the layers. In this case, layers will
+        only allow `Qt.MoveAction` (Move a layer from one position to another).
+        """
         return Qt.MoveAction
 
-    def supportedDropActions(self):
+    def supportedDropActions(self) -> Qt.DropActions:
+        """
+        Returns the supported drop actions for the layers. In this case, layers will
+        allow `Qt.CopyAction` (add layers from another widget), and `Qt.MoveAction` (add
+        layers from the same widget).
+        """
         return Qt.CopyAction | Qt.MoveAction
 
     def mimeTypes(self) -> List[str]:
-        return [Dial.KerasLayerDictMIME.value]
+        """
+        MIME Types supported by this model. In this case, the only supported MIME type
+        is the one representing a list of Keras Layer.
+        """
+        return [Dial.KerasLayerListMIME.value]
 
-    def mimeData(self, indexes):
+    def mimeData(self, indexes: List[QModelIndex]) -> QMimeData:
+        """
+        Returns a serialized object representing a List of Keras Layer. Used for
+        drag/drop operations, for example.
+        """
         mime_data = QMimeData()
-        encoded_data = QByteArray()
 
+        # Serializer
+        encoded_data = QByteArray()
         stream = QDataStream(encoded_data, QIODevice.WriteOnly)
 
+        # Write all the layers corresponding to the indexes
         for index in indexes:
             if index.isValid():
-                layer = index.internalPointer()
-
+                layer = index.internalPointer().layer
                 stream.writeQVariant(layer)
 
-        mime_data.setData(Dial.KerasLayerDictMIME.value, encoded_data)
+        # Store the serialized data on the MIME data
+        mime_data.setData(Dial.KerasLayerListMIME.value, encoded_data)
 
         return mime_data
 
     def dropMimeData(
-        self, data: QMimeData, action, row: int, column: int, parent: QModelIndex
+        self,
+        mime_data: QMimeData,
+        action: Qt.DropAction,
+        row: int,
+        column: int,
+        parent: QModelIndex,
     ):
+        """
+        Decodes and inserts the MIME data (layers) from a drop operation onto the table.
+        """
         if action == Qt.IgnoreAction:
             return True
 
-        if not data.hasFormat(Dial.KerasLayerDictMIME.value):
+        if not mime_data.hasFormat(Dial.KerasLayerListMIME.value):
             return False
 
-        print(action)
-
-        # Get row number where the data will be inserted
+        # Get the row number where the layers will be inserted
         if row != -1:
             begin_row = row
         elif parent.isValid():
             begin_row = parent.row()
         else:
             begin_row = self.rowCount()
+        # TODO: Add documentation to this code ^^^^
 
         LOGGER.debug("Adding a new row at index %s...", begin_row)
 
-        # Decode data
-        encoded_data: QByteArray = data.data(Dial.KerasLayerDictMIME.value)
+        # Get the serilalized data from the MIME data and prepare for decoding
+        encoded_data: QByteArray = mime_data.data(Dial.KerasLayerListMIME.value)
         stream = QDataStream(encoded_data, QIODevice.ReadOnly)
 
-        items = []
-
+        # Unserialize binary data
+        layers = []
         while not stream.atEnd():
             layer = stream.readQVariant()
-            items.append(layer)
+            layers.append(layer)
 
-        LOGGER.debug("Values to insert: %s", len(items))
-        LOGGER.debug(items)
+        LOGGER.debug("Values to insert: %s", len(layers))
+        LOGGER.debug(layers)
 
-        self.insertRows(begin_row, len(items), self.createIndex(begin_row, 0, items))
+        # Insert the decoded layers on the model
+        self.insertRows(begin_row, len(layers), self.createIndex(begin_row, 0, layers))
 
         return True
 
     def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
+        """
+        Insert new rows onto the model. `parent.internalPointer()` must be a list of the
+        new layers to insert.
+        """
         LOGGER.debug("Insert rows BEGIN: row %s, %s items", row, count)
         LOGGER.debug("Previous model size: %s", self.rowCount())
 
         self.beginInsertRows(QModelIndex(), row, row + count - 1)
 
-        new_layers = parent.internalPointer()
+        new_layers: List = parent.internalPointer()
 
         # A suffix is added to each layer to make the names unique.
         # So, the first time a layer with name "A" is added, it will be called "A_1",
@@ -220,12 +278,16 @@ class ModelTableModel(QAbstractTableModel):
         self.__layers[row:row] = new_layers
 
         self.endInsertRows()
+
         LOGGER.debug("Insert rows END")
         LOGGER.debug("New model size: %s", self.rowCount())
 
         return True
 
     def removeRows(self, row: int, count: int, index=QModelIndex()) -> bool:
+        """
+        Remove rows from the model. Rows being deleted must be consecutive.
+        """
         if not index.isValid():
             return False
 
