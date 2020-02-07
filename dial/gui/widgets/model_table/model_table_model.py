@@ -48,7 +48,7 @@ class ModelTableModel(QAbstractTableModel):
             Qt.CheckStateRole: self.__checkstate_role,
         }
 
-    def load_layers(self, layers):
+    def load_layers(self, layers: List):
         """
         Set a new `layers` array.
         """
@@ -57,13 +57,13 @@ class ModelTableModel(QAbstractTableModel):
         # Model has been reset, redraw view
         self.modelReset.emit()
 
-    def rowCount(self, parent=QModelIndex()):
+    def rowCount(self, parent=QModelIndex()) -> int:
         """
         Return the number of rows.
         """
         return len(self.__layers)
 
-    def columnCount(self, parent=QModelIndex()):
+    def columnCount(self, parent=QModelIndex()) -> int:
         """
         Return the number of columns.
         """
@@ -126,9 +126,15 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
-    def data(self, index: QModelIndex, role: int = Qt.DisplayRole):
-        """
-        Return the corresponding data depending on the specified role.
+    def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Optional[Any]:
+        """ Returns data depending on the specified role.
+
+        Args:
+            index: Index representing the item on the table.
+            role: Data access role.
+
+        Returns:
+            The data of the `index` item for `role` or `None`.
         """
         if role in self.__role_map:
             return self.__role_map[role](index)

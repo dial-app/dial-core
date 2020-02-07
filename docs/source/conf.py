@@ -10,9 +10,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+
+sys.path.insert(0, os.path.abspath("../.."))
 
 
 # -- Project information -----------------------------------------------------
@@ -31,9 +32,12 @@ release = "v0.4a0"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
+    "sphinx_autodoc_typehints",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
+    "sphinx.ext.viewcode",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -46,7 +50,11 @@ exclude_patterns = []
 
 source_suffix = [".rst", ".md"]
 
+master_doc = "index"
+
 autodoc_member_order = "bysource"
+
+intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -55,6 +63,8 @@ autodoc_member_order = "bysource"
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
+
+html_theme_options = {"navigation_depth": 2}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

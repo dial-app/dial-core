@@ -11,6 +11,7 @@ pyside2 = ">=5.12.6"
 pillow = ">=6.2.1"
 qimage2ndarray = ">=1.8.0"
 dependency-injector = ">=3.14.12"
+sphinx-autodoc-typehints = "*"
 
 [dev-packages]
 black = "*"
@@ -26,6 +27,7 @@ twine = "*"
 pre-commit = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
+sphinx-autodoc-typehints = "*"
 
 [requires]
 python_version = "3.7"
