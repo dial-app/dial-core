@@ -28,6 +28,7 @@ pre-commit = "*"
 sphinx = "*"
 sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
+recommonmark = "*"
 
 [requires]
 python_version = "3.7"

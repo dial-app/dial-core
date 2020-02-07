@@ -13,6 +13,8 @@
 import os
 import sys
 
+import sphinx.ext.apidoc
+
 sys.path.insert(0, os.path.abspath("../.."))
 
 
@@ -32,12 +34,15 @@ release = "v0.4a0"
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
+    "sphinx.ext.autosummary",
+    "sphinx.ext.ifconfig",
     "sphinx.ext.napoleon",
     "sphinx.ext.autodoc",
     "sphinx_autodoc_typehints",
     "sphinx.ext.todo",
     "sphinx.ext.coverage",
     "sphinx.ext.viewcode",
+    "recommonmark",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -46,9 +51,7 @@ templates_path = ["_templates"]
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = []
-
-source_suffix = [".rst", ".md"]
+exclude_patterns = ["_build", "Thumbs.db", ".DS_Store", "sphinxtest.rst"]
 
 master_doc = "index"
 
@@ -56,6 +59,26 @@ autodoc_member_order = "bysource"
 
 intersphinx_mapping = {"python": ("https://docs.python.org/3", None)}
 
+todo_include_todos = True
+
+
+def setup(app):
+    app.add_javascript("copybutton.js")
+    sphinx.ext.apidoc.main(
+        [
+            "-f",  # Overwrite existing files
+            # "-T",  # Create table of contents
+            "-e",  # Give modules their own pages
+            # '-E', #user docstring headers
+            # '-M', #Modules first
+            "-o",  # Output the files to:
+            "./_autogen/",  # Output Directory
+            "./../dial",  # Main Module directory
+        ]
+    )
+
+
+add_module_names = False
 
 # -- Options for HTML output -------------------------------------------------
 
