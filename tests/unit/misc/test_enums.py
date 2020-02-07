@@ -10,7 +10,7 @@ from dial.misc import Dial
     "enum, value",
     [
         (Dial.TypeRole, Qt.UserRole),
-        (Dial.KerasLayerDictMIME, "application/keras.layer"),
+        (Dial.KerasLayerListMIME, "application/keras.layer.list"),
     ],
 )
 def test_enum_values(enum, value):
