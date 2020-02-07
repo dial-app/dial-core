@@ -7,4 +7,4 @@ from PySide2.QtCore import Qt
 
 class Dial(Enum):
     TypeRole = Qt.UserRole  # The type of the data (used with datatype.DataType)
-    KerasLayerDictMIME = "application/keras.layer"
+    KerasLayerListMIME = "application/keras.layer.list"

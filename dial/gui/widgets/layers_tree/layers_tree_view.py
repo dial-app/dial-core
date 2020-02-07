@@ -3,7 +3,7 @@
 """
 """
 
-from PySide2.QtWidgets import QTreeView
+from PySide2.QtWidgets import QAbstractItemView, QTreeView
 
 
 class LayersTreeView(QTreeView):
@@ -11,3 +11,5 @@ class LayersTreeView(QTreeView):
         super().__init__(parent)
 
         self.setDragEnabled(True)
+
+        self.setSelectionMode(QAbstractItemView.ExtendedSelection)
