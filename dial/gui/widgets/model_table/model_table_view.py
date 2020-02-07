@@ -4,7 +4,7 @@
 """
 
 from PySide2.QtCore import Qt
-from PySide2.QtGui import QContextMenuEvent
+from PySide2.QtGui import QContextMenuEvent, QDropEvent
 from PySide2.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QTableView
 
 
@@ -14,6 +14,9 @@ class ModelTableView(QTableView):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        # Components
+        self.__header_context_menu = None
 
         # How are headers going to stretch and resize?
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
@@ -35,11 +38,16 @@ class ModelTableView(QTableView):
 
         self.setDragDropMode(QAbstractItemView.DragDrop)
         self.setDragDropOverwriteMode(False)
+        self.setDefaultDropAction(Qt.MoveAction)
 
         # Model can be dragged
         self.setDragEnabled(True)
 
-        self.__header_context_menu = None
+    def dropEvent(self, event: QDropEvent):
+        super().dropEvent(event)
+
+        if event.dropAction() == Qt.MoveAction:
+            self.deleteSelectedRows()
 
     def setModel(self, model):
         # Assign model to view by calling the parent method

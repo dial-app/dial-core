@@ -163,7 +163,7 @@ class ModelTableModel(QAbstractTableModel):
 
         return True
 
-    def supportedDragAcKerasLayerMIMEtions(self) -> Qt.DropActions:
+    def supportedDragActions(self) -> Qt.DropActions:
         """
         Returns the supported drag actions for the layers. In this case, layers will
         only allow `Qt.MoveAction` (Move a layer from one position to another).
@@ -199,7 +199,7 @@ class ModelTableModel(QAbstractTableModel):
         # Write all the layers corresponding to the indexes
         for index in indexes:
             if index.isValid():
-                layer = index.internalPointer().layer
+                layer = index.internalPointer()
                 stream.writeQVariant(layer)
 
         # Store the serialized data on the MIME data
@@ -227,12 +227,10 @@ class ModelTableModel(QAbstractTableModel):
         # Get the row number where the layers will be inserted
         if row != -1:
             begin_row = row
-        elif parent.isValid():
-            begin_row = parent.row()
         else:
             begin_row = self.rowCount()
-        # TODO: Add documentation to this code ^^^^
 
+        LOGGER.debug("Drop action type: %s", action)
         LOGGER.debug("Adding a new row at index %s...", begin_row)
 
         # Get the serilalized data from the MIME data and prepare for decoding
@@ -247,6 +245,10 @@ class ModelTableModel(QAbstractTableModel):
 
         LOGGER.debug("Values to insert: %s", len(layers))
         LOGGER.debug(layers)
+
+        # When adding new layers we must ensure that the names are all uniques
+        if action == Qt.CopyAction:
+            self.__set_unique_layer_names(layers)
 
         # Insert the decoded layers on the model
         self.insertRows(begin_row, len(layers), self.createIndex(begin_row, 0, layers))
@@ -268,12 +270,6 @@ class ModelTableModel(QAbstractTableModel):
         # A suffix is added to each layer to make the names unique.
         # So, the first time a layer with name "A" is added, it will be called "A_1",
         # the second time "A_2", the third time "A_3"...
-        for layer in new_layers:
-            layer_name = layer.name.split("_")[0]
-            self.__layer_name_occurencies.setdefault(layer_name, 0)
-            self.__layer_name_occurencies[layer_name] += 1
-
-            layer._name = f"{layer_name}_{self.__layer_name_occurencies[layer_name]}"
 
         self.__layers[row:row] = new_layers
 
@@ -315,13 +311,14 @@ class ModelTableModel(QAbstractTableModel):
         count: int,
         destination_parent: QModelIndex,
         destination_child: int,
-    ):
+    ) -> bool:
         LOGGER.debug(
             "Move rows BEGIN: row %s, %s items to %s",
             source_row,
             count,
             destination_child,
         )
+
         self.beginMoveRows(
             source_parent,
             source_row,
@@ -339,7 +336,7 @@ class ModelTableModel(QAbstractTableModel):
 
     def __display_role(self, index: QModelIndex) -> Optional[str]:
         """
-        Return the text representation of the cell value.
+        Returns the text representation of the index value.
         """
         if not index.isValid():
             return None
@@ -362,15 +359,12 @@ class ModelTableModel(QAbstractTableModel):
         except AttributeError:
             pass
 
-        # if index.column() == self.Column.Trainable:
-        #     return ""
-
-        # if index.column() == self.Column.Param:
-        #     return str(self.__layers[index.row()].count_params())
-
         return None
 
-    def __checkstate_role(self, index: QModelIndex):
+    def __checkstate_role(self, index: QModelIndex) -> Optional[Qt.CheckState]:
+        """
+        Returns a checkbox representatino of the index value.
+        """
         if not index.isValid():
             return None
 
@@ -378,3 +372,11 @@ class ModelTableModel(QAbstractTableModel):
             return Qt.Checked if index.internalPointer().trainable else Qt.Unchecked
 
         return None
+
+    def __set_unique_layer_names(self, layers):
+        for layer in layers:
+            layer_name = layer.name.split("_")[0]
+            self.__layer_name_occurencies.setdefault(layer_name, 0)
+            self.__layer_name_occurencies[layer_name] += 1
+
+            layer._name = f"{layer_name}_{self.__layer_name_occurencies[layer_name]}"
