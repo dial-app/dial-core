@@ -77,6 +77,11 @@ class LayersTreeModel(AbstractTreeModel):
                 "Sigmoid", keras.layers.Activation("sigmoid"), layer_name="sigmoid"
             )
         )
+        activation_layers.append(
+            LayerNode(
+                "Softmax", keras.layers.Activation("softmax"), layer_name="softmx"
+            )
+        )
 
         self.root_node.append(basic_layers)
         self.root_node.append(activation_layers)

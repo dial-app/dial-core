@@ -1,5 +1,28 @@
 # Changelog
 
+## [v0.4a0](https://github.com/davafons/dial/tree/v0.4a0) (2020-02-06)
+
+[Full Changelog](https://github.com/davafons/dial/compare/v0.3a0...v0.4a0)
+
+**Fixed bugs:**
+
+- Layers don't have an unique name in the model [\#4](https://github.com/davafons/dial/issues/4)
+
+**Closed issues:**
+
+- Allow layers on the model table to be removed [\#8](https://github.com/davafons/dial/issues/8)
+- Activation layers naming is poor [\#6](https://github.com/davafons/dial/issues/6)
+- question [\#1](https://github.com/davafons/dial/issues/1)
+
+**Merged pull requests:**
+
+- Add "Train" window tab [\#12](https://github.com/davafons/dial/pull/12) ([davafons](https://github.com/davafons))
+- :sparkles: Allow to drag/drop \(copy\) columns and remove columns [\#9](https://github.com/davafons/dial/pull/9) ([davafons](https://github.com/davafons))
+- :lipstick: Now each activation layer has a proper layer name [\#7](https://github.com/davafons/dial/pull/7) ([davafons](https://github.com/davafons))
+- :bug: Now each layer of the model is created with a unique name [\#5](https://github.com/davafons/dial/pull/5) ([davafons](https://github.com/davafons))
+- Add button for compiling a model [\#3](https://github.com/davafons/dial/pull/3) ([davafons](https://github.com/davafons))
+- Creating the "Compile Window" widget [\#2](https://github.com/davafons/dial/pull/2) ([davafons](https://github.com/davafons))
+
 ## [v0.3a0](https://github.com/davafons/dial/tree/v0.3a0) (2020-02-03)
 
 [Full Changelog](https://github.com/davafons/dial/compare/v0.2a0...v0.3a0)

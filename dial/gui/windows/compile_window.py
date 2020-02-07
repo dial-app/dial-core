@@ -40,6 +40,10 @@ class CompileWindow(QWidget):
             lambda value: self.__project_manager.change_parameter("optimizer", value)
         )
 
+        self.__parameters_form.batch_size_changed.connect(
+            lambda value: self.__project_manager.change_parameter("batch_size", value)
+        )
+
         self.__parameters_form.compile_model.connect(
             lambda: self.__project_manager.compile_model()
         )

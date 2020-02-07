@@ -67,11 +67,11 @@ class Dataset(keras.utils.Sequence):
 
     @property
     def input_shape(self):
-        return self.__x.shape
+        return self.x_type.process(self.__x[0]).shape
 
     @property
     def output_shape(self):
-        return self.__y.shape
+        return self.y_type.process(self.__y[0]).shape
 
     @property
     def shuffled(self) -> bool:
@@ -93,20 +93,20 @@ class Dataset(keras.utils.Sequence):
         self.__shuffled = True
         np.random.shuffle(self.__indexes)
 
-    def head(self, n_items: int = 10) -> Tuple[List, List]:
+    def head(self, n_items: int = 10, op: str = "process") -> Tuple[List, List]:
         """
         Returns the first `n` items on the dataset.
         """
-        return self.items(0, n_items + 1)
+        return self.items(0, n_items + 1, op)
 
-    def items(self, start: int, end: int,) -> Tuple[List, List]:
+    def items(self, start: int, end: int, op: str = "process") -> Tuple[List, List]:
         """
         Return the `n` elements between start and end as a tuple of (x, y) items
         Range is EXCLUSIVE [start, end)
         """
         indexes = self.__indexes[start:end]
 
-        x_set, y_set = self.__preprocess_data(self.__x[indexes], self.__y[indexes])
+        x_set, y_set = self.__preprocess_data(self.__x[indexes], self.__y[indexes], op)
         return x_set, y_set
 
     def __len__(self) -> int:
@@ -130,13 +130,19 @@ class Dataset(keras.utils.Sequence):
 
         return np.array(batch_x), np.array(batch_y)
 
-    def __preprocess_data(self, x_data: List, y_data: List) -> Tuple[List, List]:
+    def __preprocess_data(
+        self, x_data: List, y_data: List, op: str = "process"
+    ) -> Tuple[List, List]:
         """
         Preprocess the data. For example, if the image is a path to a file, load it and
         return the corresponding array.
         """
 
-        x_data = [self.x_type.process(element) for element in x_data]
-        y_data = [self.y_type.process(element) for element in y_data]
+        if op == "display":
+            x_data = [self.x_type.display(element) for element in x_data]
+            y_data = [self.y_type.display(element) for element in y_data]
+        else:
+            x_data = [self.x_type.process(element) / 255 for element in x_data]
+            y_data = [self.y_type.process(element) for element in y_data]
 
         return (x_data, y_data)
