@@ -7,7 +7,7 @@ from PySide2.QtGui import QColor, QPen
 from PySide2.QtWidgets import QGraphicsScene
 
 
-class EditorScene(QGraphicsScene):
+class NodeEditorScene(QGraphicsScene):
     def __init__(self, parent=None):
         super().__init__(parent)
 
