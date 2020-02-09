@@ -1,10 +1,17 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 """The main window for the program."""
-from PySide2.QtCore import QSize
-from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
+from PySide2.QtCore import QRectF, QSize
+from PySide2.QtWidgets import (
+    QApplication,
+    QGraphicsProxyWidget,
+    QMainWindow,
+    QPushButton,
+    QTabWidget,
+)
 
 from dial import __version__
+from dial.node_editor import Edge, EditorScene, EditorView, Node
 from dial.project import DialProjectManager
 from dial.utils import log
 
@@ -96,6 +103,12 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.__tabs_widget)
 
         # Configure Tabs widget
+        editor_view = EditorView(self)
+        editor_scene = EditorScene()
+
+        editor_view.setScene(editor_scene)
+
+        self.__tabs_widget.addTab(editor_view, "Editor")
         self.__tabs_widget.addTab(self.__datasets_window, "Datasets")
         self.__tabs_widget.addTab(self.__models_window, "Models")
         self.__tabs_widget.addTab(self.__compile_window, "Compile")

@@ -62,7 +62,7 @@ class TrainWindow(QWidget):
         stream = EmittingStream()
         stream.text_written.connect(self.write_training_output)
 
-        sys.stdout = stream
+        # sys.stdout = stream
 
     @Slot(str)
     def write_training_output(self, text):
