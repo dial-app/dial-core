@@ -110,6 +110,7 @@ tags
 *~
 *.temp
 *.lock
+.idea
 
 # Custom
 *.dial

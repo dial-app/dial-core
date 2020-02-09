@@ -21,6 +21,7 @@ def arg_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "-d", "--debug", help="Show debug messages", action="store_true"
     )
+
     parser.add_argument(
         "-l",
         "--loglevel",
