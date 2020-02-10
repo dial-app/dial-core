@@ -4,6 +4,7 @@ import math
 
 from PySide2.QtCore import QLine
 from PySide2.QtGui import QColor, QPen
+from PySide2.QtWidgets import QGraphicsScene
 
 
 class NodeEditorScene(QGraphicsScene):

@@ -10,6 +10,13 @@ class NodeEditorView(QGraphicsView):
     def __init__(self, parent=None):
         super().__init__()
 
+        self.zoom_in_factor = 1.25
+        self.zoom = 10
+        self.zoomStep = 1
+        self.zoomRange = [0, 10]
+
+        self.__setup_ui()
+
     def __setup_ui(self):
         self.setRenderHints(
             QPainter.Antialiasing
@@ -21,10 +28,7 @@ class NodeEditorView(QGraphicsView):
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
-        self.zoomInFactor = 1.25
-        self.zoom = 10
-        self.zoomStep = 1
-        self.zoomRange = [0, 10]
+        self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.MiddleButton:
@@ -56,5 +60,22 @@ class NodeEditorView(QGraphicsView):
     def middleMouseButtonRelease(self, event):
         self.setDragMode(QGraphicsView.NoDrag)
 
-    def wheelFactor(self, event):
-        zoomOutFactor = 1 / self.zoomInFactor
+    def wheelEvent(self, event):
+        zoom_out_factor = 1 / self.zoom_in_factor
+
+        old_pos = self.mapToScene(event.pos())
+
+        if event.angleDelta().y() > 0:
+            zoom_factor = self.zoom_in_factor
+            self.zoom += self.zoomStep
+        else:
+            zoom_factor = zoom_out_factor
+            self.zoom -= self.zoomStep
+
+        # Set new scale
+        self.scale(zoom_factor, zoom_factor)
+
+        # Translate view
+        new_pos = self.mapToScene(event.pos())
+        delta = new_pos - old_pos
+        self.translate(delta.x(), delta.y())
