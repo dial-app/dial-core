@@ -4,7 +4,9 @@ from PySide2.QtCore import Qt
 from PySide2.QtGui import QBrush, QPen
 from PySide2.QtWidgets import QGraphicsItem, QVBoxLayout, QWidget
 
-from dial.node_editor import NodeEditorScene, NodeEditorView
+from dial.node_editor import NodeEditorView
+
+from .scene import Scene
 
 
 class NodeEditorWindow(QWidget):
@@ -14,9 +16,9 @@ class NodeEditorWindow(QWidget):
         self.__main_layout = QVBoxLayout()
 
         self.__node_editor_view = NodeEditorView()
-        self.__node_editor_scene = NodeEditorScene()
+        self.__node_editor_scene = Scene()
 
-        self.__node_editor_view.setScene(self.__node_editor_scene)
+        self.__node_editor_view.setScene(self.__node_editor_scene.grScene)
 
         self.__setup_ui()
 
@@ -35,7 +37,7 @@ class NodeEditorWindow(QWidget):
         outline_pen = QPen(Qt.black)
         outline_pen.setWidth(2)
 
-        rect = self.__node_editor_scene.addRect(
+        rect = self.__node_editor_scene.grScene.addRect(
             -100, -100, 100, 100, outline_pen, green_brush
         )
 
