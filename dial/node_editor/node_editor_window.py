@@ -6,6 +6,7 @@ from PySide2.QtWidgets import QGraphicsItem, QVBoxLayout, QWidget
 
 from dial.node_editor import NodeEditorView
 
+from .node import GraphicsNode
 from .scene import Scene
 
 
@@ -18,11 +19,14 @@ class NodeEditorWindow(QWidget):
         self.__node_editor_view = NodeEditorView()
         self.__node_editor_scene = Scene()
 
+        node = GraphicsNode(self.__node_editor_scene, "My Awesome Node")
+
+        self.__node_editor_scene.addNode(node)
+        self.__node_editor_scene.grScene.addItem(node)
+
         self.__node_editor_view.setScene(self.__node_editor_scene.grScene)
 
         self.__setup_ui()
-
-        self.addDebugContent()
 
         self.show()  # Necessary (Otherwise won't display any items)
 

@@ -2,19 +2,19 @@
 
 """Base class for the Node system"""
 
-from typing import Any
 
-from PySide2.QtCore import QRectF, Qt
-from PySide2.QtGui import QPainter, QPainterPath, QPen
-from PySide2.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem, QWidget
+from .graphics_node import GraphicsNode
 
 
-class Node(QGraphicsItem):
-    """Base class for all the nodes.
+class Node:
+    def __init__(self, scene, title="Undefined Node"):
+        self.scene = scene
 
-    Attributes:
-        _id: Unique identifier of the node.
-    """
+        self.title = title
 
-    def __init__(self):
-        pass
+        self.grNode = GraphicsNode(self, self.title)
+
+        self.scene.addNode(self)
+
+        self.inputs = []
+        self.outpus = []
