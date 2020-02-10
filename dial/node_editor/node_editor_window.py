@@ -1,12 +1,12 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtCore import Qt
+from PySide2.QtCore import QFile, Qt
 from PySide2.QtGui import QBrush, QPen
-from PySide2.QtWidgets import QGraphicsItem, QVBoxLayout, QWidget
+from PySide2.QtWidgets import QApplication, QGraphicsItem, QVBoxLayout, QWidget
 
 from dial.node_editor import NodeEditorView
 
-from .node import GraphicsNode
+from .node import Node
 from .scene import Scene
 
 
@@ -14,15 +14,18 @@ class NodeEditorWindow(QWidget):
     def __init__(self, parent=None):
         super().__init__()
 
+        self.styleSheet_filename = "qss/nodestyle.qss"
+        self.loadStylesheet(self.styleSheet_filename)
+
         self.__main_layout = QVBoxLayout()
 
         self.__node_editor_view = NodeEditorView()
         self.__node_editor_scene = Scene()
 
-        node = GraphicsNode(self.__node_editor_scene, "My Awesome Node")
+        node = Node(self.__node_editor_scene, "My Awesome Node")
 
         self.__node_editor_scene.addNode(node)
-        self.__node_editor_scene.grScene.addItem(node)
+        self.__node_editor_scene.grScene.addItem(node.grNode)
 
         self.__node_editor_view.setScene(self.__node_editor_scene.grScene)
 
@@ -46,3 +49,12 @@ class NodeEditorWindow(QWidget):
         )
 
         rect.setFlag(QGraphicsItem.ItemIsMovable)
+
+    def loadStylesheet(self, filename):
+        print("Style loading", filename)
+
+        file = QFile(filename)
+        file.open(QFile.ReadOnly | QFile.Text)
+
+        stylesheet = file.readAll()
+        QApplication.instance().setStyleSheet(str(stylesheet, encoding="utf-8"))

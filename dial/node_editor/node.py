@@ -4,6 +4,7 @@
 
 
 from .graphics_node import GraphicsNode
+from .node_content_widget import NodeContentWidget
 
 
 class Node:
@@ -12,7 +13,8 @@ class Node:
 
         self.title = title
 
-        self.grNode = GraphicsNode(self, self.title)
+        self.content = NodeContentWidget()
+        self.grNode = GraphicsNode(self)
 
         self.scene.addNode(self)
 

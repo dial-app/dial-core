@@ -2,12 +2,14 @@
 
 from PySide2.QtCore import QRectF, Qt
 from PySide2.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPen
-from PySide2.QtWidgets import QGraphicsItem, QGraphicsTextItem
+from PySide2.QtWidgets import QGraphicsItem, QGraphicsProxyWidget, QGraphicsTextItem
 
 
 class GraphicsNode(QGraphicsItem):
-    def __init__(self, scene, title="Node Graphics Item", parent=None):
+    def __init__(self, node, parent=None):
         super().__init__(parent)
+        self.node = node
+        self.content = self.node.content
 
         self._title_color = Qt.white
 
@@ -20,15 +22,19 @@ class GraphicsNode(QGraphicsItem):
         self.title_height = 24
         self._padding = 10.0
 
-        self._title = ""
-
         self._brush_title = QBrush(QColor("#FF313131"))
         self._brush_background = QBrush(QColor("#E3212121"))
         self._pen_default = QPen(QColor("#7F000000"))
         self._pen_selected = QPen(QColor("#FFFFA637"))
 
+        # Init title
         self.initTitle()
-        self.title = title
+        self.title = self.node.title
+
+        # Init sockets
+
+        # Init content
+        self.initContent()
 
         self.__setup_ui()
 
@@ -44,14 +50,25 @@ class GraphicsNode(QGraphicsItem):
         self.title_item.setPos(self._padding, 0)
         self.title_item.setTextWidth(self.width - self._padding * 2)
 
+    def initContent(self):
+        self.grContent = QGraphicsProxyWidget(self)
+        self.content.setGeometry(
+            self.edge_size,
+            self.title_height + self.edge_size,
+            self.width - 2 * self.edge_size,
+            self.height - 2 * self.edge_size - self.title_height,
+        )
+
+        self.grContent.setWidget(self.content)
+
     @property
     def title(self):
-        return self._title
+        return self.node.title
 
     @title.setter
     def title(self, value):
-        self._title = value
-        self.title_item.setPlainText(self._title)
+        self.node.title = value
+        self.title_item.setPlainText(self.node.title)
 
     def boundingRect(self):
         return QRectF(
