@@ -1,14 +1,14 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from .graphics_scene import GraphicsScene
+from .graphics_scene import GraphicsNodeScene
 
 
-class Scene:
+class NodeScene:
     def __init__(self):
         self.nodes = []
         self.edges = []
 
-        self.graphics_scene = GraphicsScene(self)
+        self.graphics_scene = GraphicsNodeScene(self)
 
     def addNode(self, node):
         self.nodes.append(node)

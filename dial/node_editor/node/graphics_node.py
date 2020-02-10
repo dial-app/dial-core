@@ -23,7 +23,7 @@ class GraphicsNode(QGraphicsItem):
         self.round_edge_size = 10
 
         self.title_height = 24
-        self.padding = 10.0
+        self.padding = 15.0
 
         self.title_background_brush = QBrush(QColor("#FF313131"))
         self.background_brush = QBrush(QColor("#E3212121"))
