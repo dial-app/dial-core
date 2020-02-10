@@ -6,6 +6,7 @@ from PySide2.QtWidgets import QApplication, QVBoxLayout, QWidget
 from .node import Node
 from .node_editor_view import NodeEditorView
 from .scene import NodeScene
+from .socket import Socket
 
 
 class NodeEditorWindow(QWidget):
@@ -20,7 +21,7 @@ class NodeEditorWindow(QWidget):
         self.__node_editor_view = NodeEditorView()
         self.__node_editor_scene = NodeScene()
 
-        node = Node("My Awesome Node")
+        node = Node("My Awesome Node", inputs=[Socket(), Socket()], outputs=[Socket()])
         self.__node_editor_scene.addNode(node)
 
         self.__node_editor_view.setScene(self.__node_editor_scene.graphics_scene)
