@@ -3,6 +3,8 @@
 """Base class for the Node system"""
 
 
+from PySide2.QtCore import QPointF
+
 from dial.node_editor.socket import Socket
 
 from .graphics_node import GraphicsNode
@@ -37,3 +39,9 @@ class Node:
         # Node components
         self.content = NodeContentWidget()
         self.graphics_node = GraphicsNode(self)
+
+    def pos(self) -> QPointF:
+        return self.graphics_node.pos()
+
+    def setPos(self, x, y):
+        self.graphics_node.setPos(x, y)

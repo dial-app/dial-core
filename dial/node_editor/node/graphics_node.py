@@ -14,7 +14,7 @@ class GraphicsNode(QGraphicsItem):
         self.node = node
 
         # Components
-        self.graphics_content = QGraphicsProxyWidget(self)
+        self.graphics_content = self.node.content
 
         # Appearance
         self.__title_color = Qt.white
@@ -38,7 +38,7 @@ class GraphicsNode(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsMovable)
 
         # Content
-        self.graphics_content.setWidget(self.node.content)
+        self.graphics_content.setParentItem(self)
         self.graphics_content.setPos(self.padding, self.padding + self.title_height)
 
         # Title
