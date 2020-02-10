@@ -8,15 +8,14 @@ from .node_content_widget import NodeContentWidget
 
 
 class Node:
-    def __init__(self, scene, title="Undefined Node"):
-        self.scene = scene
+    def __init__(self, title="Undefined Node"):
+        self.scene = None
 
         self.title = title
 
-        self.content = NodeContentWidget()
-        self.grNode = GraphicsNode(self)
-
-        self.scene.addNode(self)
-
         self.inputs = []
         self.outpus = []
+
+        # Node components
+        self.content = NodeContentWidget()
+        self.graphics_node = GraphicsNode(self)

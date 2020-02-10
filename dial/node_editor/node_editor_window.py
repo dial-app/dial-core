@@ -4,9 +4,8 @@ from PySide2.QtCore import QFile, Qt
 from PySide2.QtGui import QBrush, QPen
 from PySide2.QtWidgets import QApplication, QGraphicsItem, QVBoxLayout, QWidget
 
-from dial.node_editor import NodeEditorView
-
 from .node import Node
+from .node_editor_view import NodeEditorView
 from .scene import Scene
 
 
@@ -22,12 +21,11 @@ class NodeEditorWindow(QWidget):
         self.__node_editor_view = NodeEditorView()
         self.__node_editor_scene = Scene()
 
-        node = Node(self.__node_editor_scene, "My Awesome Node")
+        node = Node("My Awesome Node")
 
         self.__node_editor_scene.addNode(node)
-        self.__node_editor_scene.grScene.addItem(node.grNode)
 
-        self.__node_editor_view.setScene(self.__node_editor_scene.grScene)
+        self.__node_editor_view.setScene(self.__node_editor_scene.graphics_scene)
 
         self.__setup_ui()
 

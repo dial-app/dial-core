@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 
-from PySide2.QtCore import QEvent, Qt
+from PySide2.QtCore import Qt
 from PySide2.QtGui import QMouseEvent, QPainter
 from PySide2.QtWidgets import QGraphicsView
 
@@ -25,9 +25,11 @@ class NodeEditorView(QGraphicsView):
             | QPainter.SmoothPixmapTransform
         )
 
+        # Hide scrollbars
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
 
+        # Set anchor under mouse (for zooming)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
 
     def mousePressEvent(self, event):

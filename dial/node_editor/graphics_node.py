@@ -8,128 +8,114 @@ from PySide2.QtWidgets import QGraphicsItem, QGraphicsProxyWidget, QGraphicsText
 class GraphicsNode(QGraphicsItem):
     def __init__(self, node, parent=None):
         super().__init__(parent)
+
         self.node = node
-        self.content = self.node.content
 
-        self._title_color = Qt.white
+        # Components
+        self.graphics_content = QGraphicsProxyWidget(self)
 
-        self._title_font = QFont("Ubuntu", 10)
+        # Appearance
+        self.__title_color = Qt.white
+        self.__title_font = QFont("Ubuntu", 10)
 
         self.width = 180
         self.height = 180
-        self.edge_size = 10
+        self.round_edge_size = 10
 
         self.title_height = 24
-        self._padding = 10.0
+        self.padding = 10.0
 
-        self._brush_title = QBrush(QColor("#FF313131"))
-        self._brush_background = QBrush(QColor("#E3212121"))
-        self._pen_default = QPen(QColor("#7F000000"))
-        self._pen_selected = QPen(QColor("#FFFFA637"))
-
-        # Init title
-        self.initTitle()
-        self.title = self.node.title
-
-        # Init sockets
-
-        # Init content
-        self.initContent()
+        self.title_background_brush = QBrush(QColor("#FF313131"))
+        self.background_brush = QBrush(QColor("#E3212121"))
+        self.outline_default_pen = QPen(QColor("#7F000000"))
+        self.outline_selection_pen = QPen(QColor("#FFFFA637"))
 
         self.__setup_ui()
 
     def __setup_ui(self):
+        # GraphicsItem
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemIsMovable)
 
-    def initTitle(self):
+        # Title
         self.title_item = QGraphicsTextItem(self,)
-        self.title_item.setDefaultTextColor(self._title_color)
-        self.title_item.setFont(self._title_font)
+        self.title_item.setDefaultTextColor(self.__title_color)
+        self.title_item.setFont(self.__title_font)
+        self.title_item.setPlainText(self.node.title)
 
-        self.title_item.setPos(self._padding, 0)
-        self.title_item.setTextWidth(self.width - self._padding * 2)
+        self.title_item.setPos(self.padding, 0)
+        self.title_item.setTextWidth(self.width - self.padding * 2)
 
-    def initContent(self):
-        self.grContent = QGraphicsProxyWidget(self)
-        self.content.setGeometry(
-            self.edge_size,
-            self.title_height + self.edge_size,
-            self.width - 2 * self.edge_size,
-            self.height - 2 * self.edge_size - self.title_height,
-        )
-
-        self.grContent.setWidget(self.content)
+        # Content
+        self.graphics_content.setWidget(self.node.content)
+        self.graphics_content.setPos(self.padding, self.padding + self.title_height)
 
     @property
     def title(self):
+        """Returns the title of the node"""
         return self.node.title
 
     @title.setter
     def title(self, value):
+        """Sets a new title for the node"""
         self.node.title = value
         self.title_item.setPlainText(self.node.title)
 
     def boundingRect(self):
+        rect = self.graphics_content.rect()
         return QRectF(
-            0, 0, 2 * self.edge_size + self.width, 2 * self.edge_size + self.height
+            0,
+            0,
+            rect.width() + self.padding * 2,
+            rect.height() + self.title_height + self.padding * 2,
         ).normalized()
 
     def paint(self, painter: QPainter, option, widget=None):
-        # Title
-        path_title = QPainterPath()
-        path_title.setFillRule(Qt.WindingFill)
-        path_title.addRoundedRect(
-            0, 0, self.width, self.title_height, self.edge_size, self.edge_size
-        )
-        path_title.addRect(
-            0, self.title_height - self.edge_size, self.edge_size, self.edge_size
-        )
-
-        path_title.addRect(
-            self.width - self.edge_size,
-            self.title_height - self.edge_size,
-            self.edge_size,
-            self.edge_size,
-        )
-
-        painter.setPen(Qt.NoPen)
-        painter.setBrush(self._brush_title)
-        painter.drawPath(path_title.simplified())
-
-        # Content
-        path_content = QPainterPath()
-        path_content.setFillRule(Qt.WindingFill)
-        path_content.addRoundedRect(
+        # Draw title background
+        path_title_background = QPainterPath()
+        path_title_background.setFillRule(Qt.WindingFill)
+        path_title_background.addRoundedRect(
             0,
-            self.title_height,
+            0,
             self.width,
-            self.height - self.title_height,
-            self.edge_size,
-            self.edge_size,
+            self.title_height,
+            self.round_edge_size,
+            self.round_edge_size,
+        )
+        # (Drawing to rects to hide the two botton round edges)
+        path_title_background.addRect(
+            0,
+            self.title_height - self.round_edge_size,
+            self.round_edge_size,
+            self.round_edge_size,
         )
 
-        path_content.addRect(0, self.title_height, self.edge_size, self.edge_size)
-        path_content.addRect(
-            self.width - self.edge_size,
-            self.title_height,
-            self.edge_size,
-            self.edge_size,
+        path_title_background.addRect(
+            self.width - self.round_edge_size,
+            self.title_height - self.round_edge_size,
+            self.round_edge_size,
+            self.round_edge_size,
         )
 
         painter.setPen(Qt.NoPen)
-        painter.setBrush(self._brush_background)
-        painter.drawPath(path_content.simplified())
+        painter.setBrush(self.title_background_brush)
+        painter.drawPath(path_title_background.simplified())
 
-        # Outline
-        path_outline = QPainterPath()
-        path_outline.addRoundedRect(
-            0, 0, self.width, self.height, self.edge_size, self.edge_size
+        # Draw node background
+        path_background = QPainterPath()
+        path_background.addRoundedRect(
+            self.boundingRect(), self.round_edge_size, self.round_edge_size
         )
 
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(self.background_brush)
+        painter.drawPath(path_background.simplified())
+
+        # Draw node outline
         painter.setPen(
-            self._pen_default if not self.isSelected() else self._pen_selected
+            self.outline_default_pen
+            if not self.isSelected()
+            else self.outline_selection_pen
         )
-
         painter.setBrush(Qt.NoBrush)
-        painter.drawPath(path_outline.simplified())
+        painter.drawPath(path_background.simplified())

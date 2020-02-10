@@ -7,11 +7,14 @@ from PySide2.QtGui import QColor, QPen
 from PySide2.QtWidgets import QGraphicsScene
 
 
-class NodeEditorScene(QGraphicsScene):
+class GraphicsScene(QGraphicsScene):
     def __init__(self, scene, parent=None):
         super().__init__(parent)
 
         self.scene = scene
+
+        self.width = 64000
+        self.height = 64000
 
         # Settings
         self.grid_size = 20
@@ -27,14 +30,18 @@ class NodeEditorScene(QGraphicsScene):
         self._pen_dark = QPen(self._color_dark)
         self._pen_dark.setWidth(2)
 
+        self.__setup_ui()
+
+    def __setup_ui(self):
+
         self.setBackgroundBrush(self._color_background)
 
-    def setScene(self, width, height):
         self.setSceneRect(
-            -width // 2, -height // 2, width, height,
+            -self.width // 2, -self.height // 2, self.width, self.height,
         )
 
     def drawBackground(self, painter, rect):
+        """Draw scenes background"""
         super().drawBackground(painter, rect)
 
         # Get grid boundaries

@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from .node_editor_scene import NodeEditorScene
+from .graphics_scene import GraphicsScene
 
 
 class Scene:
@@ -8,24 +8,18 @@ class Scene:
         self.nodes = []
         self.edges = []
 
-        self.scene_width = 64000
-        self.scene_height = 64000
-
-        self.grScene = NodeEditorScene(self)
-
-        self.__setup_ui()
-
-    def __setup_ui(self):
-        self.grScene.setScene(self.scene_width, self.scene_height)
+        self.graphics_scene = GraphicsScene(self)
 
     def addNode(self, node):
         self.nodes.append(node)
+        self.graphics_scene.addItem(node.graphics_node)
 
     def addEdge(self, edge):
         self.edges.append(edge)
 
     def removeNode(self, node):
         self.nodes.remove(node)
+        self.graphics_scene.removeItem(node.graphics_node)
 
     def removeEdge(self, edge):
         self.edges.remove(edge)
