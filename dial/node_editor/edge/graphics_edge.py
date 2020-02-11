@@ -24,21 +24,35 @@ class GraphicsEdge(QGraphicsPathItem):
 
         self.setZValue(-1)
 
+    def set_source(self, x, y):
+        self.pos_source = QPointF(x, y)
+
+    def set_destination(self, x, y):
+        self.pos_destination = QPointF(x, y)
+
+    def updatePositions(self):
+        start_socket_pos = self.edge.start_socket.node.graphics_node.pos()
+        start_socket_pos += self.edge.start_socket.graphics_socket.pos()
+
+        self.set_source(start_socket_pos.x(), start_socket_pos.y())
+        print("Start socket pos", start_socket_pos)
+
+        if self.edge.end_socket:
+            end_socket_pos = self.edge.end_socket.node.graphics_node.pos()
+            end_socket_pos += self.edge.end_socket.graphics_socket.pos()
+
+            self.set_destination(end_socket_pos.x(), end_socket_pos.y())
+            print("End socket pos", end_socket_pos)
+
+        self.update()
+
     def paint(self, painter, option, widget=None):
         self.updatePath()
 
-        self.setPen(self.default_pen if not self.isSelected() else self.selected_pen)
-        self.setBrush(Qt.NoBrush)
+        painter.setPen(self.default_pen if not self.isSelected() else self.selected_pen)
+        painter.setBrush(Qt.NoBrush)
 
         painter.drawPath(self.path())
-
-    def boundingRect(self):
-        return QRectF(
-            self.pos_source.x(),
-            self.pos_source.y(),
-            self.pos_destination.x() - self.pos_source.x(),
-            self.pos_destination.y() - self.pos_source.x(),
-        )
 
     def updatePath(self):
         """Handles drawing QPainterPath from Point A to B"""
@@ -46,15 +60,11 @@ class GraphicsEdge(QGraphicsPathItem):
 
 
 class GraphicsEdgeDirect(GraphicsEdge):
-    def shape(self):
+    def updatePath(self):
         path = QPainterPath(self.pos_source)
         path.lineTo(self.pos_destination)
 
-        return path
-
-    def updatePath(self):
-        print("Updatepath")
-        self.setPath(self.shape())
+        self.setPath(path)
 
 
 class GraphicsEdgeBezier(GraphicsEdge):

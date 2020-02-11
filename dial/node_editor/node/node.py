@@ -13,8 +13,6 @@ from .node_content_widget import NodeContentWidget
 
 class Node:
     def __init__(self, title="Undefined Node", inputs=None, outputs=None):
-        self.scene = None
-
         self.title = title
 
         self.inputs = []

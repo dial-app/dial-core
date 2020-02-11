@@ -18,3 +18,8 @@ class Socket:
         self.index = 0
         self.node = None
         self.graphics_socket = GraphicsSocket(self)
+
+        self.edge = None
+
+    def set_connected_edge(self, edge=None):
+        self.edge = edge

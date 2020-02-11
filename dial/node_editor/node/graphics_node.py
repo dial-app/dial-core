@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtCore import QRectF, Qt
+from PySide2.QtCore import QPointF, QRectF, Qt
 from PySide2.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import QGraphicsItem, QGraphicsProxyWidget, QGraphicsTextItem
 
@@ -32,6 +32,19 @@ class GraphicsNode(QGraphicsItem):
 
         self.__setup_ui()
 
+    def get_socket_position(self, socket) -> QPointF:
+        if socket.position == Socket.Position.LeftTop:
+            x = 0
+        else:
+            x = self.boundingRect().width()
+
+        y = (
+            self.title_height * 1.5
+            + socket.index * socket.graphics_socket.boundingRect().height() * 2
+        )
+
+        return QPointF(x, y)
+
     def __setup_ui(self):
         # GraphicsItem
         self.setFlag(QGraphicsItem.ItemIsSelectable)
@@ -54,16 +67,7 @@ class GraphicsNode(QGraphicsItem):
         def position_sockets(sockets):
             for socket in sockets:
                 socket.graphics_socket.setParentItem(self)
-                if socket.position == Socket.Position.LeftTop:
-                    x = 0
-                else:
-                    x = self.boundingRect().width()
-
-                socket.graphics_socket.setPos(
-                    x,
-                    self.title_height * 1.5
-                    + socket.index * socket.graphics_socket.boundingRect().height() * 2,
-                )
+                socket.graphics_socket.setPos(self.get_socket_position(socket))
 
         position_sockets(self.node.inputs)
         position_sockets(self.node.outputs)
