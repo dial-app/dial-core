@@ -8,7 +8,7 @@ from .port import Port
 """
 Can:
  * Connect and disconnect from/to different nodes
- * Add remove new ports
+ * Add/remove new ports as input/output ports
 """
 
 
@@ -35,7 +35,7 @@ class Node:
         Args:
             port_name: Name of the port being added.
             input_port: Port object added to the input ports list.
-        """
+    """
         self.inputs[port_name] = input_port
 
     def add_output(self, port_name, output_port):

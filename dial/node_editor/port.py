@@ -1,11 +1,27 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+"""
+Can:
+  * Connect/Discconnect to another port.
+  * Detect and prevent being connected to itself.
+  * Connect to several ports or only one port at a time.
+"""
+
 
 class Port:
-    def __init__(self, allows_multiple_connections=True):
+    def __init__(self, port_type, allows_multiple_connections=True):
+        self.__port_type = port_type
         self.__connected_to = set()  # Avoid repeat ports
 
         self.allows_multiple_connections = allows_multiple_connections
+
+    @property
+    def port_type(self):
+        """Data type allowed by the port.
+
+        Used to check which ports can be connected between them.
+        """
+        return self.__port_type
 
     @property
     def connections(self):
@@ -15,6 +31,10 @@ class Port:
         functions to handle port connections
         """
         return self.__connected_to
+
+    def is_compatible_with(self, port: "Port"):
+        """Checks if this port is compatible with another port."""
+        return self.__port_type == port.port_type
 
     def connect_to(self, port: "Port"):
         """Connects the current port to another port.
@@ -31,10 +51,16 @@ class Port:
             ValueError: If the port is connected to itself.
         """
         if port is self:  # Avoid connecting a port to itself
-            raise ValueError("Can't connect port {port} to itself!")
+            raise ValueError(f"Can't connect port {port} to itself!")
 
         if port in self.__connected_to:  # The ports are already connected
             return
+
+        if not self.is_compatible_with(port):
+            raise ValueError(
+                f"This port ({self.port_type}) isn't compatible with the"
+                f"other port! ({port.port_type})"
+            )
 
         if not self.allows_multiple_connections:
             # Disconnect from other ports before setting the new connection

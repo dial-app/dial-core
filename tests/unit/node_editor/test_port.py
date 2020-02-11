@@ -8,19 +8,29 @@ from dial.node_editor import Port
 @pytest.fixture
 def a():
     """Empty port a. Allows multiple connections to different ports. """
-    return Port()
+    return Port(port_type=int)
 
 
 @pytest.fixture
 def b():
     """Empty port b. Allows multiple connections to different ports. """
-    return Port()
+    return Port(port_type=int)
 
 
 @pytest.fixture
 def c():
     """Empty port c. Allows multiple connections to different ports. """
-    return Port()
+    return Port(port_type=int)
+
+
+def test_ports_compatible():
+    p1 = Port(port_type=int)
+    p2 = Port(port_type=int)
+    p3 = Port(port_type=str)
+
+    assert p1.is_compatible_with(p2)
+    assert p2.is_compatible_with(p1)
+    assert not p1.is_compatible_with(p3)
 
 
 def test_connect_port_to_other(a, b):
@@ -63,9 +73,9 @@ def test_connect_port_to_two_other_ports(a, b, c):
 
 
 def test_connect_port_to_two_other_ports_with_single_connection(a, b, c):
-    a_single = Port(allows_multiple_connections=False)
-    b_single = Port(allows_multiple_connections=False)
-    c_single = Port(allows_multiple_connections=False)
+    a_single = Port(port_type=int, allows_multiple_connections=False)
+    b_single = Port(port_type=int, allows_multiple_connections=False)
+    c_single = Port(port_type=int, allows_multiple_connections=False)
 
     a_single.connect_to(b_single)
 
@@ -83,6 +93,14 @@ def test_connect_port_to_two_other_ports_with_single_connection(a, b, c):
 def test_connect_port_to_self(a):
     with pytest.raises(ValueError):
         a.connect_to(a)
+
+
+def test_connect_port_to_incompatible():
+    p1 = Port(port_type=int)
+    p2 = Port(port_type=str)
+
+    with pytest.raises(ValueError):
+        p1.connect_to(p2)
 
 
 def test_disconnect_port_from_other(a, b):
