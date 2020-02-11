@@ -65,7 +65,7 @@ class Node:
         Raises:
             ValueError: If can't find a port to remove named `port_name`.
         """
-        removed = self.__remove_port_from(self.inputs, port_name)
+        removed = self.__remove_port_from(self.outputs, port_name)
 
         if not removed:
             raise ValueError(
