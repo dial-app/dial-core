@@ -12,10 +12,16 @@ class GraphicsEdge(QGraphicsPathItem):
         self.edge = edge
 
         # Appareance
-        self.default_pen = QPen(QColor("#001000"))
+        self.__color = QColor("#001000")
+        self.default_pen = QPen(self.__color)
         self.default_pen.setWidthF(3.0)
+
         self.selected_pen = QPen(QColor("#00FF00"))
         self.selected_pen.setWidthF(3.0)
+
+        self.dragging_pen = QPen(self.__color)
+        self.dragging_pen.setWidthF(3.0)
+        self.dragging_pen.setStyle(Qt.DashLine)
 
         self.pos_source = QPointF(0, 0)
         self.pos_destination = QPointF(200, 100)
@@ -49,7 +55,13 @@ class GraphicsEdge(QGraphicsPathItem):
     def paint(self, painter, option, widget=None):
         self.updatePath()
 
-        painter.setPen(self.default_pen if not self.isSelected() else self.selected_pen)
+        if not self.edge.end_socket:
+            painter.setPen(self.dragging_pen)
+        else:
+            painter.setPen(
+                self.default_pen if not self.isSelected() else self.selected_pen
+            )
+
         painter.setBrush(Qt.NoBrush)
 
         painter.drawPath(self.path())

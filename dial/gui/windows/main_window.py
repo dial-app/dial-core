@@ -5,7 +5,7 @@ from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
 
 from dial import __version__
-from dial.node_editor import NodeEditorWindow
+from dial.node_editor_2 import NodeEditorWindow
 from dial.project import DialProjectManager
 from dial.utils import log
 

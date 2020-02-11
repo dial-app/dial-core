@@ -19,8 +19,3 @@ def imagearray_obj():
 )
 def test_process(imagearray_obj, test_input, expected):
     assert np.alltrue(imagearray_obj.process(test_input) == expected)
-
-
-@pytest.mark.parametrize("test_input, expected", [(np.array([1, 2]), "[1, 2]")])
-def test_display(imagearray_obj, test_input, expected):
-    assert imagearray_obj.display(test_input) == expected

@@ -1,10 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from .graphics_edge import GraphicsEdgeDirect
+from .graphics_edge import GraphicsEdgeBezier
 
 
 class Edge:
-    def __init__(self, start_socket, end_socket, edge_type=GraphicsEdgeDirect):
+    def __init__(self, start_socket, end_socket, edge_type=GraphicsEdgeBezier):
         self.start_socket = start_socket
         self.end_socket = end_socket
 

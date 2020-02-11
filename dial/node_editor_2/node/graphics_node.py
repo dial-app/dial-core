@@ -4,7 +4,7 @@ from PySide2.QtCore import QPointF, QRectF, Qt
 from PySide2.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import QGraphicsItem, QGraphicsTextItem
 
-from dial.node_editor.socket import Socket
+from dial.node_editor_2.socket import Socket
 
 
 class GraphicsNode(QGraphicsItem):

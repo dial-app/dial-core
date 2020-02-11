@@ -7,8 +7,8 @@ from PySide2.QtCore import Qt
 from PySide2.QtGui import QMouseEvent, QPainter
 from PySide2.QtWidgets import QGraphicsView
 
-from dial.node_editor.edge import Edge
-from dial.node_editor.socket import GraphicsSocket
+from dial.node_editor_2.edge import Edge
+from dial.node_editor_2.socket import GraphicsSocket
 
 
 class NodeEditorView(QGraphicsView):
@@ -115,7 +115,17 @@ class NodeEditorView(QGraphicsView):
 
         if type(item) is GraphicsSocket:
             print("Assign End Socket")
+            self.dragEdge.end_socket = item.socket
+            self.dragEdge.start_socket.set_connected_edge(self.dragEdge)
+
+            item.socket.set_connected_edge(self.dragEdge)
+
+            self.dragEdge.graphics_edge.update()
             return True
+
+        self.dragEdge.remove()
+        self.scene().scene.removeEdge(self.dragEdge)
+        self.dragEdge = None
 
         return False
 

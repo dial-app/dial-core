@@ -5,7 +5,7 @@
 
 from PySide2.QtCore import QPointF
 
-from dial.node_editor.socket import Socket
+from dial.node_editor_2.socket import Socket
 
 from .graphics_node import GraphicsNode
 from .node_content_widget import NodeContentWidget
