@@ -13,10 +13,19 @@ class GraphicsSocket(QGraphicsItem):
 
         self.radius = 7.0
 
-        self.outline_pen = QPen(QColor("#FF002132"))
+        self.colors = [
+            QColor("#FF002132"),
+            QColor("#FF53E220"),
+            QColor("#FF0056A6"),
+            QColor("#FFA86DB1"),
+            QColor("#FFB54747"),
+            QColor("#FFDBE220"),
+        ]
+
+        self.outline_pen = QPen(QColor("#FF000000"))
         self.outline_pen.setWidthF(2)
 
-        self.background_brush = QBrush(QColor("#FFFFA637"))
+        self.background_brush = QBrush(self.colors[self.socket.socket_type])
 
     def boundingRect(self):
         return QRectF(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)

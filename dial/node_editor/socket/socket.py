@@ -12,14 +12,15 @@ class Socket:
         RightTop = 3
         # RightBottom = 4
 
-    def __init__(self, position=Position.LeftTop):
+    def __init__(self, socket_type=1, position=Position.LeftTop):
         self.position = position
-
         self.index = 0
-        self.node = None
-        self.graphics_socket = GraphicsSocket(self)
+        self.socket_type = socket_type
 
+        self.node = None
         self.edge = None
+
+        self.graphics_socket = GraphicsSocket(self)
 
     def set_connected_edge(self, edge=None):
         self.edge = edge
