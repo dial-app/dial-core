@@ -5,35 +5,45 @@ Can:
   * Connect/Discconnect to another port.
   * Detect and prevent being connected to itself.
   * Connect to several ports or only one port at a time.
+  * Check if two ports are compatible and can be connected
 """
+
+from typing import Set, Type
 
 
 class Port:
-    def __init__(self, port_type, allows_multiple_connections=True):
+    def __init__(self, port_type: Type, allows_multiple_connections: bool = True):
         self.__port_type = port_type
-        self.__connected_to = set()  # Avoid repeat ports
+        self.__connected_to: Set["Port"] = set()  # Avoid repeat ports
 
         self.allows_multiple_connections = allows_multiple_connections
 
     @property
-    def port_type(self):
-        """Data type allowed by the port.
+    def port_type(self) -> Type:
+        """Returns the Type allowed by this port.
 
         Used to check which ports can be connected between them.
         """
         return self.__port_type
 
     @property
-    def connections(self):
+    def connections(self) -> Set["Port"]:
         """Returns the ports this port is currently connected.
 
         Shouldn't be manipulated directly. Use the `connect_to`, `disconnect_from`
         functions to handle port connections
+
+        Returns:
+           A set with all the Ports connected to this port.
         """
         return self.__connected_to
 
-    def is_compatible_with(self, port: "Port"):
-        """Checks if this port is compatible with another port."""
+    def is_compatible_with(self, port: "Port") -> bool:
+        """Checks if this port is compatible with another port.
+
+        Args:
+            port: Port being compared with.
+        """
         return self.__port_type == port.port_type
 
     def connect_to(self, port: "Port"):
@@ -49,6 +59,7 @@ class Port:
 
         Raises:
             ValueError: If the port is connected to itself.
+            ValueError: If the ports aren't compatible (can't be connected).
         """
         if port is self:  # Avoid connecting a port to itself
             raise ValueError(f"Can't connect port {port} to itself!")

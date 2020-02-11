@@ -1,35 +1,34 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Dict
-
-from .port import Port
-
-
 """
 Can:
  * Connect and disconnect from/to different nodes
  * Add/remove new ports as input/output ports
 """
 
+from typing import Dict
+
+from .port import Port
+
 
 class Node:
-    def __init__(self, title):
+    def __init__(self, title: str):
         self.title = title
 
-        self.__inputs = {}
-        self.__outputs = {}
+        self.__inputs: Dict[str, Port] = {}
+        self.__outputs: Dict[str, Port] = {}
 
     @property
-    def inputs(self):
+    def inputs(self) -> Dict[str, Port]:
         """Returns a list of the input ports of the node."""
         return self.__inputs
 
     @property
-    def outputs(self):
+    def outputs(self) -> Dict[str, Port]:
         """Returns a list of the output ports of the node."""
         return self.__outputs
 
-    def add_input(self, port_name, input_port):
+    def add_input(self, port_name: str, input_port: Port):
         """Adds a new input port to the list of ports.
 
         Args:
@@ -38,7 +37,7 @@ class Node:
     """
         self.inputs[port_name] = input_port
 
-    def add_output(self, port_name, output_port):
+    def add_output(self, port_name: str, output_port: Port):
         """Adds a new output port to the list of ports.
 
         Args:
