@@ -16,6 +16,8 @@ class NodeScene:
 
     def addEdge(self, edge):
         self.edges.append(edge)
+        self.graphics_scene.addItem(edge.graphics_edge)
+        print("Added Edge")
 
     def removeNode(self, node):
         self.nodes.remove(node)
@@ -23,3 +25,4 @@ class NodeScene:
 
     def removeEdge(self, edge):
         self.edges.remove(edge)
+        self.graphics_scene.removeItem(edge.graphics_edge)

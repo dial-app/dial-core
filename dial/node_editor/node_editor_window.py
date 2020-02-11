@@ -3,6 +3,7 @@
 from PySide2.QtCore import QFile
 from PySide2.QtWidgets import QApplication, QVBoxLayout, QWidget
 
+from .edge import Edge, GraphicsEdgeBezier
 from .node import Node
 from .node_editor_view import NodeEditorView
 from .scene import NodeScene
@@ -21,6 +22,15 @@ class NodeEditorWindow(QWidget):
         self.__node_editor_view = NodeEditorView()
         self.__node_editor_scene = NodeScene()
 
+        self.addNodes()
+
+        self.__node_editor_view.setScene(self.__node_editor_scene.graphics_scene)
+
+        self.__setup_ui()
+
+        self.show()  # Necessary (Otherwise won't display any items)
+
+    def addNodes(self):
         node1 = Node(
             "My Awesome Node 1", inputs=[Socket(), Socket()], outputs=[Socket()]
         )
@@ -39,11 +49,9 @@ class NodeEditorWindow(QWidget):
         self.__node_editor_scene.addNode(node2)
         self.__node_editor_scene.addNode(node3)
 
-        self.__node_editor_view.setScene(self.__node_editor_scene.graphics_scene)
-
-        self.__setup_ui()
-
-        self.show()  # Necessary (Otherwise won't display any items)
+        edge = Edge(node1.outputs[0], node2.inputs[0])
+        edge = Edge(node1.outputs[0], node2.inputs[0], edge_type=GraphicsEdgeBezier)
+        self.__node_editor_scene.addEdge(edge)
 
     def __setup_ui(self):
         self.__main_layout.addWidget(self.__node_editor_view)
