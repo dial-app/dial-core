@@ -11,6 +11,7 @@ def node_a():
     return Node(title="a")
 
 
+@pytest.fixture
 def node_b():
     """Empty node b. Allows multiple connections to different ports. """
     return Node(title="b")
@@ -50,3 +51,42 @@ def test_remove_output(node_a):
 
     node_a.remove_output("port")
     assert my_output_port not in node_a.outputs
+
+
+def test_remove_connected_port(node_a):
+    foo_port = Port()
+    bar_port = Port()
+    foo_port.connect_to(bar_port)
+
+    node_a.add_input("foo", foo_port)
+
+    assert foo_port in bar_port.connections
+    assert bar_port in foo_port.connections
+
+    node_a.remove_input("foo")
+
+    assert foo_port not in bar_port.connections
+    assert bar_port not in foo_port.connections
+
+
+def test_node_connect_to_node(node_a, node_b):
+    foo_port = Port()
+    bar_port = Port()
+
+    node_a.add_output("foo", foo_port)
+    node_b.add_input("bar", bar_port)
+
+    node_a.outputs["foo"].connect_to(node_b.inputs["bar"])
+
+    # Assert the two ports are connected
+    assert foo_port in bar_port.connections
+    assert bar_port in foo_port.connections
+
+
+def test_node_connect_to_inexistent(node_a, node_b):
+    foo_port = Port()
+
+    node_a.add_output("foo", foo_port)
+
+    with pytest.raises(KeyError):
+        node_a.outputs["foo"].connect_to(node_b.inputs["doesnt_exists"])

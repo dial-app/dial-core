@@ -61,7 +61,8 @@ class Port:
     def clear_all_connections(self):
         """Remove all connections to this port."""
 
-        for port in self.__connected_to:
+        # Use a list to avoid a port while iterating the list
+        for port in list(self.__connected_to):
             port.disconnect_from(self)
 
         self.__connected_to.clear()

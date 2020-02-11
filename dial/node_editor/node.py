@@ -5,6 +5,13 @@ from typing import Dict
 from .port import Port
 
 
+"""
+Can:
+ * Connect and disconnect from/to different nodes
+ * Add remove new ports
+"""
+
+
 class Node:
     def __init__(self, title):
         self.title = title

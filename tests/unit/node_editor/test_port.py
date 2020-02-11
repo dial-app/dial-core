@@ -108,3 +108,14 @@ def test_disconnect_port_twice(a, b):
 
     assert len(a.connections) == 0
     assert len(b.connections) == 0
+
+
+def test_clear_port_connections(a, b, c):
+    a.connect_to(b)
+    a.connect_to(c)
+
+    a.clear_all_connections()
+
+    assert len(a.connections) == 0
+    assert a not in b.connections
+    assert a not in c.connections
