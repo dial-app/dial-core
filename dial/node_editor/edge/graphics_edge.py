@@ -24,6 +24,8 @@ class GraphicsEdge(QGraphicsPathItem):
 
         self.setZValue(-1)
 
+        self.updatePositions()
+
     def set_source(self, x, y):
         self.pos_source = QPointF(x, y)
 
