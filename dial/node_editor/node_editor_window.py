@@ -38,14 +38,20 @@ class NodeEditorWindow(QWidget):
             "My Awesome Node 2", inputs=[Socket(), Socket()], outputs=[Socket()]
         )
 
+        node3 = Node(
+            "My Awesome Node 3", inputs=[Socket(), Socket()], outputs=[Socket()]
+        )
+
         node1.setPos(0, 0)
         node2.setPos(600, 250)
+        node3.setPos(750, 400)
 
         self.__node_editor_scene.addNode(node1)
         self.__node_editor_scene.addNode(node2)
+        self.__node_editor_scene.addNode(node3)
 
         edge1 = Edge(node1.outputs[0], node2.inputs[0])
-        edge2 = Edge(node1.outputs[0], node2.inputs[0], edge_type=GraphicsEdgeBezier)
+        edge2 = Edge(node2.outputs[0], node3.inputs[1], edge_type=GraphicsEdgeBezier)
         self.__node_editor_scene.addEdge(edge1)
         self.__node_editor_scene.addEdge(edge2)
 

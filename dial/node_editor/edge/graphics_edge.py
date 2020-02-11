@@ -35,14 +35,12 @@ class GraphicsEdge(QGraphicsPathItem):
         start_socket_pos += self.edge.start_socket.graphics_socket.pos()
 
         self.set_source(start_socket_pos.x(), start_socket_pos.y())
-        print("Start socket pos", start_socket_pos)
 
         if self.edge.end_socket:
             end_socket_pos = self.edge.end_socket.node.graphics_node.pos()
             end_socket_pos += self.edge.end_socket.graphics_socket.pos()
 
             self.set_destination(end_socket_pos.x(), end_socket_pos.y())
-            print("End socket pos", end_socket_pos)
 
         self.update()
 

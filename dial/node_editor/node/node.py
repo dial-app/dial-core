@@ -43,3 +43,12 @@ class Node:
 
     def setPos(self, x, y):
         self.graphics_node.setPos(x, y)
+
+    def updateConnectedEdges(self):
+        def update_sockets(sockets):
+            for socket in sockets:
+                if socket.edge:
+                    socket.edge.graphics_edge.updatePositions()
+
+        update_sockets(self.inputs)
+        update_sockets(self.outputs)

@@ -8,6 +8,9 @@ class Edge:
         self.start_socket = start_socket
         self.end_socket = end_socket
 
+        self.start_socket.edge = self
+        self.end_socket.edge = self
+
         self.graphics_edge = edge_type(self)
 
     def remove_from_socket(self):
