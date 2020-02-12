@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 # pylint: disable=global-statement
+# type: ignore
 
 """Loggers used to display information and debug."""
 
@@ -16,7 +17,7 @@ FORMATTER = logging.Formatter(
 
 LOG_FILE = "dial.log"
 LOG_STREAM = StringIO()
-ROOT_LOGGER = logging.getLogger("")
+ROOT_LOGGER = logging.getLogger()
 
 LOG_LEVEL = logging.INFO
 
@@ -81,8 +82,8 @@ def init_logs(args: argparse.Namespace):
     add_handler_to_root(get_string_handler())
 
     # Configure loggers that could already be initialized (module loggers)
-    # loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
-    # for logger in loggers:
-    #     logger.setLevel(LOG_LEVEL)
+    loggers = [logging.getLogger(name) for name in logging.root.manager.loggerDict]
+    for logger in loggers:
+        logger.setLevel(LOG_LEVEL)
 
     get_logger(__name__).debug("Logging system initialized.")

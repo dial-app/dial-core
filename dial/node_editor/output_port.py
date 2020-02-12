@@ -9,16 +9,16 @@ class OutputPort(Port):
     def __init__(self, port_type: Type):
         super().__init__(port_type, allows_multiple_connections=True)
 
-        self.function_to_generate_output = None
+        self.output_generator = None
 
     def get_output_value(self):
         """Returns the value this port expects from the connected node."""
-        if not self.function_to_generate_output:
+        if not self.output_generator:
             raise NotImplementedError(
                 "Output Port {self} doesn't has an implementation!"
             )
 
-        return self.function_to_generate_output()
+        return self.output_generator()
 
     def send(self):
         for port in self.connections:

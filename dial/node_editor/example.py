@@ -7,7 +7,7 @@ class ValueNode(Node):
 
         # Port configuration
         self.add_output_port("value", OutputPort(port_type=int))
-        self.outputs["value"].function_to_generate_output = self.return_value
+        self.outputs["value"].output_generator = self.return_value
 
         # Attributes
         self.value = value
@@ -24,7 +24,7 @@ class AddNode(Node):
         self.add_input_port("op2", InputPort(port_type=int))
 
         self.add_output_port("result", OutputPort(port_type=int))
-        self.outputs["result"].function_to_generate_output = self.add_ops
+        self.outputs["result"].output_generator = self.add_ops
 
     def add_ops(self):
         op1 = self.inputs["op1"].receive()

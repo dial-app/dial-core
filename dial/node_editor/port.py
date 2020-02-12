@@ -8,7 +8,14 @@ Can:
   * Check if two ports are compatible and can be connected
 """
 
+import logging
+from logging import DEBUG, ERROR
 from typing import Optional, Set, Type
+
+from dial.utils import log
+from logdecorator import log_on_end, log_on_error
+
+LOGGER = log.get_logger(__name__)
 
 
 class Port:
@@ -48,6 +55,10 @@ class Port:
         """
         return self.__port_type == port.port_type
 
+    @log_on_end(DEBUG, "{self!r} connected to {port!r}")
+    @log_on_error(
+        ERROR, "Error on connection: {e}", on_exceptions=(ValueError), reraise=True
+    )
     def connect_to(self, port: "Port"):
         """Connects the current port to another port.
 
@@ -63,16 +74,17 @@ class Port:
             ValueError: If the port is connected to itself.
             ValueError: If the ports aren't compatible (can't be connected).
         """
-        if port in self.__connected_to:  # The ports are already connected
-            return
+
+        logger = logging.getLogger()
+        logger.debug("haudf")
 
         if port is self:  # Avoid connecting a port to itself
-            raise ValueError(f"Can't connect port {port} to itself!")
+            raise ValueError(f"Can't connect {port!r} to itself!")
 
         if not self.is_compatible_with(port):
             raise ValueError(
-                f"This port ({self.port_type}) isn't compatible with the"
-                f"other port! ({port.port_type})"
+                f"This port ({self!r}) type is not compatible with the"
+                f" other port. ({port!r})"
             )
 
         if not self.allows_multiple_connections:
@@ -81,8 +93,10 @@ class Port:
 
         # Two way connection (Both ports will have a reference to each other)
         self.__connected_to.add(port)
-        port.connect_to(self)
+        if self not in port.connections:
+            port.connect_to(self)
 
+    @log_on_end(DEBUG, "Port {self!r} disconnected from {port!r}")
     def disconnect_from(self, port: "Port"):
         """Disconnects the current port from the other port.
 
@@ -96,6 +110,7 @@ class Port:
         self.__connected_to.discard(port)
         port.disconnect_from(self)
 
+    @log_on_end(DEBUG, "All connections cleared on {self!r}")
     def clear_all_connections(self):
         """Removes all connections to this port."""
 
@@ -104,3 +119,12 @@ class Port:
             port.disconnect_from(self)
 
         self.__connected_to.clear()
+
+    def __str__(self):
+        return f"{type(self).__name__} [{self.port_type.__name__}]"
+
+    def __repr__(self):
+        return (
+            f"{type(self).__name__} {str(id(self))[:4]}...{str(id(self))[-4:]}"
+            f" [{self.port_type.__name__}]"
+        )
