@@ -10,6 +10,7 @@ import sys
 
 from dial import __description__
 from dial.gui import app
+from dial.node_editor.example import run_example
 
 
 def arg_parser() -> argparse.ArgumentParser:
@@ -38,9 +39,10 @@ def main():
     """
     Entry point for dial ui.
     """
-    args = arg_parser().parse_args(sys.argv[1:])
+    # args = arg_parser().parse_args(sys.argv[1:])
 
-    sys.exit(app.run(args))
+    # sys.exit(app.run(args))
+    run_example()
 
 
 if __name__ == "__main__":

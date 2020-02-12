@@ -8,7 +8,7 @@ Can:
   * Check if two ports are compatible and can be connected
 """
 
-from typing import Set, Type
+from typing import Optional, Set, Type
 
 
 class Port:
@@ -16,7 +16,7 @@ class Port:
         self.__port_type = port_type
         self.__connected_to: Set["Port"] = set()  # Avoid repeat ports
 
-        self.process_func = None
+        self.node: Optional["Node"] = None  # type: ignore
 
         self.allows_multiple_connections = allows_multiple_connections
 

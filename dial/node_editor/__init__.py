@@ -1,9 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from .input_port import InputPort
 from .node import Node
+from .output_port import OutputPort
 from .port import Port
 
-__all__ = ["Node", "Port"]
+__all__ = ["Node", "Port", "InputPort", "OutputPort"]
 
 """
 scene = NodeEditorScene()
@@ -122,5 +124,21 @@ def process(self):
 (Something like that?)
 
 ^^^^ Process from current node backwards
+
+(Inside InputPort class)
+def receive(self):
+    output_value = self.port_connected_to.get_value()
+
+    return output_value
+
+(Inside OutputPort class)
+def send(self):
+    return self.processing_function()
+
+(Inside Node class)
+def __init__(self):
+    self.add_output("value", port_type=int)
+    self.outputs["value"].processing_function = self.get_value
+
 
 """

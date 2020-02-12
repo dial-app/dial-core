@@ -36,6 +36,7 @@ class Node:
             input_port: Port object added to the input ports list.
     """
         self.inputs[port_name] = input_port
+        input_port.node = self
 
     def add_output(self, port_name: str, output_port: Port):
         """Adds a new output port to the list of ports.
@@ -45,6 +46,7 @@ class Node:
             output_port: Port object added to the output ports list.
         """
         self.outputs[port_name] = output_port
+        output_port.node = self
 
     def remove_input(self, port_name: str):
         """Removes an input port from the list of input ports.
@@ -90,6 +92,8 @@ class Node:
         # Disconnect this port from all other connected ports before removing. This will
         # preveing having a port with hanging connections to deleted ports.
         ports_dict[port_name].clear_all_connections()
+        ports_dict[port_name].node = None
+
         del ports_dict[port_name]
 
         return True

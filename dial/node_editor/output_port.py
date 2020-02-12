@@ -2,12 +2,15 @@
 
 from typing import Type
 
-from dial.node_editor import Port
+from .port import Port
 
 
-class InputPort(Port):
+class OutputPort(Port):
     def __init__(self, port_type: Type):
         super().__init__(port_type, allows_multiple_connections=False)
 
-    def send(self):
-        pass
+        self.processing_function = None
+
+    def get_result(self):
+        """Returns the value this port expects from the connected node."""
+        return self.processing_function()
