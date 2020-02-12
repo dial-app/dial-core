@@ -1,6 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from logging import DEBUG
 from typing import Optional, Type
+
+from logdecorator import log_on_end
 
 from .port import Port
 
@@ -24,5 +27,6 @@ class InputPort(Port):
 
         return None
 
+    @log_on_end(DEBUG, "{self!r}: Value received")
     def receive(self):
         return self.port_connected_to.get_output_value()

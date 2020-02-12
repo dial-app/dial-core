@@ -6,7 +6,10 @@ Can:
  * Add/remove new ports as input/output ports
 """
 
+from logging import DEBUG
 from typing import Dict
+
+from logdecorator import log_on_end, log_on_start
 
 from .port import Port
 
@@ -30,7 +33,7 @@ class Node:
 
     def process(self):
         for output_port in self.outputs.values():
-            output_port.send()
+            output_port.propagate()
 
     def add_input_port(self, port_name: str, input_port: Port):
         """Adds a new input port to the list of ports.
@@ -82,6 +85,7 @@ class Node:
                 f"Couldn't remove {port_name} from {self}! Missing port name from input"
             )
 
+    @log_on_end(DEBUG, "{port!r} added to {self!r}")
     def __add_port_to(self, ports_dict: Dict[str, Port], port_name: str, port: Port):
         """Adds a port to a dictionary of ports.
 
@@ -95,6 +99,7 @@ class Node:
         ports_dict[port_name] = port
         port.node = self
 
+    @log_on_end(DEBUG, "{port!r} removed from {self!r}")
     def __remove_port_from(self, ports_dict: Dict[str, Port], port_name: str) -> bool:
         """Removes a port from a dictionary of ports.
 
@@ -119,3 +124,11 @@ class Node:
         del ports_dict[port_name]
 
         return True
+
+    def __str__(self):
+        """Retuns the string representation of the Port object."""
+        return f"{type(self).__name__}"
+
+    def __repr__(self):
+        """Returns the object representation of the Port object (with mem address)."""
+        return f"{type(self).__name__}({str(id(self))[:4]}...{str(id(self))[-4:]})"

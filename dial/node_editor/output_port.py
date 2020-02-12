@@ -1,6 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from logging import DEBUG
 from typing import Type
+
+from logdecorator import log_on_end
 
 from .port import Port
 
@@ -11,6 +14,9 @@ class OutputPort(Port):
 
         self.output_generator = None
 
+    @log_on_end(
+        DEBUG, "{self!r}: Value generated from {self.output_generator.__name__}"
+    )
     def get_output_value(self):
         """Returns the value this port expects from the connected node."""
         if not self.output_generator:
@@ -20,6 +26,6 @@ class OutputPort(Port):
 
         return self.output_generator()
 
-    def send(self):
+    def propagate(self):
         for port in self.connections:
             port.node.process()

@@ -8,14 +8,10 @@ Can:
   * Check if two ports are compatible and can be connected
 """
 
-import logging
 from logging import DEBUG, ERROR
 from typing import Optional, Set, Type
 
-from dial.utils import log
 from logdecorator import log_on_end, log_on_error
-
-LOGGER = log.get_logger(__name__)
 
 
 class Port:
@@ -74,10 +70,6 @@ class Port:
             ValueError: If the port is connected to itself.
             ValueError: If the ports aren't compatible (can't be connected).
         """
-
-        logger = logging.getLogger()
-        logger.debug("haudf")
-
         if port is self:  # Avoid connecting a port to itself
             raise ValueError(f"Can't connect {port!r} to itself!")
 
@@ -121,10 +113,12 @@ class Port:
         self.__connected_to.clear()
 
     def __str__(self):
+        """Retuns the string representation of the Port object."""
         return f"{type(self).__name__} [{self.port_type.__name__}]"
 
     def __repr__(self):
+        """Returns the object representation of the Port object (with mem address)."""
         return (
-            f"{type(self).__name__} {str(id(self))[:4]}...{str(id(self))[-4:]}"
+            f"{type(self).__name__}({str(id(self))[:4]}...{str(id(self))[-4:]})"
             f" [{self.port_type.__name__}]"
         )

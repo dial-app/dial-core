@@ -40,11 +40,10 @@ class PrintNode(Node):
         self.add_input_port("string", InputPort(port_type=int))
 
     def process(self):
-        string_to_print = self.inputs["string"].receive()
-
-        print(string_to_print)
-
         super().process()
+
+        string_to_print = self.inputs["string"].receive()
+        print(string_to_print)
 
 
 def run_example():
