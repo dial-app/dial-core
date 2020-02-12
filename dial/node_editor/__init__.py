@@ -3,7 +3,7 @@
 from .node import Node
 from .port import Port
 
-__all__ = ["Node"]
+__all__ = ["Node", "Port"]
 
 """
 scene = NodeEditorScene()
@@ -18,8 +18,6 @@ dataset_node.outputs["train"].connect_to(training_node.input["dataset"])
 dataset_node.outputs["train"].disconnect_from(training_node.input["dataset"])
 
 # How can we check if two ports can be connected?
-
-# How is the data going to flow between two ports?
 
 * When the port is defined, it already knows its type
 (Doesn't has sense to change port types on the fly I guess)
@@ -71,4 +69,50 @@ Let's say a node with 1 inputs and 2 outputs has a method process:
 
 scene.addNode(dataset_node)
 scene.addNode(training_node)
+
+
+### Flowing data from nodes
+
+Example: We're creating a Calculator using Nodes
+
+AddNode = Node(inputs={"op1": Port(port_type=int), "op2": Port(port_type=int)},
+                outputs={"result": Port(port_type=int)})
+
+# How is this node going to process its data?
+
+* Graph is started from any node (Change later)
+* All input ports shouldn't allow multiple connections.
+
+* What is clear: process should be an abstract class of Node, and let other objects
+  subclass it
+
+(Inside Node class)
+def process(self):
+   op1 = self.inputs["op1"].receive() # Probably nonblocking functions?
+   op2 = self.inputs["op2"].receive()
+
+   # (Check when op1 and op2 are ready)
+
+   result = op1 + op2
+
+   self.outputs["result"].send(result)
+
+(Something like that?)
+
+def process(self, port_name):
+
+    output = self._process_internal(self, port_name)
+
+NumberNode
+def _process_internal(self, port_name):
+    if port_name == "value":
+        return 1
+
+AddNode
+def _process_internal(self, port_name):
+    if port_name == "result":
+       op1 = self.inputs["op1"].receive()
+       op2 = self.inputs["op2"].receive()
+       return op1 + op2
+
 """

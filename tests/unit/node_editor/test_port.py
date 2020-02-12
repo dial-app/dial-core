@@ -90,6 +90,39 @@ def test_connect_port_to_two_other_ports_with_single_connection(a, b, c):
     assert c_single in a_single.connections
 
 
+def test_triangular_connection():
+    """
+    Test this connection:
+           b                     b
+         //                       \\
+        a          same as          a
+         \\                       //
+           c                     c
+    Where a allows multiple connections (to b and c), but both b and c not.
+    """
+    a = Port(port_type=int, allows_multiple_connections=True)
+    b = Port(port_type=int, allows_multiple_connections=False)
+    c = Port(port_type=int, allows_multiple_connections=False)
+
+    a.connect_to(b)
+    a.connect_to(c)
+
+    assert b in a.connections
+    assert c in a.connections
+
+    # But then, if we try to connect b and c, the a connection will be cut
+    #       b
+    #   a   |
+    #       c
+
+    b.connect_to(c)
+
+    assert c in b.connections
+    assert b in c.connections
+    assert b not in a.connections
+    assert c not in a.connections
+
+
 def test_connect_port_to_self(a):
     with pytest.raises(ValueError):
         a.connect_to(a)
