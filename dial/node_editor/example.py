@@ -6,8 +6,8 @@ class ValueNode(Node):
         super().__init__("Value Node")
 
         # Port configuration
-        self.add_output("value", OutputPort(port_type=int))
-        self.outputs["value"].processing_function = self.return_value
+        self.add_output_port("value", OutputPort(port_type=int))
+        self.outputs["value"].function_to_generate_output = self.return_value
 
         # Attributes
         self.value = value
@@ -20,13 +20,13 @@ class AddNode(Node):
     def __init__(self):
         super().__init__("Addition Node")
 
-        self.add_input("op1", InputPort(port_type=int))
-        self.add_input("op2", InputPort(port_type=int))
+        self.add_input_port("op1", InputPort(port_type=int))
+        self.add_input_port("op2", InputPort(port_type=int))
 
-        self.add_output("result", OutputPort(port_type=int))
-        self.outputs["result"].processing_function = self.add_inputs
+        self.add_output_port("result", OutputPort(port_type=int))
+        self.outputs["result"].function_to_generate_output = self.add_ops
 
-    def add_inputs(self):
+    def add_ops(self):
         op1 = self.inputs["op1"].receive()
         op2 = self.inputs["op2"].receive()
 
@@ -37,25 +37,27 @@ class PrintNode(Node):
     def __init__(self):
         super().__init__("Print Node")
 
-        self.add_input("string", InputPort(port_type=int))
+        self.add_input_port("string", InputPort(port_type=int))
 
     def process(self):
         string_to_print = self.inputs["string"].receive()
 
         print(string_to_print)
 
+        super().process()
+
 
 def run_example():
-    node_op1 = ValueNode(2)
+    node_op1 = ValueNode(4)
     node_op2 = ValueNode(3)
     add_node = AddNode()
     print_node = PrintNode()
+    print_node_2 = PrintNode()
 
     node_op1.outputs["value"].connect_to(add_node.inputs["op1"])
     node_op2.outputs["value"].connect_to(add_node.inputs["op2"])
 
     add_node.outputs["result"].connect_to(print_node.inputs["string"])
+    add_node.outputs["result"].connect_to(print_node_2.inputs["string"])
 
-    print_node.process()
-
-    print("Example")
+    node_op2.process()

@@ -25,4 +25,4 @@ class InputPort(Port):
         return None
 
     def receive(self):
-        return self.port_connected_to.get_result()
+        return self.port_connected_to.get_output_value()

@@ -63,11 +63,11 @@ class Port:
             ValueError: If the port is connected to itself.
             ValueError: If the ports aren't compatible (can't be connected).
         """
-        if port is self:  # Avoid connecting a port to itself
-            raise ValueError(f"Can't connect port {port} to itself!")
-
         if port in self.__connected_to:  # The ports are already connected
             return
+
+        if port is self:  # Avoid connecting a port to itself
+            raise ValueError(f"Can't connect port {port} to itself!")
 
         if not self.is_compatible_with(port):
             raise ValueError(
@@ -77,8 +77,7 @@ class Port:
 
         if not self.allows_multiple_connections:
             # Disconnect from other ports before setting the new connection
-            for connected_port in list(self.__connected_to):
-                connected_port.disconnect_from(self)
+            self.clear_all_connections()
 
         # Two way connection (Both ports will have a reference to each other)
         self.__connected_to.add(port)
@@ -98,9 +97,9 @@ class Port:
         port.disconnect_from(self)
 
     def clear_all_connections(self):
-        """Remove all connections to this port."""
+        """Removes all connections to this port."""
 
-        # Use a list to avoid a port while iterating the list
+        # Use a list to avoid removing an item from self.__connected_to while iterating
         for port in list(self.__connected_to):
             port.disconnect_from(self)
 

@@ -7,10 +7,19 @@ from .port import Port
 
 class OutputPort(Port):
     def __init__(self, port_type: Type):
-        super().__init__(port_type, allows_multiple_connections=False)
+        super().__init__(port_type, allows_multiple_connections=True)
 
-        self.processing_function = None
+        self.function_to_generate_output = None
 
-    def get_result(self):
+    def get_output_value(self):
         """Returns the value this port expects from the connected node."""
-        return self.processing_function()
+        if not self.function_to_generate_output:
+            raise NotImplementedError(
+                "Output Port {self} doesn't has an implementation!"
+            )
+
+        return self.function_to_generate_output()
+
+    def send(self):
+        for port in self.connections:
+            port.node.process()
