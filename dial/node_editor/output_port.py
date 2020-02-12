@@ -13,23 +13,23 @@ class OutputPort(Port):
         super().__init__(name, port_type, allows_multiple_connections=True)
 
         self.output_generator = None
-        self._cached_output = None
 
     @log_on_end(
         DEBUG, '{self}: Value generated from "{self.output_generator.__name__}"'
     )
     def get_output_value(self):
-        """Returns the value this port expects from the connected node."""
+        """Returns the value this port expects from the connected node.
+
+        Raises:
+            AttributeError: If the port doesn't have an output generator function
+            attached.
+        """
         if not self.output_generator:
-            raise NotImplementedError(
-                "Output Port {self} doesn't has an implementation!"
-            )
+            raise AttributeError("{self} doesn't has a generator function attached!")
 
-        if not self._cached_output:
-            self._cached_output = self.output_generator()
-
-        return self._cached_output
+        return self.output_generator()
 
     def propagate(self):
+        """Starts processing each connected node."""
         for port in self.connections:
             port.node.process()

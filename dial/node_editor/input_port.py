@@ -29,4 +29,5 @@ class InputPort(Port):
 
     @log_on_end(DEBUG, "{self}: Value received")
     def receive(self):
+        """Gets the output value of the connected OutputPort."""
         return self.port_connected_to.get_output_value()

@@ -1,7 +1,7 @@
 import pytest
 
 from dial import __version__
-from dial.node_editor import Node, Port
+from dial.node_editor import InputPort, Node, OutputPort, Port
 
 collect_ignore = ["setup.py"]
 
@@ -67,6 +67,18 @@ def node_a():
 def node_b():
     """Empty node b. Allows multiple connections to different ports. """
     return Node(title="b")
+
+
+@pytest.fixture
+def input_port_a():
+    """Simple input port"""
+    return InputPort(name="a", port_type=int)
+
+
+@pytest.fixture
+def output_port_a():
+    """Simple input port"""
+    return OutputPort(name="a", port_type=int)
 
 
 def pytest_report_header(config):
