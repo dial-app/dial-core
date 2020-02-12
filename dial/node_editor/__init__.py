@@ -78,15 +78,39 @@ Example: We're creating a Calculator using Nodes
 AddNode = Node(inputs={"op1": Port(port_type=int), "op2": Port(port_type=int)},
                 outputs={"result": Port(port_type=int)})
 
+NumberNode = Node(outputs={"value": Port(port_type=int)})
+
 # How is this node going to process its data?
 
-* Graph is started from any node (Change later)
-* All input ports shouldn't allow multiple connections.
+* Graph is started from any node (Change later?)
+* All input ports can't allow multiple connections.
 
 * What is clear: process should be an abstract class of Node, and let other objects
   subclass it
 
-(Inside Node class)
+
+AHA! Having InputPort and OutputPort reduces confusion on the API
+
+(Inside Port class)
+def receive(self):
+    return port.connect_to.process_func()
+
+(Inside NumberNode class)
+def __init__(self):
+    self.value = 5
+
+    self.add_output("value", Port(port_type=int))
+
+    # TODO: Prob check if fun return type is compatible?
+    self.outputs["value"].process_func = self.get_value
+
+def get_value(self):
+    return self.value
+
+# def process (self):
+    pass # No need to define
+
+(Inside AddNode class)
 def process(self):
    op1 = self.inputs["op1"].receive() # Probably nonblocking functions?
    op2 = self.inputs["op2"].receive()
@@ -95,24 +119,8 @@ def process(self):
 
    result = op1 + op2
 
-   self.outputs["result"].send(result)
-
 (Something like that?)
 
-def process(self, port_name):
-
-    output = self._process_internal(self, port_name)
-
-NumberNode
-def _process_internal(self, port_name):
-    if port_name == "value":
-        return 1
-
-AddNode
-def _process_internal(self, port_name):
-    if port_name == "result":
-       op1 = self.inputs["op1"].receive()
-       op2 = self.inputs["op2"].receive()
-       return op1 + op2
+^^^^ Process from current node backwards
 
 """
