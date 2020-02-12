@@ -120,5 +120,5 @@ class Port:
         """Returns the object representation of the Port object (with mem address)."""
         return (
             f"{type(self).__name__}({str(id(self))[:4]}...{str(id(self))[-4:]})"
-            f" [{self.port_type.__name__}]"
+            f" [{self.port_type.__name__}] from {self.node!r}"
         )

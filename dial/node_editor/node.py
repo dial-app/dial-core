@@ -9,7 +9,7 @@ Can:
 from logging import DEBUG
 from typing import Dict
 
-from logdecorator import log_on_end, log_on_start
+from logdecorator import log_on_end
 
 from .port import Port
 

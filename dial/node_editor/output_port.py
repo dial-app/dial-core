@@ -13,6 +13,7 @@ class OutputPort(Port):
         super().__init__(port_type, allows_multiple_connections=True)
 
         self.output_generator = None
+        self._cached_output = None
 
     @log_on_end(
         DEBUG, "{self!r}: Value generated from {self.output_generator.__name__}"
@@ -24,7 +25,10 @@ class OutputPort(Port):
                 "Output Port {self} doesn't has an implementation!"
             )
 
-        return self.output_generator()
+        if not self._cached_output:
+            self._cached_output = self.output_generator()
+
+        return self._cached_output
 
     def propagate(self):
         for port in self.connections:
