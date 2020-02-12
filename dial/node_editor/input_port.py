@@ -9,8 +9,8 @@ from .port import Port
 
 
 class InputPort(Port):
-    def __init__(self, port_type: Type):
-        super().__init__(port_type, allows_multiple_connections=False)
+    def __init__(self, name: str, port_type: Type):
+        super().__init__(name, port_type, allows_multiple_connections=False)
 
     @property
     def port_connected_to(self) -> Optional[Port]:
@@ -27,6 +27,6 @@ class InputPort(Port):
 
         return None
 
-    @log_on_end(DEBUG, "{self!r}: Value received")
+    @log_on_end(DEBUG, "{self}: Value received")
     def receive(self):
         return self.port_connected_to.get_output_value()

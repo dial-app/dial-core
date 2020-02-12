@@ -9,14 +9,14 @@ from .port import Port
 
 
 class OutputPort(Port):
-    def __init__(self, port_type: Type):
-        super().__init__(port_type, allows_multiple_connections=True)
+    def __init__(self, name: str, port_type: Type):
+        super().__init__(name, port_type, allows_multiple_connections=True)
 
         self.output_generator = None
         self._cached_output = None
 
     @log_on_end(
-        DEBUG, "{self!r}: Value generated from {self.output_generator.__name__}"
+        DEBUG, '{self}: Value generated from "{self.output_generator.__name__}"'
     )
     def get_output_value(self):
         """Returns the value this port expects from the connected node."""

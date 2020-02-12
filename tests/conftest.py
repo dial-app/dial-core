@@ -1,6 +1,72 @@
+import pytest
+
 from dial import __version__
+from dial.node_editor import Node, Port
 
 collect_ignore = ["setup.py"]
+
+
+@pytest.fixture
+def a_multi():
+    """Empty port a. Allows multiple connections to different ports. """
+    return Port(name="a_multi", port_type=int)
+
+
+@pytest.fixture
+def b_multi():
+    """Empty port b. Allows multiple connections to different ports. """
+    return Port(name="b_multi", port_type=int)
+
+
+@pytest.fixture
+def c_multi():
+    """Empty port c. Allows multiple connections to different ports. """
+    return Port(name="c_multi", port_type=int)
+
+
+@pytest.fixture
+def a_single():
+    """Empty port a. Doesn't allow singleple connections to different ports. """
+    return Port(name="a_single", port_type=int, allows_multiple_connections=False)
+
+
+@pytest.fixture
+def b_single():
+    """Empty port b. Doesn't allow singleple connections to different ports. """
+    return Port(name="b_single", port_type=int, allows_multiple_connections=False)
+
+
+@pytest.fixture
+def c_single():
+    """Empty port c. Doesn't allows multiple connections to different ports. """
+    return Port(name="c_multi", port_type=int, allows_multiple_connections=False)
+
+
+@pytest.fixture
+def port_int_a():
+    return Port(name="port_int_a", port_type=int)
+
+
+@pytest.fixture
+def port_int_b():
+    return Port(name="port_int_b", port_type=int)
+
+
+@pytest.fixture
+def port_str():
+    return Port(name="port_str", port_type=str)
+
+
+@pytest.fixture
+def node_a():
+    """Empty node a. Allows multiple connections to different ports. """
+    return Node(title="a")
+
+
+@pytest.fixture
+def node_b():
+    """Empty node b. Allows multiple connections to different ports. """
+    return Node(title="b")
 
 
 def pytest_report_header(config):

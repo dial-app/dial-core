@@ -6,7 +6,7 @@ class ValueNode(Node):
         super().__init__("Value Node")
 
         # Port configuration
-        self.add_output_port("value", OutputPort(port_type=int))
+        self.add_output_port(OutputPort("value", port_type=int))
         self.outputs["value"].output_generator = self.return_value
 
         # Attributes
@@ -20,10 +20,10 @@ class AddNode(Node):
     def __init__(self):
         super().__init__("Addition Node")
 
-        self.add_input_port("op1", InputPort(port_type=int))
-        self.add_input_port("op2", InputPort(port_type=int))
+        self.add_input_port(InputPort("op1", port_type=int))
+        self.add_input_port(InputPort("op2", port_type=int))
 
-        self.add_output_port("result", OutputPort(port_type=int))
+        self.add_output_port(OutputPort("result", port_type=int))
         self.outputs["result"].output_generator = self.add_ops
 
     def add_ops(self):
@@ -37,7 +37,7 @@ class PrintNode(Node):
     def __init__(self):
         super().__init__("Print Node")
 
-        self.add_input_port("string", InputPort(port_type=int))
+        self.add_input_port(InputPort("string", port_type=int))
 
     def process(self):
         super().process()

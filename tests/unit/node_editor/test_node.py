@@ -2,99 +2,74 @@
 
 import pytest
 
-from dial.node_editor import Node, Port
-
-
-@pytest.fixture
-def node_a():
-    """Empty node a. Allows multiple connections to different ports. """
-    return Node(title="a")
-
-
-@pytest.fixture
-def node_b():
-    """Empty node b. Allows multiple connections to different ports. """
-    return Node(title="b")
-
 
 def test_title(node_a):
     assert node_a.title == "a"
 
 
-def test_add_input_port(node_a):
-    my_input_port = Port(port_type=int)
-    node_a.add_input_port("port", my_input_port)
+def test_add_input_port(node_a, a_single):
+    node_a.add_input_port(a_single)
 
-    assert node_a.inputs["port"] == my_input_port
-    assert my_input_port not in node_a.outputs.values()
+    assert node_a.inputs["a_single"] == a_single
+    assert a_single not in node_a.outputs.values()
 
-    assert my_input_port.node is node_a
-
-
-def test_add_output_port(node_a):
-    my_output_port = Port(port_type=int)
-    node_a.add_output_port("port", my_output_port)
-
-    assert node_a.outputs["port"] == my_output_port
-    assert my_output_port not in node_a.inputs.values()
-
-    assert my_output_port.node is node_a
+    assert a_single.node is node_a
 
 
-def test_remove_input_port(node_a):
-    my_input_port = Port(port_type=int)
-    node_a.add_input_port("port", my_input_port)
+def test_add_output_port(node_a, a_single):
+    node_a.add_output_port(a_single)
 
-    node_a.remove_input_port("port")
-    assert my_input_port not in node_a.inputs
+    assert node_a.outputs["a_single"] == a_single
+    assert a_single not in node_a.inputs.values()
 
-    assert my_input_port.node is None
-
-
-def test_remove_output_port(node_a):
-    my_output_port = Port(port_type=int)
-    node_a.add_output_port("port", my_output_port)
-
-    node_a.remove_output_port("port")
-    assert my_output_port not in node_a.outputs
-
-    assert my_output_port.node is None
+    assert a_single.node is node_a
 
 
-def test_remove_connected_port(node_a):
-    foo_port = Port(port_type=int)
-    bar_port = Port(port_type=int)
-    foo_port.connect_to(bar_port)
+def test_remove_input_port(node_a, a_single):
+    node_a.add_input_port(a_single)
 
-    node_a.add_input_port("foo", foo_port)
+    node_a.remove_input_port("a_single")
+    assert a_single not in node_a.inputs
 
-    assert foo_port in bar_port.connections
-    assert bar_port in foo_port.connections
-
-    node_a.remove_input_port("foo")
-
-    assert foo_port not in bar_port.connections
-    assert bar_port not in foo_port.connections
+    assert a_single.node is None
 
 
-def test_node_connect_to_node(node_a, node_b):
-    foo_port = Port(port_type=int)
-    bar_port = Port(port_type=int)
+def test_remove_output_port(node_a, a_single):
+    node_a.add_output_port(a_single)
 
-    node_a.add_output_port("foo", foo_port)
-    node_b.add_input_port("bar", bar_port)
+    node_a.remove_output_port("a_single")
+    assert a_single not in node_a.outputs
 
-    node_a.outputs["foo"].connect_to(node_b.inputs["bar"])
+    assert a_single.node is None
+
+
+def test_remove_connected_port(node_a, a_single, b_single):
+    a_single.connect_to(b_single)
+
+    node_a.add_input_port(a_single)
+
+    assert a_single in b_single.connections
+    assert b_single in a_single.connections
+
+    node_a.remove_input_port("a_single")
+
+    assert a_single not in b_single.connections
+    assert b_single not in a_single.connections
+
+
+def test_node_connect_to_node(node_a, node_b, a_single, b_single):
+    node_a.add_output_port(a_single)
+    node_b.add_input_port(b_single)
+
+    node_a.outputs["a_single"].connect_to(node_b.inputs["b_single"])
 
     # Assert the two ports are connected
-    assert foo_port in bar_port.connections
-    assert bar_port in foo_port.connections
+    assert a_single in b_single.connections
+    assert b_single in a_single.connections
 
 
-def test_node_connect_to_inexistent(node_a, node_b):
-    foo_port = Port(port_type=int)
-
-    node_a.add_output_port("foo", foo_port)
+def test_node_connect_to_inexistent(node_a, node_b, a_single):
+    node_a.add_output_port(a_single)
 
     with pytest.raises(KeyError):
-        node_a.outputs["foo"].connect_to(node_b.inputs["doesnt_exists"])
+        node_a.outputs["a_single"].connect_to(node_b.inputs["doesnt_exists"])

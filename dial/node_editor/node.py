@@ -35,23 +35,21 @@ class Node:
         for output_port in self.outputs.values():
             output_port.propagate()
 
-    def add_input_port(self, port_name: str, input_port: Port):
+    def add_input_port(self, input_port: Port):
         """Adds a new input port to the list of ports.
 
         Args:
-            port_name: Name of the port being added.
             input_port: Port object added to the input ports list.
         """
-        self.__add_port_to(self.inputs, port_name, input_port)
+        self.__add_port_to(self.inputs, input_port)
 
-    def add_output_port(self, port_name: str, output_port: Port):
+    def add_output_port(self, output_port: Port):
         """Adds a new output port to the list of ports.
 
         Args:
-            port_name: Name of the port being added.
             output_port: Port object added to the output ports list.
         """
-        self.__add_port_to(self.outputs, port_name, output_port)
+        self.__add_port_to(self.outputs, output_port)
 
     def remove_input_port(self, port_name: str):
         """Removes an input port from the list of input ports.
@@ -85,21 +83,20 @@ class Node:
                 f"Couldn't remove {port_name} from {self}! Missing port name from input"
             )
 
-    @log_on_end(DEBUG, "{port!r} added to {self!r}")
-    def __add_port_to(self, ports_dict: Dict[str, Port], port_name: str, port: Port):
+    @log_on_end(DEBUG, "{port} added to {self}")
+    def __add_port_to(self, ports_dict: Dict[str, Port], port: Port):
         """Adds a port to a dictionary of ports.
 
         When a port is added, a reference to this Node is added (`port.node = self`)
 
         Args:
             ports_dict: Dictionary of all the ports.
-            port_name: New name (identifier) for the port.
             port: Port object to add.
         """
-        ports_dict[port_name] = port
+        ports_dict[port.name] = port
         port.node = self
 
-    @log_on_end(DEBUG, "{port!r} removed from {self!r}")
+    @log_on_end(DEBUG, "{port_name} removed from {self}")
     def __remove_port_from(self, ports_dict: Dict[str, Port], port_name: str) -> bool:
         """Removes a port from a dictionary of ports.
 
@@ -127,8 +124,11 @@ class Node:
 
     def __str__(self):
         """Retuns the string representation of the Port object."""
-        return f"{type(self).__name__}"
+        return f'{type(self).__name__} "{self.title}" '
 
     def __repr__(self):
         """Returns the object representation of the Port object (with mem address)."""
-        return f"{type(self).__name__}({str(id(self))[:4]}...{str(id(self))[-4:]})"
+        return (
+            f'{type(self).__name__} "{self.title}"'
+            f"({str(id(self))[:4]}...{str(id(self))[-4:]})"
+        )

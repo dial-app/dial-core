@@ -15,13 +15,21 @@ from logdecorator import log_on_end, log_on_error
 
 
 class Port:
-    def __init__(self, port_type: Type, allows_multiple_connections: bool = True):
+    def __init__(
+        self, name: str, port_type: Type, allows_multiple_connections: bool = True
+    ):
+        self.__name = name
         self.__port_type = port_type
         self.__connected_to: Set["Port"] = set()  # Avoid repeat ports
 
         self.node: Optional["Node"] = None  # type: ignore
 
         self.allows_multiple_connections = allows_multiple_connections
+
+    @property
+    def name(self) -> str:
+        """Returns the name (identifier) of the port."""
+        return self.__name
 
     @property
     def port_type(self) -> Type:
@@ -51,7 +59,7 @@ class Port:
         """
         return self.__port_type == port.port_type
 
-    @log_on_end(DEBUG, "{self!r} connected to {port!r}")
+    @log_on_end(DEBUG, "{self} connected to {port}")
     @log_on_error(
         ERROR, "Error on connection: {e}", on_exceptions=(ValueError), reraise=True
     )
@@ -71,12 +79,12 @@ class Port:
             ValueError: If the ports aren't compatible (can't be connected).
         """
         if port is self:  # Avoid connecting a port to itself
-            raise ValueError(f"Can't connect {port!r} to itself!")
+            raise ValueError(f"Can't connect {port} to itself!")
 
         if not self.is_compatible_with(port):
             raise ValueError(
-                f"This port ({self!r}) type is not compatible with the"
-                f" other port. ({port!r})"
+                f"This port ({self}) type is not compatible with the"
+                f" other port. ({port})"
             )
 
         if not self.allows_multiple_connections:
@@ -88,7 +96,7 @@ class Port:
         if self not in port.connections:
             port.connect_to(self)
 
-    @log_on_end(DEBUG, "Port {self!r} disconnected from {port!r}")
+    @log_on_end(DEBUG, "Port {self} disconnected from {port}")
     def disconnect_from(self, port: "Port"):
         """Disconnects the current port from the other port.
 
@@ -102,7 +110,7 @@ class Port:
         self.__connected_to.discard(port)
         port.disconnect_from(self)
 
-    @log_on_end(DEBUG, "All connections cleared on {self!r}")
+    @log_on_end(DEBUG, "All connections cleared on {self}")
     def clear_all_connections(self):
         """Removes all connections to this port."""
 
@@ -114,11 +122,12 @@ class Port:
 
     def __str__(self):
         """Retuns the string representation of the Port object."""
-        return f"{type(self).__name__} [{self.port_type.__name__}]"
+        return f'{type(self).__name__} "{self.name}" [{self.port_type.__name__}]'
 
     def __repr__(self):
         """Returns the object representation of the Port object (with mem address)."""
         return (
-            f"{type(self).__name__}({str(id(self))[:4]}...{str(id(self))[-4:]})"
-            f" [{self.port_type.__name__}] from {self.node!r}"
+            f'{type(self).__name__} "{self.name}"'
+            f" ({str(id(self))[:4]}...{str(id(self))[-4:]})"
+            f" [{self.port_type.__name__}] from {self.node}"
         )

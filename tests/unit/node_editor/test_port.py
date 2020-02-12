@@ -2,81 +2,55 @@
 
 import pytest
 
-from dial.node_editor import Port
+
+def test_ports_compatible(port_int_a, port_int_b, port_str):
+    assert port_int_a.is_compatible_with(port_int_b)
+    assert port_int_b.is_compatible_with(port_int_a)
+    assert not port_int_a.is_compatible_with(port_str)
 
 
-@pytest.fixture
-def a():
-    """Empty port a. Allows multiple connections to different ports. """
-    return Port(port_type=int)
+def test_connect_port_to_other(a_multi, b_multi):
+    a_multi.connect_to(b_multi)
+
+    assert a_multi in b_multi.connections
+    assert b_multi in a_multi.connections
+
+    assert len(a_multi.connections) == 1
+    assert len(b_multi.connections) == 1
 
 
-@pytest.fixture
-def b():
-    """Empty port b. Allows multiple connections to different ports. """
-    return Port(port_type=int)
+def test_connect_port_twice(a_multi, b_multi):
+    a_multi.connect_to(b_multi)
+    b_multi.connect_to(a_multi)
 
-
-@pytest.fixture
-def c():
-    """Empty port c. Allows multiple connections to different ports. """
-    return Port(port_type=int)
-
-
-def test_ports_compatible():
-    p1 = Port(port_type=int)
-    p2 = Port(port_type=int)
-    p3 = Port(port_type=str)
-
-    assert p1.is_compatible_with(p2)
-    assert p2.is_compatible_with(p1)
-    assert not p1.is_compatible_with(p3)
-
-
-def test_connect_port_to_other(a, b):
-    a.connect_to(b)
-
-    assert a in b.connections
-    assert b in a.connections
-
-    assert len(a.connections) == 1
-    assert len(b.connections) == 1
-
-
-def test_connect_port_twice(a, b):
-    a.connect_to(b)
-    b.connect_to(a)
-
-    assert a in b.connections
-    assert b in a.connections
+    assert a_multi in b_multi.connections
+    assert b_multi in a_multi.connections
 
     # Check that ports aren't repeated
-    assert len(a.connections) == 1
-    assert len(b.connections) == 1
+    assert len(a_multi.connections) == 1
+    assert len(b_multi.connections) == 1
 
 
-def test_connect_port_to_two_other_ports(a, b, c):
-    a.connect_to(b)
-    a.connect_to(c)
-    b.connect_to(c)
+def test_connect_port_to_two_other_ports(a_multi, b_multi, c_multi):
+    a_multi.connect_to(b_multi)
+    a_multi.connect_to(c_multi)
+    b_multi.connect_to(c_multi)
 
-    assert a in b.connections
-    assert a in c.connections
-    assert b in a.connections
-    assert b in c.connections
-    assert c in a.connections
-    assert c in b.connections
+    assert a_multi in b_multi.connections
+    assert a_multi in c_multi.connections
+    assert b_multi in a_multi.connections
+    assert b_multi in c_multi.connections
+    assert c_multi in a_multi.connections
+    assert c_multi in b_multi.connections
 
-    assert len(a.connections) == 2
-    assert len(b.connections) == 2
-    assert len(c.connections) == 2
+    assert len(a_multi.connections) == 2
+    assert len(b_multi.connections) == 2
+    assert len(c_multi.connections) == 2
 
 
-def test_connect_port_to_two_other_ports_with_single_connection(a, b, c):
-    a_single = Port(port_type=int, allows_multiple_connections=False)
-    b_single = Port(port_type=int, allows_multiple_connections=False)
-    c_single = Port(port_type=int, allows_multiple_connections=False)
-
+def test_connect_port_to_two_other_ports_with_single_connection(
+    a_single, b_single, c_single
+):
     a_single.connect_to(b_single)
 
     assert a_single in b_single.connections
@@ -90,7 +64,7 @@ def test_connect_port_to_two_other_ports_with_single_connection(a, b, c):
     assert c_single in a_single.connections
 
 
-def test_triangular_connection():
+def test_triangular_connection(a_multi, b_single, c_single):
     """
     Test this connection:
            b                     b
@@ -100,73 +74,66 @@ def test_triangular_connection():
            c                     c
     Where a allows multiple connections (to b and c), but both b and c not.
     """
-    a = Port(port_type=int, allows_multiple_connections=True)
-    b = Port(port_type=int, allows_multiple_connections=False)
-    c = Port(port_type=int, allows_multiple_connections=False)
+    a_multi.connect_to(b_single)
+    a_multi.connect_to(c_single)
 
-    a.connect_to(b)
-    a.connect_to(c)
-
-    assert b in a.connections
-    assert c in a.connections
+    assert b_single in a_multi.connections
+    assert c_single in a_multi.connections
 
     # But then, if we try to connect b and c, the a connection will be cut
     #       b
     #   a   |
     #       c
 
-    b.connect_to(c)
+    b_single.connect_to(c_single)
 
-    assert c in b.connections
-    assert b in c.connections
-    assert b not in a.connections
-    assert c not in a.connections
+    assert c_single in b_single.connections
+    assert b_single in c_single.connections
+    assert b_single not in a_multi.connections
+    assert c_single not in a_multi.connections
 
 
-def test_connect_port_to_self(a):
+def test_connect_port_to_self(a_single):
     with pytest.raises(ValueError):
-        a.connect_to(a)
+        a_single.connect_to(a_single)
 
 
-def test_connect_port_to_incompatible():
-    p1 = Port(port_type=int)
-    p2 = Port(port_type=str)
-
+def test_connect_port_to_incompatible(port_int_a, port_str):
     with pytest.raises(ValueError):
-        p1.connect_to(p2)
+        port_int_a.connect_to(port_str)
 
 
-def test_disconnect_port_from_other(a, b):
-    a.connect_to(b)
+def test_disconnect_port_from_other(a_single, b_single):
+    a_single.connect_to(b_single)
 
-    b.disconnect_from(a)
+    b_single.disconnect_from(a_single)
 
-    assert a not in b.connections
-    assert b not in a.connections
+    assert a_single not in b_single.connections
+    assert b_single not in a_single.connections
 
-    assert len(a.connections) == 0
-    assert len(b.connections) == 0
-
-
-def test_disconnect_port_twice(a, b):
-    a.connect_to(b)
-
-    b.disconnect_from(a)
-    a.disconnect_from(b)
-
-    assert a not in b.connections
-    assert b not in a.connections
-
-    assert len(a.connections) == 0
-    assert len(b.connections) == 0
+    assert len(a_single.connections) == 0
+    assert len(b_single.connections) == 0
 
 
-def test_clear_port_connections(a, b, c):
-    a.connect_to(b)
-    a.connect_to(c)
+def test_disconnect_port_twice(a_single, b_single):
+    a_single.connect_to(b_single)
 
-    a.clear_all_connections()
+    b_single.disconnect_from(a_single)
+    a_single.disconnect_from(b_single)
 
-    assert len(a.connections) == 0
-    assert a not in b.connections
-    assert a not in c.connections
+    assert a_single not in b_single.connections
+    assert b_single not in a_single.connections
+
+    assert len(a_single.connections) == 0
+    assert len(b_single.connections) == 0
+
+
+def test_clear_port_connections(a_multi, b_multi, c_multi):
+    a_multi.connect_to(b_multi)
+    a_multi.connect_to(c_multi)
+
+    a_multi.clear_all_connections()
+
+    assert len(a_multi.connections) == 0
+    assert a_multi not in b_multi.connections
+    assert a_multi not in c_multi.connections
