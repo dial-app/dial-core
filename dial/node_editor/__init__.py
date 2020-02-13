@@ -168,7 +168,7 @@ gui_scene = GraphicalScene(scene)
 Node may need access to the widget (getting functions and stuff)
 
 class DatasetNode(Node):
-    def __init__(self)
+    def __init__(self), OutputPort
         super().__init__("Dataset Node")
 
         self.content = DatasetWindow()

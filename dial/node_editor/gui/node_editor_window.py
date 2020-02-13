@@ -3,6 +3,7 @@
 from PySide2.QtWidgets import QVBoxLayout, QWidget
 
 from dial.node_editor import Node, Scene
+from dial.nodes import DatasetEditorNode
 
 from .graphics_scene import GraphicsScene
 from .node_editor_view import NodeEditorView
@@ -34,6 +35,9 @@ class NodeEditorWindow(QWidget):
         self.setLayout(self.__main_layout)
 
     def add_example_nodes(self):
-        my_node = Node(title="Example Node 1")
+        # my_node = Node(title="Example Node 1")
 
-        self.__scene.add_node(my_node)
+        dataset_node = DatasetEditorNode()
+
+        # self.__scene.add_node(my_node)
+        self.__scene.add_node(dataset_node)

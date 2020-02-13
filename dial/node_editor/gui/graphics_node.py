@@ -37,7 +37,7 @@ class GraphicsNode(QGraphicsItem):
         self.__title_font = QFont("Ubuntu", 10)
 
         self.round_edge_size = 10
-        self.padding = 15
+        self.padding = 10
 
         # Colors/Pens/Brushes
         self.title_color = Qt.white
@@ -90,7 +90,7 @@ class GraphicsNode(QGraphicsItem):
 
         return proxy_rect.adjusted(
             0, 0, self.padding * 2, self.__title_height() + self.padding * 2
-        )
+        ).normalized()
 
     def paint(
         self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget

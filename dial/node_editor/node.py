@@ -26,7 +26,7 @@ class Node(QObject):
 
         self.__title = title
 
-        self.__inner_widget: Optional[QWidget] = None
+        self.__inner_widget: Optional[QWidget] = inner_widget
 
         self.__inputs: Dict[str, Port] = {}
         self.__outputs: Dict[str, Port] = {}
