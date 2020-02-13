@@ -9,7 +9,9 @@ from .dataset_editor_widget import DatasetEditorWidget
 class DatasetEditorNode(Node):
     def __init__(self, parent=None):
         super().__init__(
-            title="Dataset Node", inner_widget=DatasetEditorWidget(), parent=parent
+            title="Dataset Editor Node",
+            inner_widget=DatasetEditorWidget(),
+            parent=parent,
         )
 
         print(self.inner_widget)

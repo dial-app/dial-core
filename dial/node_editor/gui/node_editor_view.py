@@ -1,13 +1,15 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from PySide2.QtCore import Qt
-from PySide2.QtGui import QMouseEvent, QPainter
+from PySide2.QtGui import QMouseEvent, QPainter, QWheelEvent
 from PySide2.QtWidgets import QGraphicsView
 
 
 class NodeEditorView(QGraphicsView):
     def __init__(self, parent=None):
         super().__init__(parent)
+
+        self.scale_factor_increment = 0.2
 
         self.__setup_ui()
 
@@ -49,6 +51,19 @@ class NodeEditorView(QGraphicsView):
 
         super().mouseMoveEvent(event)
 
+    def wheelEvent(self, event: QWheelEvent):
+        """Zooms in/out the view using the mouse wheel."""
+        if event.delta() > 0:
+            self.scale(
+                1.0 + self.scale_factor_increment, 1.0 + self.scale_factor_increment
+            )
+        else:
+            self.scale(
+                1.0 - self.scale_factor_increment, 1.0 - self.scale_factor_increment
+            )
+
+        event.accept()
+
     def __start_panning_view(self, event: QMouseEvent):
         """Responds to the event of start dragging the view for panning it."""
         self.setDragMode(QGraphicsView.ScrollHandDrag)
@@ -57,8 +72,8 @@ class NodeEditorView(QGraphicsView):
         self.panning_start_y = event.y()
 
     def __panning_view(self, event: QMouseEvent):
-        """Pans the view using the mouse movement."""
 
+        """Pans the view using the mouse movement."""
         # Move view by using the scrollbars
         self.horizontalScrollBar().setValue(
             self.horizontalScrollBar().value() - (event.x() - self.panning_start_x)
