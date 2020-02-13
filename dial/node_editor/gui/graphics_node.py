@@ -12,6 +12,7 @@ from PySide2.QtGui import (
 )
 from PySide2.QtWidgets import (
     QGraphicsItem,
+    QGraphicsProxyWidget,
     QGraphicsTextItem,
     QPushButton,
     QStyleOptionGraphicsItem,
@@ -29,8 +30,8 @@ class GraphicsNode(QGraphicsItem):
         self.__node = node
 
         # Graphic items
-        self.inner_widget = QPushButton("Testing")
-        self.graphics_title = QGraphicsTextItem(self)
+        self.__node_widget_proxy = QGraphicsProxyWidget(parent=self)
+        self.__graphics_title = QGraphicsTextItem(parent=self)
 
         # Graphic parameters
         self.__title_font = QFont("Ubuntu", 10)
@@ -55,6 +56,10 @@ class GraphicsNode(QGraphicsItem):
         """Returns the associated node."""
         return self.__node
 
+    def __title_height(self):
+        """Returns the height of the title graphics item."""
+        return self.__graphics_title.boundingRect().height()
+
     def __setup_ui(self):
         """Configures the graphics item flags and widgets."""
         # GraphicsItem
@@ -62,18 +67,30 @@ class GraphicsNode(QGraphicsItem):
         self.setFlag(QGraphicsItem.ItemIsMovable)
 
         # Title
-        self.graphics_title.setDefaultTextColor(self.title_color)
-        self.graphics_title.setPlainText(self.node.title)
+        self.__graphics_title.setDefaultTextColor(self.title_color)
+        self.__graphics_title.setPlainText(self.node.title)
 
-        self.graphics_title.setPos(self.padding, 0)
+        self.__graphics_title.setPos(self.padding, 0)
+
+        # Proxy widget
+        self.__node_widget_proxy.setWidget(
+            self.node.inner_widget if self.node.inner_widget else QWidget()
+        )
+        self.__node_widget_proxy.setPos(
+            self.padding, self.__title_height() + self.padding
+        )
 
     def __update_title(self, new_text: str):
         """Updates the graphics title item with new text."""
-        self.graphics_title.setPlainText(new_text)
+        self.__graphics_title.setPlainText(new_text)
 
     def boundingRect(self) -> QRectF:
         """Returns the rect enclosing the node."""
-        return QRectF(0, 0, 200, 200).normalized()
+        proxy_rect = self.__node_widget_proxy.boundingRect()
+
+        return proxy_rect.adjusted(
+            0, 0, self.padding * 2, self.__title_height() + self.padding * 2
+        )
 
     def paint(
         self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget
@@ -92,7 +109,7 @@ class GraphicsNode(QGraphicsItem):
         painter.drawPath(path_background.simplified())
 
         # Draw the title background
-        title_rect = self.graphics_title.boundingRect()
+        title_rect = self.__graphics_title.boundingRect()
 
         path_title_background = QPainterPath()
         path_title_background.setFillRule(Qt.WindingFill)

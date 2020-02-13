@@ -6,9 +6,10 @@ Can:
  * Add/remove new ports as input/output ports
 """
 
-from typing import Dict
+from typing import Dict, Optional
 
 from PySide2.QtCore import QObject, Signal
+from PySide2.QtWidgets import QWidget
 
 from dial.utils.log import DEBUG, log_on_end
 
@@ -18,10 +19,14 @@ from .port import Port
 class Node(QObject):
     title_changed = Signal(str)
 
-    def __init__(self, title: str, parent=None):
+    def __init__(
+        self, title: str, inner_widget: QWidget = None, parent: QObject = None
+    ):
         super().__init__(parent)
 
         self.__title = title
+
+        self.__inner_widget: Optional[QWidget] = None
 
         self.__inputs: Dict[str, Port] = {}
         self.__outputs: Dict[str, Port] = {}
@@ -33,8 +38,18 @@ class Node(QObject):
 
     @title.setter
     def title(self, title: str):
+        """Sets a new title for the node. Emits the `title_changed` signal.
+
+        Emits:
+            title_changed
+        """
         self.__title = title
         self.title_changed.emit(title)
+
+    @property
+    def inner_widget(self) -> Optional[QWidget]:
+        """Returns the inner widget set on the node (Or None if not used)."""
+        return self.__inner_widget
 
     @property
     def inputs(self) -> Dict[str, Port]:

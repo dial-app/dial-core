@@ -161,4 +161,29 @@ gui_scene = GraphicalScene(scene)
 
 # WORK WITH SIGNALS!! When scene adds a node, create a GraphicsNode enclosing it
 
+
+### How are custom graphic nodes go to be created?
+
+
+Node may need access to the widget (getting functions and stuff)
+
+class DatasetNode(Node):
+    def __init__(self)
+        super().__init__("Dataset Node")
+
+        self.content = DatasetWindow()
+
+        # Ports
+        self.add_output_port(OutputPort("train", port_type=int))
+        self.add_output_port(OutputPort("test", port_type=int))
+
+        self.outputs["train"].output_generator = self.get_train_dataset()
+        self.outputs["test"].output_generator = self.get_test_dataset()
+
+    def get_train_dataset(self):
+        return self.content.datasets.train
+
+    def get_test_dataset(self):
+        return self.content.datasets.test
+
 """
