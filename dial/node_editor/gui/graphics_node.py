@@ -1,25 +1,18 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from PySide2.QtCore import QRectF, Qt
-from PySide2.QtGui import (
-    QBrush,
-    QColor,
-    QFont,
-    QFontMetrics,
-    QPainter,
-    QPainterPath,
-    QPen,
-)
+from PySide2.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsProxyWidget,
     QGraphicsTextItem,
-    QPushButton,
     QStyleOptionGraphicsItem,
     QWidget,
 )
 
 from dial.node_editor import Node
+
+from .graphics_port import GraphicsPort
 
 
 class GraphicsNode(QGraphicsItem):
@@ -37,7 +30,7 @@ class GraphicsNode(QGraphicsItem):
         self.__title_font = QFont("Ubuntu", 10)
 
         self.round_edge_size = 10
-        self.padding = 10
+        self.padding = 12
 
         # Colors/Pens/Brushes
         self.title_color = Qt.white
@@ -48,6 +41,8 @@ class GraphicsNode(QGraphicsItem):
 
         # Connections
         self.node.title_changed.connect(self.__update_title)
+
+        # Create graphic ports
 
         self.__setup_ui()
 
@@ -79,6 +74,25 @@ class GraphicsNode(QGraphicsItem):
         self.__node_widget_proxy.setPos(
             self.padding, self.__title_height() + self.padding
         )
+
+        self.__create_graphic_ports()
+
+    def __create_graphic_ports(self):
+        print("creating graphic ports")
+        print(self.node.outputs.values())
+
+        def create_ports(ports_dict, x_offset):
+            for i, port in enumerate(ports_dict.values()):
+                graphics_port = GraphicsPort(port, parent=self)
+                graphics_port.setPos(
+                    x_offset,
+                    self.__title_height()
+                    + graphics_port.radius * 4
+                    + i * graphics_port.radius * 4,
+                )
+
+        create_ports(self.node.inputs, x_offset=0)
+        create_ports(self.node.outputs, x_offset=self.boundingRect().width())
 
     def __update_title(self, new_text: str):
         """Updates the graphics title item with new text."""
@@ -131,7 +145,7 @@ class GraphicsNode(QGraphicsItem):
         )
 
         path_title_background.addRect(
-            self.boundingRect().height() - self.round_edge_size,
+            self.boundingRect().width() - self.round_edge_size,
             title_rect.height() - self.round_edge_size,
             self.round_edge_size,
             self.round_edge_size,
