@@ -34,6 +34,11 @@ def test_remove_input_port(node_a, a_single):
     assert a_single.node is None
 
 
+def test_remove_inexistent_input_port(node_a, a_single):
+    with pytest.raises(ValueError):
+        node_a.remove_input_port("not_exists")
+
+
 def test_remove_output_port(node_a, a_single):
     node_a.add_output_port(a_single)
 
@@ -41,6 +46,11 @@ def test_remove_output_port(node_a, a_single):
     assert a_single not in node_a.outputs
 
     assert a_single.node is None
+
+
+def test_remove_inexistent_output_port(node_a, a_single):
+    with pytest.raises(ValueError):
+        node_a.remove_output_port("not_exists")
 
 
 def test_remove_connected_port(node_a, a_single, b_single):
