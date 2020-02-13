@@ -39,13 +39,7 @@ class NodeEditorWindow(QWidget):
     def add_example_nodes(self):
         # my_node = Node(title="Example Node 1")
 
-        connection = GraphicsConnection()
-        connection.start = QPointF(0, 0)
-        connection.end = QPointF(300, 450)
-
         dataset_node = DatasetEditorNode()
 
         # self.__scene.add_node(my_node)
         self.__scene.add_node(dataset_node)
-
-        self.__graphics_scene.addItem(connection)

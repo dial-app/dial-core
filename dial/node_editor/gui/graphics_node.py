@@ -21,6 +21,7 @@ class GraphicsNode(QGraphicsItem):
 
         # Components
         self.__node = node
+        self.__node.graphics_node = self  # Add an instance variable to self
 
         # Graphic items
         self.__node_widget_proxy = QGraphicsProxyWidget(parent=self)

@@ -12,6 +12,9 @@ class GraphicsPort(QGraphicsItem):
         super().__init__(parent)
 
         self.__port = port
+        self.__port.graphics_port = self  # Add an instance reference to self
+
+        self.graphics_node = parent
 
         self.radius = 8
 

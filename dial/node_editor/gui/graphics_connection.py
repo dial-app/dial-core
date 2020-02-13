@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import Optional
+
 from PySide2.QtCore import QPointF
 from PySide2.QtGui import QPainter, QPainterPath, QPainterPathStroker, QPen
 from PySide2.QtWidgets import (
@@ -8,6 +10,8 @@ from PySide2.QtWidgets import (
     QStyleOptionGraphicsItem,
     QWidget,
 )
+
+from .graphics_port import GraphicsPort
 
 
 class GraphicsConnection(QGraphicsPathItem):
@@ -21,6 +25,9 @@ class GraphicsConnection(QGraphicsPathItem):
 
         self.__start = QPointF(0, 0)
         self.__end = QPointF(0, 0)
+
+        self.__start_graphics_port: Optional[GraphicsPort] = None
+        self.__end_graphics_port: Optional[GraphicsPort] = None
 
         # Colors/Pens/Brushes
         self.default_pen = QPen("#001000")
@@ -38,10 +45,9 @@ class GraphicsConnection(QGraphicsPathItem):
         return self.__start
 
     @start.setter
-    def start(self, point: QPointF):
-        """Sets a new start point for the connection."""
-        self.__start = point
-        print("New start point")
+    def start(self, position: QPointF):
+        self.__start = position
+        self.__start_graphics_port = None
 
     @property
     def end(self):
@@ -49,10 +55,27 @@ class GraphicsConnection(QGraphicsPathItem):
         return self.__end
 
     @end.setter
-    def end(self, point: QPointF):
-        """Sets a new end point for the connection."""
-        self.__end = point
-        print("New end point")
+    def end(self, position: QPointF):
+        self.__end = position
+        self.__end_graphics_port = None
+
+    @property
+    def start_graphics_port(self):
+        return self.__start_graphics_port
+
+    @start_graphics_port.setter
+    def start_graphics_port(self, port: GraphicsPort):
+        self.__start_graphics_port = port
+        self.__start = port.graphics_node.pos() + port.pos()
+
+    @property
+    def end_graphics_port(self):
+        return self.__end_graphics_port
+
+    @end_graphics_port.setter
+    def end_graphics_port(self, port: GraphicsPort):
+        self.__end_graphics_port = port
+        self.__end = port.graphics_node.pos() + port.pos()
 
     def shape(self):
         """Returns a detailed shape of the connection."""
