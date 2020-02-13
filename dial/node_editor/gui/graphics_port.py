@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from PySide2.QtCore import QRectF
-from PySide2.QtGui import QBrush, QColor, QPen
+from PySide2.QtGui import QBrush, QPen
 from PySide2.QtWidgets import QGraphicsItem
 
 from .type_colors import TypeColor
