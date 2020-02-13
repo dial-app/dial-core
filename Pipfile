@@ -12,7 +12,6 @@ pillow = ">=6.2.1"
 qimage2ndarray = ">=1.8.0"
 dependency-injector = ">=3.14.12"
 sphinx-autodoc-typehints = "*"
-logdecorator = "*"
 
 [dev-packages]
 black = "*"

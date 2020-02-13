@@ -1,9 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from logging import DEBUG
 from typing import Optional, Type
 
-from logdecorator import log_on_end
+from dial.utils.log import DEBUG, log_on_end
 
 from .port import Port
 

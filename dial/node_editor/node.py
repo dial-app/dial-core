@@ -6,20 +6,34 @@ Can:
  * Add/remove new ports as input/output ports
 """
 
-from logging import DEBUG
 from typing import Dict
 
-from logdecorator import log_on_end
+from PySide2.QtCore import QObject, Signal
+
+from dial.utils.log import DEBUG, log_on_end
 
 from .port import Port
 
 
-class Node:
-    def __init__(self, title: str):
-        self.title = title
+class Node(QObject):
+    title_changed = Signal(str)
+
+    def __init__(self, title: str, parent=None):
+        super().__init__(parent)
+
+        self.__title = title
 
         self.__inputs: Dict[str, Port] = {}
         self.__outputs: Dict[str, Port] = {}
+
+    @property
+    def title(self) -> str:
+        """Returns the title of the node."""
+        return self.__title
+
+    @title.setter
+    def title(self, title: str):
+        self.__title = title
 
     @property
     def inputs(self) -> Dict[str, Port]:

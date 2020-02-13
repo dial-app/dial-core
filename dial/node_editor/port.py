@@ -8,10 +8,9 @@ Can:
   * Check if two ports are compatible and can be connected
 """
 
-from logging import DEBUG, ERROR
 from typing import Optional, Set, Type
 
-from logdecorator import log_on_end, log_on_error
+from dial.utils.log import DEBUG, ERROR, log_on_end, log_on_error
 
 
 class Port:

@@ -4,8 +4,9 @@ from .input_port import InputPort
 from .node import Node
 from .output_port import OutputPort
 from .port import Port
+from .scene import Scene
 
-__all__ = ["Node", "Port", "InputPort", "OutputPort"]
+__all__ = ["Node", "Port", "InputPort", "OutputPort", "Scene"]
 
 """
 scene = NodeEditorScene()
@@ -73,23 +74,13 @@ scene.addNode(dataset_node)
 scene.addNode(training_node)
 
 
-### Flowing data from nodes
+# Flowing data from nodes
 
 Example: We're creating a Calculator using Nodes
 
-AddNode = Node(inputs={"op1": Port(port_type=int), "op2": Port(port_type=int)},
-                outputs={"result": Port(port_type=int)})
-
-NumberNode = Node(outputs={"value": Port(port_type=int)})
-
-# How is this node going to process its data?
-
-* Graph is started from any node (Change later?)
+* Graph can be started from any node (Change later?)
 * All input ports can't allow multiple connections.
-
-* What is clear: process should be an abstract class of Node, and let other objects
-  subclass it
-
+)
 
 AHA! Having InputPort and OutputPort reduces confusion on the API
 
@@ -140,5 +131,34 @@ def __init__(self):
     self.add_output("value", port_type=int)
     self.outputs["value"].processing_function = self.get_value
 
+### How are object going to be inserted on the scene?
+
+* IMPORTANT: Split GUI from Models
+* Each GUI object has a reference to its model
+* GUI objects can't be reassigned (To avoid confusions)
+
+```
+my_node = Node(title="my node")
+my_gui_node = GraphicsNode(my_node)
+```
+
+* `Scene` object that has all nodes
+
+```
+scene = Scene()
+scene.add_node(my_node)      # Add
+scene.remove_node(my_node)   # Remove
+# Proby also process? To start/stop the graph
+# Takes care of each node inner state, caching... (???? Consider later)
+```
+
+(scene.nodes = [my_node, node_2, node_3...])
+
+
+* `Scene` also has a GUI counterpart `GraphicsScene`
+
+gui_scene = GraphicalScene(scene)
+
+# WORK WITH SIGNALS!! When scene adds a node, create a GraphicsNode enclosing it
 
 """
