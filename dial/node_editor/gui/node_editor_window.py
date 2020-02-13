@@ -43,9 +43,9 @@ class NodeEditorWindow(QWidget):
         connection.start = QPointF(0, 0)
         connection.end = QPointF(300, 450)
 
-        # dataset_node = DatasetEditorNode()
+        dataset_node = DatasetEditorNode()
 
         # self.__scene.add_node(my_node)
-        # self.__scene.add_node(dataset_node)
+        self.__scene.add_node(dataset_node)
 
         self.__graphics_scene.addItem(connection)

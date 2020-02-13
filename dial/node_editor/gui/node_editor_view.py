@@ -34,6 +34,9 @@ class NodeEditorView(QGraphicsView):
         if event.button() == Qt.MiddleButton:
             self.__start_panning_view(event)
 
+        elif event.button() == Qt.LeftButton:
+            self.__start_creating_connection(event)
+
         super().mousePressEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
@@ -63,6 +66,9 @@ class NodeEditorView(QGraphicsView):
             )
 
         event.accept()
+
+    def __start_creating_connection(self, event: QMouseEvent):
+        print(f"Clicked on {self.itemAt(event.pos())}")
 
     def __start_panning_view(self, event: QMouseEvent):
         """Responds to the event of start dragging the view for panning it."""

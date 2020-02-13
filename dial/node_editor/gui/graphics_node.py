@@ -78,8 +78,7 @@ class GraphicsNode(QGraphicsItem):
         self.__create_graphic_ports()
 
     def __create_graphic_ports(self):
-        print("creating graphic ports")
-        print(self.node.outputs.values())
+        """Adds new GraphicsPort items at each side of the node."""
 
         def create_ports(ports_dict, x_offset):
             for i, port in enumerate(ports_dict.values()):
