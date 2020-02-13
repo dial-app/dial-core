@@ -2,7 +2,7 @@
 
 from PySide2.QtWidgets import QVBoxLayout, QWidget
 
-from dial.node_editor import Scene
+from dial.node_editor import Node, Scene
 
 from .graphics_scene import GraphicsScene
 from .node_editor_view import NodeEditorView
@@ -22,6 +22,8 @@ class NodeEditorWindow(QWidget):
 
         self.__setup_ui()
 
+        self.add_example_nodes()
+
         self.show()
 
     def __setup_ui(self):
@@ -30,3 +32,8 @@ class NodeEditorWindow(QWidget):
         self.__main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.__main_layout)
+
+    def add_example_nodes(self):
+        my_node = Node(title="Example Node 1")
+
+        self.__scene.add_node(my_node)

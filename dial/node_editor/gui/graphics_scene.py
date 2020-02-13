@@ -1,10 +1,15 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import math
+from typing import List, Tuple
 
-from PySide2.QtCore import QLine
-from PySide2.QtGui import QColor, QPen
+from PySide2.QtCore import QLine, QRect, QRectF
+from PySide2.QtGui import QColor, QPainter, QPen
 from PySide2.QtWidgets import QGraphicsScene
+
+from dial.utils.log import DEBUG, log_on_end
+
+from .graphics_node import GraphicsNode
 
 
 class GraphicsScene(QGraphicsScene):
@@ -32,7 +37,7 @@ class GraphicsScene(QGraphicsScene):
         self._pen_dark.setWidth(2)
 
         # Connections
-        self.scene.node_added.connect(self.__add_node_to_graphics)
+        self.scene.node_added.connect(self.add_node_to_graphics)
 
         # UI
         self.__setup_ui()
@@ -50,42 +55,65 @@ class GraphicsScene(QGraphicsScene):
             -self.width // 2, -self.height // 2, self.width, self.height,
         )
 
-    def drawBackground(self, painter, rect):
+    @log_on_end(DEBUG, "{node} added as a GraphicNode.")
+    def add_node_to_graphics(self, node):
+        """Add a new Node to the GraphicsScene, making it visible."""
+        self.addItem(GraphicsNode(node))
+
+    def drawBackground(self, painter: QPainter, rect: QRectF):
         """Draws the background for the scene."""
         super().drawBackground(painter, rect)
 
+        grid_rect = self.__calculate_grid_boundaries(rect)
+
+        # Compute all lines to be drawn
+        light_lines, dark_lines = self.__calculate_grid_lines(grid_rect)
+
+        # Draw all lines
+        painter.setPen(self._pen_light)
+        painter.drawLines(light_lines)
+
+        painter.setPen(self._pen_dark)
+        painter.drawLines(dark_lines)
+
+    def __calculate_grid_boundaries(self, rect: QRectF) -> QRect:
+        """Calculates the grid boundaries from the rect."""
         # Get grid boundaries
         left = int(math.floor(rect.left()))
         right = int(math.ceil(rect.right()))
         top = int(math.floor(rect.top()))
         bottom = int(math.ceil(rect.bottom()))
 
-        first_left = left - (left % self.grid_size)
-        first_top = top - (top % self.grid_size)
+        # Anchor left and top to the closest grid line
+        left = left - (left % self.grid_size)
+        top = top - (top % self.grid_size)
 
-        # Compute all lines to be drawn
-        lines_light = []
-        lines_dark = []
+        return QRect(left, top, right - left + 2, bottom - top + 2)
 
-        # TODO: Remove duplication?
-        for x in range(first_left, right, self.grid_size):
+    def __calculate_grid_lines(self, grid_rect: QRect) -> Tuple[List, List]:
+        """Calculates the coordinates of the horizontal/vertical lines to be drawn.
+
+        Args:
+            grid_rect: Rectangle representing the grid boundaries.
+
+        Returns:
+            Lists of light lines and dark lines to draw.
+        """
+        light_lines = []
+        dark_lines = []
+
+        # Calculate horizontal lines
+        for x in range(grid_rect.left(), grid_rect.right(), self.grid_size):
             if x % (self.grid_size * self.grid_squares) != 0:
-                lines_light.append(QLine(x, top, x, bottom))
+                light_lines.append(QLine(x, grid_rect.top(), x, grid_rect.bottom()))
             else:
-                lines_dark.append(QLine(x, top, x, bottom))
+                dark_lines.append(QLine(x, grid_rect.top(), x, grid_rect.bottom()))
 
-        for y in range(first_top, bottom, self.grid_size):
+        # Calculate vertical lines
+        for y in range(grid_rect.top(), grid_rect.bottom(), self.grid_size):
             if y % (self.grid_size * self.grid_squares) != 0:
-                lines_light.append(QLine(left, y, right, y))
+                light_lines.append(QLine(grid_rect.left(), y, grid_rect.right(), y))
             else:
-                lines_dark.append(QLine(left, y, right, y))
+                dark_lines.append(QLine(grid_rect.left(), y, grid_rect.right(), y))
 
-        # Draw all lines
-        painter.setPen(self._pen_light)
-        painter.drawLines(lines_light)
-
-        painter.setPen(self._pen_dark)
-        painter.drawLines(lines_dark)
-
-    def __add_node_to_graphics(self, node):
-        print("Add node to graphics")
+        return light_lines, dark_lines

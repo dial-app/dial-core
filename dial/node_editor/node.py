@@ -34,6 +34,7 @@ class Node(QObject):
     @title.setter
     def title(self, title: str):
         self.__title = title
+        self.title_changed.emit(title)
 
     @property
     def inputs(self) -> Dict[str, Port]:
