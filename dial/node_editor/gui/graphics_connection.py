@@ -3,7 +3,7 @@
 from typing import Optional
 
 from PySide2.QtCore import QPointF, Qt
-from PySide2.QtGui import QPainter, QPainterPath, QPainterPathStroker, QPen
+from PySide2.QtGui import QColor, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsPathItem,
@@ -30,18 +30,26 @@ class GraphicsConnection(QGraphicsPathItem):
         self.__end_graphics_port: Optional[GraphicsPort] = None
 
         # Colors/Pens/Brushes
-        self.default_pen = QPen("#001000")
-        self.default_pen.setWidthF(4)
+        self.__color = QColor("black")
 
-        self.selected_pen = QPen("#00AA00")
-        self.selected_pen.setWidthF(4)
-
-        self.setPen(self.default_pen)
+        self.__default_pen = QPen(self.color)
+        self.__default_pen.setWidthF(4.0)
 
         # Draw connections always on bottom
         self.setZValue(-1)
 
         self.update()
+
+    @property
+    def color(self):
+        """Returns the color of the connection."""
+        return self.__color
+
+    @color.setter
+    def color(self, color: QColor):
+        """Sets a new color for the connection, updating the QPen used for paintingg"""
+        self.__color = color
+        self.__default_pen.setColor(self.__color)
 
     @property
     def start(self):
@@ -73,6 +81,7 @@ class GraphicsConnection(QGraphicsPathItem):
     def start_graphics_port(self, port: GraphicsPort):
         self.__start_graphics_port = port
         self.__start = port.graphics_node.pos() + port.pos()
+        self.color = port.color
         self.updatePath()
 
     @property
@@ -94,7 +103,7 @@ class GraphicsConnection(QGraphicsPathItem):
 
     def itemChange(self, change, value):
         if change == self.ItemSelectedChange:
-            self.setPen(self.selected_pen if value else self.default_pen)
+            self.pen().setColor(self.color if value else self.color.lighter(200))
 
         return super().itemChange(change, value)
 
@@ -105,6 +114,6 @@ class GraphicsConnection(QGraphicsPathItem):
         widget: QWidget = None,
     ):
         """Paint the connection as a line between the start and end points."""
-        painter.setPen(self.pen())
+        painter.setPen(self.__default_pen)
         painter.setBrush(Qt.NoBrush)
         painter.drawPath(self.path())

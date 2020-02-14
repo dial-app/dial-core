@@ -52,18 +52,12 @@ class NodeEditorView(QGraphicsView):
         except KeyError:
             pass
 
-        if not event.isAccepted():
-            super().mousePressEvent(event)
-
     def mouseReleaseEvent(self, event: QMouseEvent):
         """Performs an action when any mouse button is released."""
         try:
             self.__mouse_button_release_event[event.button()](event)
         except KeyError:
             pass
-
-        if not event.isAccepted():
-            super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent):
         """Performs an action when the mouse moves (while clicking a mouse button)."""
@@ -102,6 +96,8 @@ class NodeEditorView(QGraphicsView):
         self.panning_start_x = event.x()
         self.panning_start_y = event.y()
 
+        super().mousePressEvent(event)
+
     def __stop_panning_view(self, event: QMouseEvent):
         """Responds to the event of start dragging the view for panning it.
 
@@ -111,6 +107,8 @@ class NodeEditorView(QGraphicsView):
             event: Mouse event.
         """
         self.setDragMode(QGraphicsView.NoDrag)
+
+        super().mouseReleaseEvent(event)
 
     def __panning_view(self, event: QMouseEvent):
         """Pans the view using the mouse movement.
@@ -134,6 +132,8 @@ class NodeEditorView(QGraphicsView):
         self.panning_start_x = event.x()
         self.panning_start_y = event.y()
 
+        super().mouseMoveEvent(event)
+
     def __start_dragging_connection(self, event: QMouseEvent):
         """Starts creating a new connection by dragging the mouse.
 
@@ -150,8 +150,8 @@ class NodeEditorView(QGraphicsView):
             self.new_connection.start_graphics_port = item
 
             # Its important to not pass the event to parent classes to avoid selecting
-            # items when we start dragging.
-            event.accept()
+            # items when we start dragging. That's why we return here.
+            return
 
         super().mousePressEvent(event)
 
@@ -177,6 +177,8 @@ class NodeEditorView(QGraphicsView):
 
         # Reset the connection item
         self.new_connection = None
+
+        super().mouseReleaseEvent(event)
 
     def __dragging_connection(self, event: QMouseEvent):
         """Drags a connection while the mouse is moving.
