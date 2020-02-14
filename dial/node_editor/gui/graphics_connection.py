@@ -18,10 +18,8 @@ class GraphicsConnection(QGraphicsPathItem):
     def __init__(self, parent: QGraphicsItem = None):
         super().__init__(parent)
 
-        # Connection can be selectable
+        # A Connection can be selectable
         self.setFlag(QGraphicsItem.ItemIsSelectable)
-
-        # TODO: Track start and end ports
 
         self.__start = QPointF(0, 0)
         self.__end = QPointF(0, 0)
@@ -54,22 +52,36 @@ class GraphicsConnection(QGraphicsPathItem):
     @property
     def start(self):
         """Returns the start position of the connection."""
-        return self.__start
+        return (
+            self.__start
+            if not self.__start_graphics_port
+            else self.__start_graphics_port.pos()
+        )
 
     @start.setter
     def start(self, position: QPointF):
         self.__start = position
+
+        if self.__start_graphics_port:
+            self.__start_graphics_port.remove_connection(self)
         self.__start_graphics_port = None
         self.updatePath()
 
     @property
     def end(self):
         """Returns the end position of the connection."""
-        return self.__end
+        return (
+            self.__end
+            if not self.__end_graphics_port
+            else self.__end_graphics_port.pos()
+        )
 
     @end.setter
     def end(self, position: QPointF):
         self.__end = position
+
+        if self.__end_graphics_port:
+            self.__end_graphics_port.remove_connection(self)
         self.__end_graphics_port = None
         self.updatePath()
 
@@ -79,9 +91,16 @@ class GraphicsConnection(QGraphicsPathItem):
 
     @start_graphics_port.setter
     def start_graphics_port(self, port: GraphicsPort):
+        # Updates the start position
+        self.__start = port.pos()
+
+        # Assigns a new start port
         self.__start_graphics_port = port
-        self.__start = port.graphics_node.pos() + port.pos()
+        self.__start_graphics_port.add_connection(self)
+
+        # The connection adopts the color of the port
         self.color = port.color
+
         self.updatePath()
 
     @property
@@ -90,11 +109,17 @@ class GraphicsConnection(QGraphicsPathItem):
 
     @end_graphics_port.setter
     def end_graphics_port(self, port: GraphicsPort):
+        # Updates the end position
+        self.__end = port.pos()
+
+        # Assigns a new end port
         self.__end_graphics_port = port
-        self.__end = port.graphics_node.pos() + port.pos()
+        self.__end_graphics_port.add_connection(self)
+
         self.updatePath()
 
     def updatePath(self):
+        """Create a new path from the start and end points of the line."""
         path = QPainterPath(self.start)
         path.lineTo(self.end)
 

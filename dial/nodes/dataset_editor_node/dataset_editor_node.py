@@ -23,8 +23,8 @@ class DatasetEditorNode(Node):
         self.outputs["train"].output_generator = self.get_train_dataset
         self.outputs["test"].output_generator = self.get_test_dataset
 
-    def get_train_dataset(self):
+    def get_train_dataset(self):  # TODO: Implement
         raise NotImplementedError("get_train_dataset not implemented!")
 
-    def get_test_dataset(self):
+    def get_test_dataset(self):  # TODO: Implementget_model_layers
         raise NotImplementedError("get_test_dataset not implemented!")

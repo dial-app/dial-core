@@ -1,12 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtCore import QPointF
 from PySide2.QtWidgets import QVBoxLayout, QWidget
 
-from dial.node_editor import Node, Scene
-from dial.nodes import DatasetEditorNode
+from dial.node_editor import Scene
+from dial.nodes import DatasetEditorNode, LayersEditorNode
 
-from .graphics_connection import GraphicsConnection
 from .graphics_scene import GraphicsScene
 from .node_editor_view import NodeEditorView
 
@@ -40,6 +38,8 @@ class NodeEditorWindow(QWidget):
         # my_node = Node(title="Example Node 1")
 
         dataset_node = DatasetEditorNode()
+        layers_node = LayersEditorNode()
 
         # self.__scene.add_node(my_node)
         self.__scene.add_node(dataset_node)
+        self.__scene.add_node(layers_node)

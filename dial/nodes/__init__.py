@@ -2,5 +2,6 @@
 
 
 from .dataset_editor_node import DatasetEditorNode
+from .layers_editor_node import LayersEditorNode
 
-__all__ = ["DatasetEditorNode"]
+__all__ = ["DatasetEditorNode", "LayersEditorNode"]
