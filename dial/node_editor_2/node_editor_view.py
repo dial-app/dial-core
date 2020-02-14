@@ -95,7 +95,6 @@ class NodeEditorView(QGraphicsView):
         if self.mode == self.Mode.EdgeDrag:
             pos = self.mapToScene(event.pos())
             self.dragEdge.graphics_edge.set_destination(pos.x(), pos.y())
-            self.dragEdge.graphics_edge.update()
 
         super().mouseMoveEvent(event)
 

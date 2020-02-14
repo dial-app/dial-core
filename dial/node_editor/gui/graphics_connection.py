@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from PySide2.QtCore import QPointF
+from PySide2.QtCore import QPointF, Qt
 from PySide2.QtGui import QPainter, QPainterPath, QPainterPathStroker, QPen
 from PySide2.QtWidgets import (
     QGraphicsItem,
@@ -36,8 +36,12 @@ class GraphicsConnection(QGraphicsPathItem):
         self.selected_pen = QPen("#00AA00")
         self.selected_pen.setWidthF(4)
 
+        self.setPen(self.default_pen)
+
         # Draw connections always on bottom
         self.setZValue(-1)
+
+        self.update()
 
     @property
     def start(self):
@@ -48,6 +52,7 @@ class GraphicsConnection(QGraphicsPathItem):
     def start(self, position: QPointF):
         self.__start = position
         self.__start_graphics_port = None
+        self.updatePath()
 
     @property
     def end(self):
@@ -58,6 +63,7 @@ class GraphicsConnection(QGraphicsPathItem):
     def end(self, position: QPointF):
         self.__end = position
         self.__end_graphics_port = None
+        self.updatePath()
 
     @property
     def start_graphics_port(self):
@@ -67,6 +73,7 @@ class GraphicsConnection(QGraphicsPathItem):
     def start_graphics_port(self, port: GraphicsPort):
         self.__start_graphics_port = port
         self.__start = port.graphics_node.pos() + port.pos()
+        self.updatePath()
 
     @property
     def end_graphics_port(self):
@@ -76,16 +83,20 @@ class GraphicsConnection(QGraphicsPathItem):
     def end_graphics_port(self, port: GraphicsPort):
         self.__end_graphics_port = port
         self.__end = port.graphics_node.pos() + port.pos()
+        self.updatePath()
 
-    def shape(self):
-        """Returns a detailed shape of the connection."""
-        stroker = QPainterPathStroker()
-        stroker.setWidth(self.default_pen.widthF() * 4)
-
+    def updatePath(self):
         path = QPainterPath(self.start)
         path.lineTo(self.end)
 
-        return stroker.createStroke(path)
+        self.setPath(path)
+        self.update()
+
+    def itemChange(self, change, value):
+        if change == self.ItemSelectedChange:
+            self.setPen(self.selected_pen if value else self.default_pen)
+
+        return super().itemChange(change, value)
 
     def paint(
         self,
@@ -94,8 +105,6 @@ class GraphicsConnection(QGraphicsPathItem):
         widget: QWidget = None,
     ):
         """Paint the connection as a line between the start and end points."""
-        path = QPainterPath(self.start)
-        path.lineTo(self.end)
-
-        painter.setPen(self.default_pen if not self.isSelected() else self.selected_pen)
-        painter.drawPath(path)
+        painter.setPen(self.pen())
+        painter.setBrush(Qt.NoBrush)
+        painter.drawPath(self.path())

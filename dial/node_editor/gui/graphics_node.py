@@ -37,8 +37,11 @@ class GraphicsNode(QGraphicsItem):
         self.title_color = Qt.white
         self.title_background_brush = QBrush(QColor("#FF313131"))
         self.background_brush = QBrush(QColor("#E3212121"))
-        self.outline_default_pen = QPen(QColor("#7F000000"))
-        self.outline_selection_pen = QPen(QColor("#FFFFA637"))
+
+        self.outline_selected_color = QColor("#FFA637")
+        self.outline_default_color = QColor("#000000")
+
+        self.__outline_pen = QPen(self.outline_default_color)
 
         # Connections
         self.node.title_changed.connect(self.__update_title)
@@ -106,6 +109,14 @@ class GraphicsNode(QGraphicsItem):
             0, 0, self.padding * 2, self.__title_height() + self.padding * 2
         ).normalized()
 
+    def itemChange(self, change, value):
+        if change == self.ItemSelectedChange:
+            self.__outline_pen.setColor(
+                self.outline_selected_color if value else self.outline_default_color
+            )
+
+        return super().itemChange(change, value)
+
     def paint(
         self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget
     ):
@@ -156,10 +167,6 @@ class GraphicsNode(QGraphicsItem):
         painter.drawPath(path_title_background.simplified())
 
         # Draw the outline
-        painter.setPen(
-            self.outline_default_pen
-            if not self.isSelected()
-            else self.outline_selection_pen
-        )
+        painter.setPen(self.__outline_pen)
         painter.setBrush(Qt.NoBrush)
         painter.drawPath(path_background.simplified())
