@@ -46,9 +46,8 @@ class GraphicsNode(QGraphicsItem):
         # Connections
         self.node.title_changed.connect(self.__update_title)
 
-        # Create graphic ports
-
         self.__setup_ui()
+        self.__create_graphic_ports()
 
     @property
     def node(self) -> Node:
@@ -78,8 +77,6 @@ class GraphicsNode(QGraphicsItem):
         self.__node_widget_proxy.setPos(
             self.padding, self.__title_height() + self.padding
         )
-
-        self.__create_graphic_ports()
 
     def __create_graphic_ports(self):
         """Adds new GraphicsPort items at each side of the node."""
@@ -114,6 +111,7 @@ class GraphicsNode(QGraphicsItem):
             self.__outline_pen.setColor(
                 self.outline_selected_color if value else self.outline_default_color
             )
+            return value
 
         return super().itemChange(change, value)
 
@@ -122,7 +120,11 @@ class GraphicsNode(QGraphicsItem):
     ):
         """Paints the GraphicsNode item."""
 
-        # Draw the background
+        self.__paint_background(painter)
+        self.__paint_title_background(painter)
+        self.__paint_outline(painter)
+
+    def __paint_background(self, painter: QPainter):
         path_background = QPainterPath()
         path_background.addRoundedRect(
             self.boundingRect(), self.round_edge_size, self.round_edge_size
@@ -133,7 +135,7 @@ class GraphicsNode(QGraphicsItem):
 
         painter.drawPath(path_background.simplified())
 
-        # Draw the title background
+    def __paint_title_background(self, painter: QPainter):
         title_rect = self.__graphics_title.boundingRect()
 
         path_title_background = QPainterPath()
@@ -166,7 +168,12 @@ class GraphicsNode(QGraphicsItem):
         painter.setBrush(self.title_background_brush)
         painter.drawPath(path_title_background.simplified())
 
-        # Draw the outline
+    def __paint_outline(self, painter: QPainter):
+        path_outline = QPainterPath()
+        path_outline.addRoundedRect(
+            self.boundingRect(), self.round_edge_size, self.round_edge_size
+        )
+
         painter.setPen(self.__outline_pen)
         painter.setBrush(Qt.NoBrush)
-        painter.drawPath(path_background.simplified())
+        painter.drawPath(path_outline.simplified())

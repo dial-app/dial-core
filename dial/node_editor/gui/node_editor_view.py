@@ -63,11 +63,10 @@ class NodeEditorView(QGraphicsView):
         """Performs an action when the mouse moves (while clicking a mouse button)."""
         if self.dragMode() == QGraphicsView.ScrollHandDrag:
             self.__panning_view(event)
-
-        if self.__is_dragging_connection():
+        elif self.__is_dragging_connection():
             self.__dragging_connection(event)
-
-        super().mouseMoveEvent(event)
+        else:
+            super().mouseMoveEvent(event)
 
     def wheelEvent(self, event: QWheelEvent):
         """Zooms in/out the view using the mouse wheel."""
@@ -148,6 +147,7 @@ class NodeEditorView(QGraphicsView):
         if self.__clicked_on_graphics_port(item):
             self.new_connection = self.__create_new_connection()
             self.new_connection.start_graphics_port = item
+            self.new_connection.end = self.new_connection.start_graphics_port.pos()
 
             # Its important to not pass the event to parent classes to avoid selecting
             # items when we start dragging. That's why we return here.
@@ -164,21 +164,23 @@ class NodeEditorView(QGraphicsView):
         Args:
             event: Mouse event.
         """
+        super().mouseReleaseEvent(event)
+
         if not self.__is_dragging_connection():
             return
 
         item = self.__item_clicked_on(event)
 
         # The conection must end on a GraphicsPort item
-        if self.__clicked_on_graphics_port(item):
+        if self.__clicked_on_graphics_port(item) and item.port.is_compatible_with(
+            self.new_connection.start_graphics_port.port
+        ):
             self.new_connection.end_graphics_port = item
         else:
             self.__remove_connection(self.new_connection)
 
         # Reset the connection item
         self.new_connection = None
-
-        super().mouseReleaseEvent(event)
 
     def __dragging_connection(self, event: QMouseEvent):
         """Drags a connection while the mouse is moving.
@@ -187,6 +189,8 @@ class NodeEditorView(QGraphicsView):
             event: Mouse event.
         """
         self.new_connection.end = self.mapToScene(event.pos())
+
+        super().mouseMoveEvent(event)
 
     def __is_dragging_connection(self) -> bool:
         """Checks if the user is currently dragging a connection or not."""

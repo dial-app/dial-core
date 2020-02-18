@@ -39,6 +39,11 @@ class GraphicsPort(QGraphicsItem):
         return self.__color
 
     @property
+    def port(self):
+        """Returns the port associated to this GraphicsItem."""
+        return self.__port
+
+    @property
     def connections(self) -> List["GraphicsConnection"]:
         """Returns a list of the GraphicsConnections item connected to this port."""
         return self.__connections
@@ -71,6 +76,8 @@ class GraphicsPort(QGraphicsItem):
             # Update the position of all connections to follow the ports
             for connection in self.connections:
                 connection.updatePath()
+
+            return value
 
         return super().itemChange(change, value)
 
