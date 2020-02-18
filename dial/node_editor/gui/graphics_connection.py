@@ -121,7 +121,15 @@ class GraphicsConnection(QGraphicsPathItem):
     def updatePath(self):
         """Create a new path from the start and end points of the line."""
         path = QPainterPath(self.start)
-        path.lineTo(self.end)
+
+        diffx = self.end.x() - self.start.x()
+
+        c0x = self.start.x() + (diffx / 3)
+        c0y = self.start.y()
+        c1x = self.end.x() - (diffx / 3)
+        c1y = self.end.y()
+
+        path.cubicTo(c0x, c0y, c1x, c1y, self.end.x(), self.end.y())
 
         self.setPath(path)
         self.update()
