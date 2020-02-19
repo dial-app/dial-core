@@ -24,7 +24,7 @@ def main(sys_args: List = sys.argv[1:]):
     # Initialize
     initialization.initialize_application(app_config)
 
-    from dial.gui import app
+    from dial.main_window import app
 
     # Run
     sys.exit(app.run(app_config))

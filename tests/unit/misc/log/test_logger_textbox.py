@@ -2,12 +2,12 @@
 
 import pytest
 
-from dial.gui.widgets import Logger
+from dial.misc.log import LoggerTextboxFactory
 
 
 @pytest.fixture
 def logger_textbox():
-    return Logger.TextboxWidget()
+    return LoggerTextboxFactory()
 
 
 def test_set_plain_text(qtbot, logger_textbox):

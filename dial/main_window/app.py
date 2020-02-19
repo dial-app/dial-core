@@ -9,7 +9,7 @@ from datetime import datetime
 
 from PySide2.QtWidgets import QApplication
 
-from dial.gui.windows import Windows
+from dial.main_window import MainWindowFactory
 from dial.utils import log
 
 
@@ -24,7 +24,7 @@ def run(args: argparse.Namespace):
         `dial.utils.initialization.initialize_application`
     """
 
-    main_window = Windows.Main()
+    main_window = MainWindowFactory()
     main_window.show()
 
     log.module_logger().debug("Command Line Arguments: %s", args)
