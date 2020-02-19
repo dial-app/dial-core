@@ -8,9 +8,11 @@ from dial.node_editor import InputPort, Node, OutputPort
 
 
 class ModelCompilerNode(Node):
-    def __init__(self, parent=None):
+    def __init__(self, model_compiler_widget, parent=None):
         super().__init__(
-            title="Model Compiler Node", parent=parent,
+            title="Model Compiler Node",
+            inner_widget=model_compiler_widget,
+            parent=parent,
         )
 
         # Ports

@@ -63,7 +63,7 @@ class ParametersForm(QWidget):
     def __setup_ui(self):
         self.__main_layout.setFieldGrowthPolicy(QFormLayout.AllNonFixedFieldsGrow)
         self.__main_layout.setFormAlignment(Qt.AlignHCenter)
-        self.__main_layout.setHorizontalSpacing(200)
+        self.__main_layout.setHorizontalSpacing(50)
 
         self.__main_layout.addRow("Epochs", self.__epoch_spinbox)
         self.__main_layout.addRow("Loss functions", self.__loss_function_combobox)

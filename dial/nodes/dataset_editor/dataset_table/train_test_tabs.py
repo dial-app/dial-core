@@ -14,15 +14,15 @@ class TrainTestTabs(QTabWidget):
     widget.
     """
 
-    def __init__(self, datasettable_factory, parent=None):
+    def __init__(self, datasettable_mv_factory, parent=None):
         super().__init__(parent)
 
-        self.__train_model = datasettable_factory.Model(parent=self)
-        self.__train_view = datasettable_factory.View(parent=self)
+        self.__train_model = datasettable_mv_factory.Model(parent=self)
+        self.__train_view = datasettable_mv_factory.View(parent=self)
         self.__train_view.setModel(self.__train_model)
 
-        self.__test_model = datasettable_factory.Model(parent=self)
-        self.__test_view = datasettable_factory.View(parent=self)
+        self.__test_model = datasettable_mv_factory.Model(parent=self)
+        self.__test_view = datasettable_mv_factory.View(parent=self)
         self.__test_view.setModel(self.__test_model)
 
         self.__setup_ui()

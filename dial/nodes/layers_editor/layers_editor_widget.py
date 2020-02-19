@@ -4,15 +4,8 @@
 Window for all the model related operations (Create/Modify NN architectures)
 """
 
-from PySide2.QtCore import Qt
-from PySide2.QtWidgets import QDockWidget, QMainWindow, QWidget
-
-from dial.utils import log
-
-from .layers_tree import LayersTree
-from .model_table import ModelTable
-
-LOGGER = log.get_logger(__name__)
+from PySide2.QtCore import QSize, Qt
+from PySide2.QtWidgets import QDockWidget, QMainWindow
 
 
 class LayersEditorWidget(QMainWindow):
@@ -20,10 +13,7 @@ class LayersEditorWidget(QMainWindow):
     """
 
     def __init__(
-        self,
-        layers_tree=LayersTree.Widget(),
-        model_table=ModelTable.Widget(),
-        parent=None,
+        self, layers_tree, model_table, parent=None,
     ):
         super().__init__(parent)
 
@@ -38,6 +28,9 @@ class LayersEditorWidget(QMainWindow):
 
         # Configure interface
         self.__setup_ui()
+
+    def sizeHint(self):
+        return QSize(800, 600)
 
     def __setup_ui(self):
         # Configure dock widget with layers tree

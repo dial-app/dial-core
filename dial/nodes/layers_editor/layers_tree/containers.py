@@ -12,10 +12,11 @@ from .layers_tree_view import LayersTreeView
 from .layers_tree_widget import LayersTreeWidget
 
 
-class LayersTreeMVC(containers.DeclarativeContainer):
+class LayersTreeMVFactory(containers.DeclarativeContainer):
     Model = providers.Factory(LayersTreeModel)
     View = providers.Factory(LayersTreeView)
 
 
-class LayersTree(containers.DeclarativeContainer):
-    Widget = providers.Factory(LayersTreeWidget, layerstree_factory=LayersTreeMVC)
+LayersTreeFactory = providers.Factory(
+    LayersTreeWidget, layerstree_mv_factory=LayersTreeMVFactory
+)

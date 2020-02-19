@@ -6,16 +6,16 @@
 from PySide2.QtWidgets import QVBoxLayout, QWidget
 
 
-class LayersTreeWidget(QWidget):
+class ModelTableWidget(QWidget):
     """
-    Widget for displaying the list of avaliable layers for constructing models.
+    Widget for displaying the model definition.
     """
 
-    def __init__(self, layerstree_factory, parent=None):
+    def __init__(self, modeltable_mv_factory, parent=None):
         super().__init__(parent)
 
-        self.__model = layerstree_factory.Model(parent=self)
-        self.__view = layerstree_factory.View(parent=self)
+        self.__model = modeltable_mv_factory.Model(parent=self)
+        self.__view = modeltable_mv_factory.View(parent=self)
         self.__view.setModel(self.__model)
 
         self.__main_layout = QVBoxLayout()
@@ -30,4 +30,4 @@ class LayersTreeWidget(QWidget):
     def set_model(self, model):
         """
         """
-        self.__model.load_model(model)
+        self.__model.load_layers(model.layers)

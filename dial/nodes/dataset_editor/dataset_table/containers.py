@@ -12,10 +12,11 @@ from .dataset_table_view import DatasetTableView
 from .train_test_tabs import TrainTestTabs
 
 
-class DatasetTableMVC(containers.DeclarativeContainer):
+class DatasetTableMVFactory(containers.DeclarativeContainer):
     Model = providers.Factory(DatasetTableModel)
     View = providers.Factory(DatasetTableView)
 
 
-class TrainTestTable(containers.DeclarativeContainer):
-    Widget = providers.Factory(TrainTestTabs, datasettable_factory=DatasetTableMVC)
+TrainTestTabsFactory = providers.Factory(
+    TrainTestTabs, datasettable_mv_factory=DatasetTableMVFactory
+)

@@ -8,14 +8,14 @@ Can:
   * Check if two ports are compatible and can be connected
 """
 
-from typing import Optional, Set, Type
+from typing import Any, Optional, Set
 
 from dial.utils.log import DEBUG, ERROR, log_on_end, log_on_error
 
 
 class Port:
     def __init__(
-        self, name: str, port_type: Type, allows_multiple_connections: bool = True
+        self, name: str, port_type: Any, allows_multiple_connections: bool = True
     ):
         self.__name = name
         self.__port_type = port_type
@@ -31,7 +31,7 @@ class Port:
         return self.__name
 
     @property
-    def port_type(self) -> Type:
+    def port_type(self) -> Any:
         """Returns the Type allowed by this port.
 
         Used to check which ports can be connected between them.

@@ -7,14 +7,12 @@ from .dataset_editor_widget import DatasetEditorWidget
 
 
 class DatasetEditorNode(Node):
-    def __init__(self, parent=None):
+    def __init__(self, dataset_editor_widget: DatasetEditorWidget, parent=None):
         super().__init__(
             title="Dataset Editor Node",
-            inner_widget=DatasetEditorWidget(),
+            inner_widget=dataset_editor_widget,
             parent=parent,
         )
-
-        print(self.inner_widget)
 
         # Ports
         self.add_output_port(OutputPort("train", port_type=Dataset))

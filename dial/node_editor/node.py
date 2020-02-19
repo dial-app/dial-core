@@ -13,6 +13,8 @@ from PySide2.QtWidgets import QWidget
 
 from dial.utils.log import DEBUG, log_on_end
 
+from .input_port import InputPort
+from .output_port import OutputPort
 from .port import Port
 
 
@@ -28,8 +30,8 @@ class Node(QObject):
 
         self.__inner_widget: Optional[QWidget] = inner_widget
 
-        self.__inputs: Dict[str, Port] = {}
-        self.__outputs: Dict[str, Port] = {}
+        self.__inputs: Dict[str, InputPort] = {}
+        self.__outputs: Dict[str, OutputPort] = {}
 
     @property
     def title(self) -> str:
@@ -52,12 +54,12 @@ class Node(QObject):
         return self.__inner_widget
 
     @property
-    def inputs(self) -> Dict[str, Port]:
+    def inputs(self) -> Dict[str, InputPort]:
         """Returns a list of the input ports of the node."""
         return self.__inputs
 
     @property
-    def outputs(self) -> Dict[str, Port]:
+    def outputs(self) -> Dict[str, OutputPort]:
         """Returns a list of the output ports of the node."""
         return self.__outputs
 

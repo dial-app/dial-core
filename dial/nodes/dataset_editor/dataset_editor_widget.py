@@ -10,27 +10,20 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
-from dial.utils import log
-
-from .dataset_table import TrainTestTable
-
-LOGGER = log.get_logger(__name__)
-
 
 class DatasetEditorWidget(QWidget):
     """
     Window for all the dataset related operations (Visualization, loading...)
     """
 
-    # TODO: Change dataset_table_widget
-    def __init__(self, dataset_table_widget=TrainTestTable.Widget(), parent=None):
+    def __init__(self, train_test_tabs, parent=None):
         super().__init__(parent)
 
         # Initialize widgets
         self.__main_layout = QGridLayout()
         self.__options_layout = QFormLayout()
 
-        self.__train_test_tabs = dataset_table_widget
+        self.__train_test_tabs = train_test_tabs
         self.__train_test_tabs.setParent(self)
 
         self.__dataset_name_label = QLabel("")

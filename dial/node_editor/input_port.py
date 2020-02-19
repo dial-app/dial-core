@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Optional, Type
+from typing import Any, Optional
 
 from dial.utils.log import DEBUG, log_on_end
 
@@ -8,7 +8,7 @@ from .port import Port
 
 
 class InputPort(Port):
-    def __init__(self, name: str, port_type: Type):
+    def __init__(self, name: str, port_type: Any):
         super().__init__(name, port_type, allows_multiple_connections=False)
 
     @property

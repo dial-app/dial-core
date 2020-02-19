@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Type
+from typing import Any, Callable, Optional
 
 from dial.utils.log import DEBUG, log_on_end
 
@@ -8,10 +8,10 @@ from .port import Port
 
 
 class OutputPort(Port):
-    def __init__(self, name: str, port_type: Type):
+    def __init__(self, name: str, port_type: Any):
         super().__init__(name, port_type, allows_multiple_connections=True)
 
-        self.output_generator = None
+        self.output_generator: Optional[Callable] = None
 
     @log_on_end(
         DEBUG, '{self}: Value generated from "{self.output_generator.__name__}"'

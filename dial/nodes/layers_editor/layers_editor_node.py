@@ -7,11 +7,9 @@ from .layers_editor_widget import LayersEditorWidget
 
 
 class LayersEditorNode(Node):
-    def __init__(self, parent=None):
+    def __init__(self, layers_editor_widget: LayersEditorWidget, parent=None):
         super().__init__(
-            title="Layers Editor Node",
-            inner_widget=LayersEditorWidget(),
-            parent=parent,
+            title="Layers Editor Node", inner_widget=layers_editor_widget, parent=parent
         )
 
         self.add_output_port(OutputPort("layers", port_type=Dial.KerasLayerListMIME))
