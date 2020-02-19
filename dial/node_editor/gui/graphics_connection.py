@@ -11,6 +11,8 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
+from dial.utils.log import INFO, log_on_end
+
 if TYPE_CHECKING:
     from .graphics_port import GraphicsPort
 
@@ -127,6 +129,7 @@ class GraphicsConnection(QGraphicsPathItem):
         return self.__start_graphics_port
 
     @start_graphics_port.setter
+    @log_on_end(INFO, "{self} connected to Start Port {port}")
     def start_graphics_port(self, port: "GraphicsPort"):
         """Sets the start of this connection to the `port` position.
 
@@ -150,6 +153,7 @@ class GraphicsConnection(QGraphicsPathItem):
         return self.__end_graphics_port
 
     @end_graphics_port.setter
+    @log_on_end(INFO, "{self} connected to End Port {port}")
     def end_graphics_port(self, port: "GraphicsPort"):
         """Sets the end of this connection to the `port` position."""
         # Updates the end position
@@ -199,3 +203,9 @@ class GraphicsConnection(QGraphicsPathItem):
         painter.setPen(self.__default_pen)
         painter.setBrush(Qt.NoBrush)
         painter.drawPath(self.path())
+
+    def __str__(self) -> str:
+        return (
+            f"{type(self).__name__} {self.start} ({self.start_graphics_port})"
+            f" {self.end} ({self.end_graphics_port})"
+        )

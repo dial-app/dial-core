@@ -29,6 +29,8 @@ import inspect
 import logging
 from functools import wraps
 
+from .log import LOG_LEVEL
+
 
 class DecoratorMixin(object):
     def execute(self, fn, *args, **kwargs):
@@ -55,6 +57,7 @@ class LoggingDecorator(DecoratorMixin):
     def get_logger(self, fn):
         if self._logger is None:
             self._logger = logging.getLogger(fn.__module__)
+            self._logger.setLevel(LOG_LEVEL)
 
         return self._logger
 

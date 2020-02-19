@@ -64,10 +64,11 @@ class Node(QObject):
         return self.__outputs
 
     def process(self):
+        """Sends the output of each port to the connected nodes."""
         for output_port in self.outputs.values():
             output_port.propagate()
 
-    def add_input_port(self, input_port: Port):
+    def add_input_port(self, input_port: InputPort):
         """Adds a new input port to the list of ports.
 
         Args:
@@ -75,7 +76,7 @@ class Node(QObject):
         """
         self.__add_port_to(self.inputs, input_port)
 
-    def add_output_port(self, output_port: Port):
+    def add_output_port(self, output_port: OutputPort):
         """Adds a new output port to the list of ports.
 
         Args:

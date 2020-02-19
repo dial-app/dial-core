@@ -71,7 +71,7 @@ def test_calculator_example():
     #                \                                            /
     #              ("op1")                                       /
     #                  add_node ("result") - ("input") conv ("output")
-    #              ("op2")                                       \
+    #              ("op2")                         (int -> str)  \
     #                /                                            \
     #   node_op2 ("value")                                   ("value") print_node_2
 
