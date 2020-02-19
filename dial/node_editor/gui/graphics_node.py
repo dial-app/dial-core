@@ -111,10 +111,10 @@ class GraphicsNode(QGraphicsItem):
     def __create_graphic_ports(self):
         """Adds new GraphicsPort items at each side of the node."""
 
-        def create_ports(ports_dict, x_offset):
+        def create_ports(ports_dict, port_name_position, x_offset):
             graphics_ports = []
             for i, port in enumerate(ports_dict.values()):
-                graphics_port = GraphicsPort(port, parent=self)
+                graphics_port = GraphicsPort(port, port_name_position, parent=self)
                 graphics_port.setPos(
                     x_offset,
                     self.__title_height()
@@ -125,9 +125,13 @@ class GraphicsNode(QGraphicsItem):
 
             return graphics_ports
 
-        self.__input_graphics_ports = create_ports(self.node.inputs, x_offset=0)
+        self.__input_graphics_ports = create_ports(
+            self.node.inputs, GraphicsPort.PortNamePosition.Left, x_offset=0
+        )
         self.__output_graphics_ports = create_ports(
-            self.node.outputs, x_offset=self.boundingRect().width()
+            self.node.outputs,
+            GraphicsPort.PortNamePosition.Right,
+            x_offset=self.boundingRect().width(),
         )
 
     def __update_title(self, new_text: str):

@@ -1,10 +1,16 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from enum import Enum
 from typing import TYPE_CHECKING, Set
 
 from PySide2.QtCore import QPointF, QRectF
 from PySide2.QtGui import QBrush, QColor, QPainter, QPen
-from PySide2.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem, QWidget
+from PySide2.QtWidgets import (
+    QGraphicsItem,
+    QGraphicsTextItem,
+    QStyleOptionGraphicsItem,
+    QWidget,
+)
 
 from dial.node_editor import Port
 
@@ -33,7 +39,13 @@ class GraphicsPort(QGraphicsItem):
         connections: GraphicsConnection objects connected to this port.
     """
 
-    def __init__(self, port: Port, parent: "GraphicsNode"):
+    class PortNamePosition(Enum):
+        Left = 1
+        Right = 2
+
+    def __init__(
+        self, port: Port, port_name_position: PortNamePosition, parent: "GraphicsNode",
+    ):
         super().__init__(parent)
 
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
@@ -48,6 +60,18 @@ class GraphicsPort(QGraphicsItem):
         self.__connections: Set["GraphicsConnection"] = set()
 
         self.radius = 8
+
+        self.__port_name_position = port_name_position
+        self.__port_name = QGraphicsTextItem(parent=self)
+        self.__port_name.setPlainText(self.__port.name)
+        self.__port_name.setDefaultTextColor("#FFFFFF")
+
+        if self.__port_name_position == self.PortNamePosition.Left:
+            self.__port_name.setPos(-self.__port_name.boundingRect().width(), 0)
+        elif self.__port_name_position == self.PortNamePosition.Right:
+            self.__port_name.setPos(0, 0)
+
+        print(self.__port_name.boundingRect().width())
 
         # Colors/Pens/Brushes
         self.__color = TypeColor.get_color_for(port.port_type)
