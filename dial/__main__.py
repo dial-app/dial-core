@@ -5,42 +5,29 @@
 Entry point for dial ui.
 """
 
-import argparse
 import sys
-
-from dial import __description__
-from dial.gui import app
+from typing import List
 
 
-def arg_parser() -> argparse.ArgumentParser:
+def main(sys_args: List = sys.argv[1:]):
     """
-    Return an argument parser.
+    Entry point for Dial. Initialize components and stars the application.
+
+    Args:
+        sys_args: A list of arguments from the command line.
     """
-    parser = argparse.ArgumentParser(prog="dial", description=__description__)
+    from dial.utils import initialization
 
-    parser.add_argument(
-        "-d", "--debug", help="Show debug messages", action="store_true"
-    )
+    # Parse arguments
+    app_config = initialization.parse_args(sys_args)
 
-    parser.add_argument(
-        "-l",
-        "--loglevel",
-        dest="loglevel",
-        help="Set logging level",
-        default="info",
-        choices=["critical", "error", "warning", "info", "debug"],
-    )
+    # Initialize
+    initialization.initialize_application(app_config)
 
-    return parser
+    from dial.gui import app
 
-
-def main():
-    """
-    Entry point for dial ui.
-    """
-    args = arg_parser().parse_args(sys.argv[1:])
-
-    sys.exit(app.run(args))
+    # Run
+    sys.exit(app.run(app_config))
 
 
 if __name__ == "__main__":

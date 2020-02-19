@@ -1,8 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Optional
+from typing import Any, Union
 
-from PySide2.QtCore import QPointF, Qt
+from PySide2.QtCore import Qt
 from PySide2.QtGui import QMouseEvent, QPainter, QWheelEvent
 from PySide2.QtWidgets import QGraphicsView
 
@@ -196,21 +196,21 @@ class NodeEditorView(QGraphicsView):
         """Checks if the user is currently dragging a connection or not."""
         return self.new_connection is not None
 
-    def __create_new_connection(self) -> GraphicsConnection:
+    def __create_new_connection(self) -> "GraphicsConnection":
         """Create a new connection on the scene."""
         connection = GraphicsConnection()
         self.scene().addItem(connection)
 
         return connection
 
-    def __remove_connection(self, connection: GraphicsConnection):
+    def __remove_connection(self, connection: "GraphicsConnection"):
         """Removes the GraphicsConnection item from the scene."""
         self.scene().removeItem(connection)
 
-    def __item_clicked_on(self, event: QMouseEvent):
+    def __item_clicked_on(self, event: QMouseEvent) -> Union["GraphicsPort", Any]:
         """Returns the graphical item under the mouse."""
         return self.itemAt(event.pos())
 
-    def __clicked_on_graphics_port(self, item):
+    def __clicked_on_graphics_port(self, item) -> bool:
         """Checks if the passed item is a GraphicsPort or not."""
         return isinstance(item, GraphicsPort)

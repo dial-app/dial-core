@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import Flag, auto
+from typing import List
 
 from PySide2.QtCore import QRectF, Qt
 from PySide2.QtGui import (
@@ -46,8 +47,8 @@ class GraphicsNode(QGraphicsItem):
         # Graphic items
         self.__node_widget_proxy = QGraphicsProxyWidget(parent=self)
         self.__graphics_title = QGraphicsTextItem(parent=self)
-        self.__input_graphics_ports = []
-        self.__output_graphics_ports = []
+        self.__input_graphics_ports: List["GraphicsPort"] = []
+        self.__output_graphics_ports: List["GraphicsPort"] = []
 
         # Graphic parameters
         self.__title_font = QFont("Ubuntu", 10)

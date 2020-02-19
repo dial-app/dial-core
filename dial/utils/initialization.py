@@ -4,29 +4,116 @@
 Functions to check that python versions, libraries... used by the program are correct.
 """
 
+import argparse
+import signal
 import sys
 from importlib.util import find_spec
 from typing import List, Tuple
 
+from dial import __description__, __requirements__
 from dial.utils import log
 
-LOGGER = log.get_logger(__name__)
+
+def initialize_application(args: argparse.Namespace):
+    """Performs all the necessary steps before running the application. This checks
+    python version, installed modules, graphics configurations, initialize logging
+    system...
+
+    Raises:
+        ImportError: If couldn't import a necessary module.
+        SystemError: If the Python version isn't compatible.
+    """
+    try:
+        __non_gui_initialization(args)
+        __gui_initialization(args)
+
+    except (ImportError, SystemError) as err:
+        log.module_logger().exception(err)
+
+        from dial.utils import tkinter
+
+        tkinter.showerror(str(err))
+        sys.exit(1)
+
+
+def __non_gui_initialization(args: argparse.Namespace):
+    """Performs all the necessary initialization before the GUI initialization."""
+    # Init logs system
+    log.init_logs(args)
+
+    # Check correct python and module versions
+    check_python_version()
+
+    # Check that all the required modules are installed
+    check_required_modules(__requirements__)
+
+    # State the signals handled by this application
+    signal.signal(signal.SIGINT, signal.SIG_DFL)
+
+
+def __gui_initialization(args: argparse.Namespace):
+    """Performs all the initialization of the GUI components.
+
+    Args:
+        args: App configuration namespace."""
+    # Initialize PySide2
+    from PySide2.QtWidgets import QApplication
+
+    QApplication()
+
+
+def parse_args(sys_args: List):
+    """Parses the system arguments (sys.arv), returning the app configuration.
+
+    Args:
+        sys_args: List of arguments to parse.
+    """
+    return get_arg_parser().parse_args(sys_args)
+
+
+def get_arg_parser() -> argparse.ArgumentParser:
+    """
+    Returns:
+        An argument parser for this application.
+    """
+    parser = argparse.ArgumentParser(prog="dial", description=__description__)
+
+    parser.add_argument(
+        "-d", "--debug", help="Show debug messages", action="store_true"
+    )
+
+    parser.add_argument(
+        "-l",
+        "--loglevel",
+        dest="loglevel",
+        help="Set logging level",
+        default="info",
+        choices=["critical", "error", "warning", "info", "debug"],
+    )
+
+    return parser
 
 
 def check_python_version():
     """
     Check if Python version installed is correct.
+
+    Raises:
+        SystemError: If a wrong Python version is installed.
     """
     # Check correct python version
     if sys.version_info[0] < 3 or sys.version_info[1] < 6:
         raise SystemError("Must use Python 3.6 or newer.")
 
-    LOGGER.debug("Python Version: %s", sys.version)
+    log.module_logger().debug("Python Version: %s", sys.version)
 
 
 def check_module_installed(module_name: str):
     """
     Check if PySide2 version installed is correct.
+
+    Raises:
+        ImportError: If the module is not installed.
     """
     spec = find_spec(module_name)
 
@@ -36,12 +123,15 @@ def check_module_installed(module_name: str):
             f'"pip install --user {module_name}" to install it.'
         )
 
-    LOGGER.debug("%s module found (%s)", spec.name, spec.origin)
+    log.module_logger().debug("%s module found (%s)", spec.name, spec.origin)
 
 
 def check_required_modules(requirements: List[Tuple[str, str]]):
     """
     Check if the required modules are installed.
+
+    Raises:
+        ImportError: If the module is not installed.
     """
     # Warning: Pillow module is actually imported as "PIL", so we have to change its
     # name before checking it

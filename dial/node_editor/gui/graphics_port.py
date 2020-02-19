@@ -1,18 +1,39 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-# type: ignore
-
-from typing import List
+from typing import TYPE_CHECKING, Set
 
 from PySide2.QtCore import QPointF, QRectF
 from PySide2.QtGui import QBrush, QColor, QPainter, QPen
 from PySide2.QtWidgets import QGraphicsItem, QStyleOptionGraphicsItem, QWidget
 
+from dial.node_editor import Port
+
 from .type_colors import TypeColor
+
+if TYPE_CHECKING:
+    from .graphics_connection import GraphicsConnection
+    from .graphics_node import GraphicsNode
+
+"""Class representing a port for a node.
+
+Can be used as a start/end point for dragging connections between nodes.
+"""
 
 
 class GraphicsPort(QGraphicsItem):
-    def __init__(self, port, parent=None):
+    """Class representing a port for a node.
+
+    Can be used as a start/end point for dragging connections between nodes.
+
+    Attributes:
+        graphics_node: Parent GraphicsNode object where this port is located.
+        radius: Radius of the port (used for drawing).
+        color: Color of the port.
+        port: Port object associated with this GraphicsPort object.
+        connections: GraphicsConnection objects connected to this port.
+    """
+
+    def __init__(self, port: Port, parent: "GraphicsNode"):
         super().__init__(parent)
 
         self.setFlag(QGraphicsItem.ItemSendsScenePositionChanges)
@@ -20,9 +41,11 @@ class GraphicsPort(QGraphicsItem):
         self.graphics_node = parent
 
         self.__port = port
-        self.__port.graphics_port = self  # Add an instance reference to self
 
-        self.__connections = set()
+        # Add add an instance attribute to this GraphicsPort.
+        self.__port.graphics_port = self  # type: ignore
+
+        self.__connections: Set["GraphicsConnection"] = set()
 
         self.radius = 8
 
@@ -44,7 +67,7 @@ class GraphicsPort(QGraphicsItem):
         return self.__port
 
     @property
-    def connections(self) -> List["GraphicsConnection"]:
+    def connections(self) -> Set["GraphicsConnection"]:
         """Returns a list of the GraphicsConnections item connected to this port."""
         return self.__connections
 
@@ -52,7 +75,7 @@ class GraphicsPort(QGraphicsItem):
         """Returns the position of the GraphicsPort (In terms of scene coordinates)."""
         return self.graphics_node.pos() + super().pos()
 
-    def add_connection(self, connection_item):
+    def add_connection(self, connection_item: "GraphicsConnection"):
         """Adds a new GraphicsConnection item to the list of connections.
 
         Args:
@@ -60,7 +83,7 @@ class GraphicsPort(QGraphicsItem):
         """
         self.__connections.add(connection_item)
 
-    def remove_connection(self, connection_item):
+    def remove_connection(self, connection_item: "GraphicsConnection"):
         """Removes an existent GraphicsConnection item from the list of connections.
 
         Doesn't do anything if the item to remove is not present on the connections
@@ -70,16 +93,6 @@ class GraphicsPort(QGraphicsItem):
             connection_item: A GraphicsConnection object.
         """
         self.__connections.discard(connection_item)
-
-    def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value):
-        if change == QGraphicsItem.ItemScenePositionHasChanged:
-            # Update the position of all connections to follow the ports
-            for connection in self.connections:
-                connection.updatePath()
-
-            return value
-
-        return super().itemChange(change, value)
 
     def boundingRect(self) -> QRectF:
         """Returns the bounding rect of the port.

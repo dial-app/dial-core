@@ -13,7 +13,7 @@ from tkinter import messagebox
 
 def showerror(message: str, title: str = "Error"):
     """
-    Show an error window with a custom message.
+    Shows an error window with a custom message.
     """
 
     root = tk.Tk()
