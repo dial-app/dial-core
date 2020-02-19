@@ -45,7 +45,6 @@ class LayersEditorWidget(QMainWindow):
         self.__dock_layers_tree.setFeatures(
             QDockWidget.DockWidgetFloatable | QDockWidget.DockWidgetMovable
         )
-        self.__dock_layers_tree.setWindowTitle("Layers")
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.__dock_layers_tree)
 

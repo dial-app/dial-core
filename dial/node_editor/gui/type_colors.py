@@ -3,6 +3,7 @@
 from PySide2.QtGui import QColor
 
 from dial.datasets import Dataset
+from dial.misc import Dial
 
 
 class TypeColor:
@@ -10,6 +11,7 @@ class TypeColor:
         int: QColor("#B54747"),
         str: QColor("#0056A6"),
         Dataset: QColor("#6666FF"),
+        Dial.KerasLayerListMIME: QColor("#AA0000"),
     }
 
     @classmethod
