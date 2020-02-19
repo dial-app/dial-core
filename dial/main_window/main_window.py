@@ -30,9 +30,8 @@ class MainWindow(QMainWindow):
         self.__main_menu_bar = menubar
         self.__main_menu_bar.setParent(self)
 
-        self.__node_editor = NodeEditorWindow(parent=self)
-
         self.__tabs_widget = QTabWidget(self)
+        self.__node_editor = NodeEditorWindow(self.__tabs_widget, parent=self)
 
         # Configure ui
         self.__setup_ui()
@@ -60,6 +59,13 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.__tabs_widget)
 
         # Configure Tabs widget
+        self.__tabs_widget.setMovable(True)
+        self.__tabs_widget.setTabsClosable(True)
+
+        self.__tabs_widget.tabCloseRequested.connect(
+            lambda index: self.__tabs_widget.removeTab(index)
+        )
+
         self.__tabs_widget.addTab(self.__node_editor, "Editor")
 
     def __toggle_log_window(self):

@@ -4,18 +4,20 @@ from typing import Any, Union
 
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QMouseEvent, QPainter, QWheelEvent
-from PySide2.QtWidgets import QGraphicsView
+from PySide2.QtWidgets import QDialog, QGraphicsView, QPushButton, QVBoxLayout
 
-from dial.node_editor.gui import GraphicsConnection, GraphicsPort
+from dial.node_editor.gui import GraphicsConnection, GraphicsNode, GraphicsPort
 
 
 class NodeEditorView(QGraphicsView):
-    def __init__(self, parent=None):
+    def __init__(self, tabs_widget, parent=None):
         super().__init__(parent)
 
         self.scale_factor_increment = 0.2
 
         self.new_connection = None
+
+        self.__tabs_widget = tabs_widget
 
         self.__mouse_button_press_event = {
             Qt.MiddleButton: self.__start_panning_view,
@@ -51,6 +53,43 @@ class NodeEditorView(QGraphicsView):
             self.__mouse_button_press_event[event.button()](event)
         except KeyError:
             pass
+
+    def mouseDoubleClickEvent(self, event: QMouseEvent):
+        """Performs an action when any mouse button is pressed twice."""
+        item = self.__item_clicked_on(event)
+
+        if isinstance(item, GraphicsNode):
+
+            button = QPushButton("Show here")
+            button.setMinimumSize(200, 100)
+
+            item.prepareGeometryChange()
+            item.proxy_widget.setWidget(button)
+
+            dialog = QDialog(self)
+
+            layout = QVBoxLayout()
+            layout.addWidget(item.node.inner_widget)
+
+            dialog.setLayout(layout)
+
+            dialog.show()
+
+            def show_widget_back():
+                item.node.inner_widget.setParent(None)
+
+                item.prepareGeometryChange()
+                item.proxy_widget.setWidget(item.node.inner_widget)
+
+                dialog.close()
+
+                item.recalculateGeometry()
+
+            dialog.finished.connect(show_widget_back)
+
+            button.clicked.connect(show_widget_back)
+
+            item.recalculateGeometry()
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         """Performs an action when any mouse button is released."""

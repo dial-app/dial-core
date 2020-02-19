@@ -46,6 +46,7 @@ class GraphicsNode(QGraphicsItem):
 
         # Graphic items
         self.__node_widget_proxy = QGraphicsProxyWidget(parent=self)
+
         self.__graphics_title = QGraphicsTextItem(parent=self)
         self.__input_graphics_ports: List["GraphicsPort"] = []
         self.__output_graphics_ports: List["GraphicsPort"] = []
@@ -72,6 +73,10 @@ class GraphicsNode(QGraphicsItem):
 
         self.__setup_ui()
         self.__create_graphic_ports()
+
+    @property
+    def proxy_widget(self):
+        return self.__node_widget_proxy
 
     @property
     def node(self) -> Node:
@@ -227,22 +232,27 @@ class GraphicsNode(QGraphicsItem):
             if self.__state & self.State.ResizeDown:
                 new_h = -diff_y
 
-            self.__node_widget_proxy.setGeometry(
-                self.__node_widget_proxy.geometry().adjusted(new_x, new_y, new_w, new_h)
-            )
-
-            self.setPos(self.pos().x() + new_x, self.pos().y() + new_y)
-
-            self.__node_widget_proxy.setPos(
-                self.padding, self.__title_height() + self.padding
-            )
-
-            for graphics_port in self.__output_graphics_ports:
-                graphics_port.setX(self.boundingRect().width())
+                self.recalculateGeometry(new_x, new_y, new_w, new_h)
 
             return
 
         super().mouseMoveEvent(event)
+
+    def recalculateGeometry(
+        self, new_x: int = 0, new_y: int = 0, new_w: int = 0, new_h: int = 0
+    ):
+        self.__node_widget_proxy.setGeometry(
+            self.__node_widget_proxy.geometry().adjusted(new_x, new_y, new_w, new_h)
+        )
+
+        self.setPos(self.pos().x() + new_x, self.pos().y() + new_y)
+
+        self.__node_widget_proxy.setPos(
+            self.padding, self.__title_height() + self.padding
+        )
+
+        for graphics_port in self.__output_graphics_ports:
+            graphics_port.setX(self.boundingRect().width())
 
     def paint(
         self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget

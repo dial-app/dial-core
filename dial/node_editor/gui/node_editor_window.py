@@ -12,14 +12,14 @@ from .node_editor_view import NodeEditorView
 
 
 class NodeEditorWindow(QWidget):
-    def __init__(self, parent=None):
+    def __init__(self, tabs_widget, parent=None):
         super().__init__(parent)
 
         self.__main_layout = QVBoxLayout()
 
-        self.__node_editor_view = NodeEditorView()
+        self.__node_editor_view = NodeEditorView(tabs_widget, parent=self)
         self.__scene = Scene()
-        self.__graphics_scene = GraphicsScene(self.__scene)
+        self.__graphics_scene = GraphicsScene(self.__scene, parent=self)
 
         self.__node_editor_view.setScene(self.__graphics_scene)
 

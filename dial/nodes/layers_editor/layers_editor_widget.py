@@ -30,7 +30,7 @@ class LayersEditorWidget(QMainWindow):
         self.__setup_ui()
 
     def sizeHint(self):
-        return QSize(800, 600)
+        return QSize(600, 300)
 
     def __setup_ui(self):
         # Configure dock widget with layers tree
