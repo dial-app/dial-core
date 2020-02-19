@@ -6,7 +6,6 @@ from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
 
 from dial import __version__
 from dial.node_editor.gui import NodeEditorWindow
-from dial.project import DialProjectManager
 from dial.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -18,15 +17,7 @@ class MainWindow(QMainWindow):
     """
 
     def __init__(
-        self,
-        project_manager,
-        datasets_window,
-        models_window,
-        compile_window,
-        train_window,
-        menubar,
-        logger_dialog,
-        parent=None,
+        self, menubar, logger_dialog, parent=None,
     ):
         super().__init__(parent)
 
@@ -35,49 +26,21 @@ class MainWindow(QMainWindow):
 
         self.__setup_logger_dialog()
 
-        # Initialize components
-        self.__project_manager = project_manager
-
         # Initialize widgets
         self.__main_menu_bar = menubar
         self.__main_menu_bar.setParent(self)
 
+        self.__node_editor = NodeEditorWindow(parent=self)
+
         self.__tabs_widget = QTabWidget(self)
-
-        self.__datasets_window = datasets_window
-        self.__datasets_window.setParent(self)
-
-        self.__models_window = models_window
-        self.__models_window.setParent(self)
-
-        self.__compile_window = compile_window
-        self.__compile_window.setParent(self)
-
-        self.__train_window = train_window
-        self.__train_window.setParent(self)
 
         # Configure ui
         self.__setup_ui()
-
-        project_manager = DialProjectManager()
-        self.__main_menu_bar.addMenu(project_manager.projects_menu)
-
-        # Connect signals
-        self.__main_menu_bar.new_project.connect(project_manager.new_project)
-        self.__main_menu_bar.open_project.connect(project_manager.open_project)
-        self.__main_menu_bar.save_project.connect(project_manager.save_project)
-        self.__main_menu_bar.save_project_as.connect(project_manager.save_project_as)
-
-        self.__main_menu_bar.open_predefined_dataset.connect(
-            self.__project_manager.load_predefined_dataset
-        )
-
-        self.__main_menu_bar.open_predefined_model.connect(
-            self.__project_manager.load_predefined_model
-        )
-
         self.__main_menu_bar.quit.connect(QApplication.quit)
         self.__main_menu_bar.toggle_log_window.connect(self.__toggle_log_window)
+
+    def sizeHint(self):
+        return QSize(1000, 800)
 
     def __setup_logger_dialog(self):
         # Add the logger window as a new log handler
@@ -97,14 +60,7 @@ class MainWindow(QMainWindow):
         self.setCentralWidget(self.__tabs_widget)
 
         # Configure Tabs widget
-        self.__tabs_widget.addTab(NodeEditorWindow(), "Editor")
-        self.__tabs_widget.addTab(self.__datasets_window, "Datasets")
-        self.__tabs_widget.addTab(self.__models_window, "Models")
-        self.__tabs_widget.addTab(self.__compile_window, "Compile")
-        self.__tabs_widget.addTab(self.__train_window, "Train")
-
-    def sizeHint(self):
-        return QSize(800, 600)
+        self.__tabs_widget.addTab(self.__node_editor, "Editor")
 
     def __toggle_log_window(self):
         self.__logger_dialog.show()
