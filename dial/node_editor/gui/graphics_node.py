@@ -1,10 +1,21 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from enum import Flag, auto
+
 from PySide2.QtCore import QRectF, Qt
-from PySide2.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPen
+from PySide2.QtGui import (
+    QBrush,
+    QColor,
+    QFont,
+    QMouseEvent,
+    QPainter,
+    QPainterPath,
+    QPen,
+)
 from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsProxyWidget,
+    QGraphicsSceneHoverEvent,
     QGraphicsTextItem,
     QStyleOptionGraphicsItem,
     QWidget,
@@ -16,6 +27,13 @@ from .graphics_port import GraphicsPort
 
 
 class GraphicsNode(QGraphicsItem):
+    class State(Flag):
+        NoFlags = 0
+        ResizeLeft = auto()
+        ResizeRight = auto()
+        ResizeUp = auto()
+        ResizeDown = auto()
+
     def __init__(self, node: Node, parent: QGraphicsItem = None):
         super().__init__(parent)
 
@@ -23,15 +41,20 @@ class GraphicsNode(QGraphicsItem):
         self.__node = node
         self.__node.graphics_node = self  # Add an instance variable to self
 
+        self.__state = self.State.NoFlags
+
         # Graphic items
         self.__node_widget_proxy = QGraphicsProxyWidget(parent=self)
         self.__graphics_title = QGraphicsTextItem(parent=self)
+        self.__input_graphics_ports = []
+        self.__output_graphics_ports = []
 
         # Graphic parameters
         self.__title_font = QFont("Ubuntu", 10)
 
         self.round_edge_size = 10
         self.padding = 12
+        self.resize_cursor_margin = 15
 
         # Colors/Pens/Brushes
         self.title_color = Qt.white
@@ -63,6 +86,7 @@ class GraphicsNode(QGraphicsItem):
         # GraphicsItem
         self.setFlag(QGraphicsItem.ItemIsSelectable)
         self.setFlag(QGraphicsItem.ItemIsMovable)
+        self.setAcceptHoverEvents(True)
 
         # Title
         self.__graphics_title.setDefaultTextColor(self.title_color)
@@ -82,6 +106,7 @@ class GraphicsNode(QGraphicsItem):
         """Adds new GraphicsPort items at each side of the node."""
 
         def create_ports(ports_dict, x_offset):
+            graphics_ports = []
             for i, port in enumerate(ports_dict.values()):
                 graphics_port = GraphicsPort(port, parent=self)
                 graphics_port.setPos(
@@ -90,9 +115,14 @@ class GraphicsNode(QGraphicsItem):
                     + graphics_port.radius * 4
                     + i * graphics_port.radius * 4,
                 )
+                graphics_ports.append(graphics_port)
 
-        create_ports(self.node.inputs, x_offset=0)
-        create_ports(self.node.outputs, x_offset=self.boundingRect().width())
+            return graphics_ports
+
+        self.__input_graphics_ports = create_ports(self.node.inputs, x_offset=0)
+        self.__output_graphics_ports = create_ports(
+            self.node.outputs, x_offset=self.boundingRect().width()
+        )
 
     def __update_title(self, new_text: str):
         """Updates the graphics title item with new text."""
@@ -114,6 +144,104 @@ class GraphicsNode(QGraphicsItem):
             return value
 
         return super().itemChange(change, value)
+
+    def hoverMoveEvent(self, event: QGraphicsSceneHoverEvent):
+        x_pos = event.pos().x()
+        y_pos = event.pos().y()
+
+        # Horizontal margins
+        if x_pos < self.resize_cursor_margin:
+            self.__state |= self.State.ResizeLeft
+            self.setCursor(Qt.SizeHorCursor)
+        elif self.boundingRect().width() - x_pos < self.resize_cursor_margin:
+            self.__state |= self.State.ResizeRight
+            self.setCursor(Qt.SizeHorCursor)
+        else:
+            self.__state &= ~self.State.ResizeLeft
+            self.__state &= ~self.State.ResizeRight
+
+        if y_pos < self.resize_cursor_margin:
+            self.__state |= self.State.ResizeUp
+            self.setCursor(Qt.SizeVerCursor)
+        elif self.boundingRect().height() - y_pos < self.resize_cursor_margin:
+            self.__state |= self.State.ResizeDown
+            self.setCursor(Qt.SizeVerCursor)
+        else:
+            self.__state &= ~self.State.ResizeUp
+            self.__state &= ~self.State.ResizeDown
+
+        if self.__state == (self.State.ResizeLeft | self.State.ResizeUp):
+            self.setCursor(Qt.SizeFDiagCursor)
+
+        if self.__state == (self.State.ResizeLeft | self.State.ResizeDown):
+            self.setCursor(Qt.SizeBDiagCursor)
+
+        if self.__state == (self.State.ResizeRight | self.State.ResizeUp):
+            self.setCursor(Qt.SizeBDiagCursor)
+
+        if self.__state == (self.State.ResizeRight | self.State.ResizeDown):
+            self.setCursor(Qt.SizeFDiagCursor)
+
+        if self.__state == self.State.NoFlags:
+            self.unsetCursor()
+
+        super().hoverMoveEvent(event)
+
+    def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent):
+        self.unsetCursor()
+        self.__state = self.State.NoFlags
+
+        super().hoverLeaveEvent(event)
+
+    def mousePressEvent(self, event: QMouseEvent):
+        self.start_resizing_x = event.pos().x()
+        self.start_resizing_y = event.pos().y()
+
+        super().mousePressEvent(event)
+
+    def mouseMoveEvent(self, event: QMouseEvent):
+        if self.cursor() != Qt.ArrowCursor:
+            self.prepareGeometryChange()
+
+            diff_x = self.start_resizing_x - event.pos().x()
+            diff_y = self.start_resizing_y - event.pos().y()
+
+            self.start_resizing_x = event.pos().x()
+            self.start_resizing_y = event.pos().y()
+
+            new_x = 0
+            new_y = 0
+            new_w = 0
+            new_h = 0
+
+            if self.__state & self.State.ResizeLeft:
+                new_x = -diff_x
+
+            if self.__state & self.State.ResizeRight:
+                new_w = -diff_x
+
+            if self.__state & self.State.ResizeUp:
+                new_y = -diff_y
+
+            if self.__state & self.State.ResizeDown:
+                new_h = -diff_y
+
+            self.__node_widget_proxy.setGeometry(
+                self.__node_widget_proxy.geometry().adjusted(new_x, new_y, new_w, new_h)
+            )
+
+            self.setPos(self.pos().x() + new_x, self.pos().y() + new_y)
+
+            self.__node_widget_proxy.setPos(
+                self.padding, self.__title_height() + self.padding
+            )
+
+            for graphics_port in self.__output_graphics_ports:
+                graphics_port.setX(self.boundingRect().width())
+
+            return
+
+        super().mouseMoveEvent(event)
 
     def paint(
         self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget
