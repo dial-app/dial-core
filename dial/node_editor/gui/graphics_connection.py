@@ -45,6 +45,9 @@ class GraphicsConnection(QGraphicsPathItem):
         # A Connection can be selectable
         self.setFlag(QGraphicsItem.ItemIsSelectable)
 
+        self.width = 4
+        self.margin = 20
+
         self.__start = QPointF(0, 0)
         self.__end = QPointF(0, 0)
 
@@ -55,7 +58,7 @@ class GraphicsConnection(QGraphicsPathItem):
         self.__color = QColor("black")
 
         self.__default_pen = QPen(self.color)
-        self.__default_pen.setWidthF(4.0)
+        self.__default_pen.setWidth(self.width)
 
         # Draw connections always on bottom
         self.setZValue(-1)
@@ -199,7 +202,7 @@ class GraphicsConnection(QGraphicsPathItem):
 
     def shape(self) -> QPainterPath:
         path_stroker = QPainterPathStroker()
-        path_stroker.setWidth(4)
+        path_stroker.setWidth(self.margin)
         return path_stroker.createStroke(self.path())
 
     def paint(

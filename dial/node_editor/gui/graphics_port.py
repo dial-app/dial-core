@@ -80,6 +80,7 @@ class GraphicsPort(QGraphicsItem):
         self.__port_name = QGraphicsTextItem(parent=self)
         self.__port_name.setPlainText(self.__port.name)
         self.__port_name.setDefaultTextColor("#FFFFFF")
+        self.__port_name.setFlag(QGraphicsItem.ItemStacksBehindParent)
 
         if self.__port_name_position == self.PortNamePosition.Left:
             self.__port_name.setPos(-self.__port_name.boundingRect().width() - 3, 1)
