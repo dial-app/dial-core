@@ -2,8 +2,8 @@
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from PySide2.QtCore import QPointF, Qt
-from PySide2.QtGui import QColor, QPainter, QPainterPath, QPen
+from PySide2.QtCore import QPointF, QRectF, Qt
+from PySide2.QtGui import QColor, QPainter, QPainterPath, QPainterPathStroker, QPen
 from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsPathItem,
@@ -129,7 +129,7 @@ class GraphicsConnection(QGraphicsPathItem):
         return self.__start_graphics_port
 
     @start_graphics_port.setter
-    @log_on_end(INFO, "{self} connected to Start Port {port}")
+    # @log_on_end(INFO, "{self} connected to Start Port {port}")
     def start_graphics_port(self, port: "GraphicsPort"):
         """Sets the start of this connection to the `port` position.
 
@@ -153,7 +153,7 @@ class GraphicsConnection(QGraphicsPathItem):
         return self.__end_graphics_port
 
     @end_graphics_port.setter
-    @log_on_end(INFO, "{self} connected to End Port {port}")
+    # @log_on_end(INFO, "{self} connected to End Port {port}")
     def end_graphics_port(self, port: "GraphicsPort"):
         """Sets the end of this connection to the `port` position."""
         # Updates the end position
@@ -186,9 +186,21 @@ class GraphicsConnection(QGraphicsPathItem):
         In this case, we change the color of the connection when it's selected.
         """
         if change == self.ItemSelectedChange:
-            self.pen().setColor(self.color if value else self.color.lighter(200))
+            self.__default_pen.setColor(
+                self.color.lighter(150) if value else self.color
+            )
+
+            return value
 
         return super().itemChange(change, value)
+
+    def boundingRect(self) -> QRectF:
+        return self.shape().boundingRect().normalized()
+
+    def shape(self) -> QPainterPath:
+        path_stroker = QPainterPathStroker()
+        path_stroker.setWidth(4)
+        return path_stroker.createStroke(self.path())
 
     def paint(
         self,

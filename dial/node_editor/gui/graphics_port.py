@@ -3,8 +3,15 @@
 from enum import Enum
 from typing import TYPE_CHECKING, Set
 
-from PySide2.QtCore import QPointF, QRectF
-from PySide2.QtGui import QBrush, QColor, QPainter, QPen
+from PySide2.QtCore import QPointF, QRectF, Qt
+from PySide2.QtGui import (
+    QBrush,
+    QColor,
+    QPainter,
+    QPainterPath,
+    QPainterPathStroker,
+    QPen,
+)
 from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsTextItem,
@@ -39,9 +46,16 @@ class GraphicsPort(QGraphicsItem):
         connections: GraphicsConnection objects connected to this port.
     """
 
+    class DrawingState(Enum):
+        Normal = 0
+        Dragging = 1
+
     class PortNamePosition(Enum):
-        Left = 1
-        Right = 2
+        Left = 0
+        Right = 1
+
+    drawing_state = DrawingState.Normal
+    drawing_type = None
 
     def __init__(
         self, port: Port, port_name_position: PortNamePosition, parent: "GraphicsNode",
@@ -60,6 +74,7 @@ class GraphicsPort(QGraphicsItem):
         self.__connections: Set["GraphicsConnection"] = set()
 
         self.radius = 8
+        self.margin = 12
 
         self.__port_name_position = port_name_position
         self.__port_name = QGraphicsTextItem(parent=self)
@@ -67,9 +82,9 @@ class GraphicsPort(QGraphicsItem):
         self.__port_name.setDefaultTextColor("#FFFFFF")
 
         if self.__port_name_position == self.PortNamePosition.Left:
-            self.__port_name.setPos(-self.__port_name.boundingRect().width(), 0)
+            self.__port_name.setPos(-self.__port_name.boundingRect().width() - 3, 1)
         elif self.__port_name_position == self.PortNamePosition.Right:
-            self.__port_name.setPos(0, 0)
+            self.__port_name.setPos(3, 1)
 
         # Colors/Pens/Brushes
         self.__color = TypeColor.get_color_for(port.port_type)
@@ -77,6 +92,10 @@ class GraphicsPort(QGraphicsItem):
         self.outline_pen = QPen(self.__color.darker())
         self.outline_pen.setWidthF(2)
         self.background_brush = QBrush(self.__color)
+
+        self.dashed_outline_pen = QPen(self.__color)
+        self.dashed_outline_pen.setStyle(Qt.DashLine)
+        self.dashed_outline_pen.setWidth(2)
 
     @property
     def color(self) -> QColor:
@@ -117,12 +136,12 @@ class GraphicsPort(QGraphicsItem):
         self.__connections.discard(connection_item)
 
     def boundingRect(self) -> QRectF:
-        """Returns the bounding rect of the port.
-
-        Returns:
-            A rect enclosing the port object.
-        """
-        return QRectF(-self.radius, -self.radius, 2 * self.radius, 2 * self.radius)
+        return QRectF(
+            -self.radius - self.margin,
+            -self.radius - self.margin,
+            2 * self.radius + 2 * self.margin,
+            2 * self.radius + 2 * self.margin,
+        )
 
     def paint(
         self,
@@ -133,4 +152,14 @@ class GraphicsPort(QGraphicsItem):
         """Paints the port."""
         painter.setPen(self.outline_pen)
         painter.setBrush(self.background_brush)
-        painter.drawEllipse(self.boundingRect())
+        painter.drawEllipse(
+            -self.radius, -self.radius, 2 * self.radius, 2 * self.radius
+        )
+
+        if (
+            GraphicsPort.drawing_state == GraphicsPort.DrawingState.Dragging
+            and self.port.port_type == GraphicsPort.drawing_type
+        ):
+            painter.setPen(self.dashed_outline_pen)
+            painter.setBrush(Qt.NoBrush)
+            painter.drawEllipse(self.boundingRect())

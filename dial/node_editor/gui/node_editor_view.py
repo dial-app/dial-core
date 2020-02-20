@@ -7,6 +7,7 @@ from PySide2.QtGui import QMouseEvent, QPainter, QWheelEvent
 from PySide2.QtWidgets import QDialog, QGraphicsView, QPushButton, QVBoxLayout
 
 from dial.node_editor.gui import GraphicsConnection, GraphicsNode, GraphicsPort
+from dial.utils import log
 
 
 class NodeEditorView(QGraphicsView):
@@ -188,9 +189,15 @@ class NodeEditorView(QGraphicsView):
         item = self.__item_clicked_on(event)
 
         if self.__clicked_on_graphics_port(item):
+            log.get_logger(__name__).debug("Start dragging")
+
             self.new_connection = self.__create_new_connection()
             self.new_connection.start_graphics_port = item
             self.new_connection.end = self.new_connection.start_graphics_port.pos()
+
+            GraphicsPort.drawing_state = GraphicsPort.DrawingState.Dragging
+            GraphicsPort.drawing_type = item.port.port_type
+            self.scene().update()
 
             # Its important to not pass the event to parent classes to avoid selecting
             # items when we start dragging. That's why we return here.
@@ -222,6 +229,10 @@ class NodeEditorView(QGraphicsView):
         else:
             self.__remove_connection(self.new_connection)
 
+        GraphicsPort.drawing_state = GraphicsPort.DrawingState.Normal
+        GraphicsPort.drawing_type = None
+        self.scene().update()
+
         # Reset the connection item
         self.new_connection = None
 
@@ -232,6 +243,10 @@ class NodeEditorView(QGraphicsView):
             event: Mouse event.
         """
         self.new_connection.end = self.mapToScene(event.pos())
+
+        item = self.__item_clicked_on(event)
+        if self.__clicked_on_graphics_port(item):
+            self.new_connection.end = item.pos()
 
         super().mouseMoveEvent(event)
 
