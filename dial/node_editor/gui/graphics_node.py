@@ -151,6 +151,11 @@ class GraphicsNode(QGraphicsItem):
             self.__outline_pen.setColor(
                 self.outline_selected_color if value else self.outline_default_color
             )
+            if value:
+                self.setZValue(10)
+            else:
+                self.setZValue(0)
+
             return value
 
         return super().itemChange(change, value)

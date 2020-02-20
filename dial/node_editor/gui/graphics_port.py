@@ -71,8 +71,6 @@ class GraphicsPort(QGraphicsItem):
         elif self.__port_name_position == self.PortNamePosition.Right:
             self.__port_name.setPos(0, 0)
 
-        print(self.__port_name.boundingRect().width())
-
         # Colors/Pens/Brushes
         self.__color = TypeColor.get_color_for(port.port_type)
 

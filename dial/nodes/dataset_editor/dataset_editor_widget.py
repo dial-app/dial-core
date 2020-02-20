@@ -10,6 +10,8 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
+from .datasets_list import PredefinedDatasetsList
+
 
 class DatasetEditorWidget(QWidget):
     """
@@ -35,8 +37,11 @@ class DatasetEditorWidget(QWidget):
         # Configure interface
         self.__setup_ui()
 
+        # Connections
+        self.__dataset_loader_button.clicked.connect(self.__load_predefined_dataset)
+
     def sizeHint(self):
-        return QSize(600, 500)
+        return QSize(500, 300)
 
     def __setup_ui(self):
         splitter = QSplitter()
@@ -60,3 +65,20 @@ class DatasetEditorWidget(QWidget):
         self.__main_layout.setContentsMargins(0, 0, 0, 0)
 
         self.setLayout(self.__main_layout)
+
+    def __load_predefined_dataset(self):
+        datasets_loader_dialog = PredefinedDatasetsList.Dialog()
+
+        accepted = datasets_loader_dialog.exec()
+
+        if accepted:
+            dataset_loader = datasets_loader_dialog.selected_loader()
+
+            train, test = dataset_loader.load()
+
+            self.__train_test_tabs.set_train_dataset(train)
+            self.__train_test_tabs.set_test_dataset(test)
+
+            self.__dataset_name_label.setText(dataset_loader.name)
+            self.__train_len_label.setText(str(len(train)))
+            self.__test_len_label.setText(str(len(test)))

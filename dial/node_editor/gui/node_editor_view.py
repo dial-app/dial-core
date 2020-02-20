@@ -71,12 +71,16 @@ class NodeEditorView(QGraphicsView):
             layout = QVBoxLayout()
             layout.addWidget(item.node.inner_widget)
 
+            prev_size = item.node.inner_widget.size()
+
             dialog.setLayout(layout)
 
             dialog.show()
 
             def show_widget_back():
                 item.node.inner_widget.setParent(None)
+
+                item.node.inner_widget.resize(prev_size)
 
                 item.prepareGeometryChange()
                 item.proxy_widget.setWidget(item.node.inner_widget)
