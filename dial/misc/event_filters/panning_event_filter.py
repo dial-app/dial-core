@@ -8,6 +8,25 @@ from PySide2.QtWidgets import QGraphicsView
 
 
 class PanningEventFilter(QObject):
+    """The PanningEventFilter class provides an easy implementation of a panning
+    movement for a QGraphicsView object.
+
+    This filter only works with a QGraphicsView object.
+
+    Attributes:
+        state: The state of the movement (Panning or not).
+        button_used_for_panning: The button that must be pressed and dragged for panning
+        the view (Qt.MiddleButton by default)
+
+    Examples:
+        view = QGraphicsView()
+        panning_event_filter = PanningEventFilter()
+
+        view.installEventFilter(panning_event_filter)
+
+        # Now the `view` can be panned using the mouse.
+    """
+
     class State(Enum):
         Idle = 0
         Panning = 1
@@ -22,14 +41,28 @@ class PanningEventFilter(QObject):
 
         self.button_used_for_panning = Qt.MiddleButton
 
-    def eventFilter(self, obj: QGraphicsView, event: QEvent) -> bool:
-        print(event)
+    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
+        """Intercepts events emitted by `obj`. Implements a panning effect when the mouse
+        is dragged throughout the scene.
+
+        This filter only works with a QGraphicsView object.
+
+        Args:
+            obj: The object (QGraphicsView) to pan.
+            event: The generated event.
+
+        Returns:
+            if the event should be filtered out or not (Stopping it being handled by
+            other objects).
+        """
+        if not isinstance(obj, QGraphicsView):
+            return super().eventFilter(obj, event)
 
         if self.__panning_button_clicked(event):
             return self.__start_panning_view(obj, event)
 
         if self.__is_panning_view(event):
-            return self.__panning_view(obj, event)
+            return self.__pan_view(obj, event)
 
         if self.__panning_button_released(event):
             return self.__stop_panning_view(obj, event)
@@ -37,29 +70,39 @@ class PanningEventFilter(QObject):
         return super().eventFilter(obj, event)
 
     def __panning_button_clicked(self, event: QMouseEvent) -> bool:
+        """Checks if the button defined as the "panning button" was clicked.
+
+        This starts the panning movement.
+        """
         return (
             event.type() == QMouseEvent.MouseButtonPress
             and event.button() == self.button_used_for_panning
         )
 
     def __panning_button_released(self, event: QMouseEvent) -> bool:
+        """Checks if the button defined as the "panning button" was released.
+
+        This ends the panning movement.
+        """
         return (
             event.type() == QMouseEvent.MouseButtonRelease
             and event.button() == self.button_used_for_panning
         )
 
     def __is_panning_view(self, event: QMouseEvent) -> bool:
+        """Checks if the view is currently being panned."""
         return (
             event.type() == QMouseEvent.MouseMove and self.state == self.State.Panning
         )
 
     def __start_panning_view(self, view: QGraphicsView, event: QMouseEvent) -> bool:
-        """Responds to the event of start dragging the view for panning it.
+        """Responds to the event of start panning the view.
 
-        Changes the mouse icon to a dragging hand, and saves the last clicked position
-        used for calculate the mouse displacement.
+        Changes the mouse icon to a dragging hand, and saves the last clicked position.
+        This is used for calculating the mouse displacement.
 
         Args:
+            view: The QGraphicsView object to pan.
             event: Mouse event.
         """
         view.setDragMode(QGraphicsView.ScrollHandDrag)
@@ -71,14 +114,16 @@ class PanningEventFilter(QObject):
 
         return True
 
-    def __panning_view(self, view: QGraphicsView, event: QMouseEvent) -> bool:
+    def __pan_view(self, view: QGraphicsView, event: QMouseEvent) -> bool:
         """Pans the view using the mouse movement.
 
         The scrollbars are moved along the view (They're disabled by default, but if
-        enabled they could be usable).
+        they were enabled, the scrollbars would be scrolled along the view
+        displacement).
 
         Args:
-            event: Mouse event.
+            view: The QGraphicsView object to pan.
+            event: Generated mouse event.
         """
         # Move view by using the scrollbars
         view.horizontalScrollBar().setValue(
@@ -101,6 +146,7 @@ class PanningEventFilter(QObject):
         Changes the mouse icon back to the default icon.
 
         Args:
+            view: The QGraphicsView object to pan.
             event: Mouse event.
         """
         view.setDragMode(QGraphicsView.NoDrag)

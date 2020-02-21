@@ -2,11 +2,11 @@
 
 from typing import Any, Union
 
-from PySide2.QtCore import Qt
+from PySide2.QtCore import QObject, Qt
 from PySide2.QtGui import QMouseEvent, QPainter, QWheelEvent
 from PySide2.QtWidgets import QDialog, QGraphicsView, QPushButton, QVBoxLayout
 
-from dial.misc.event_filters import PanningEventFilter
+from dial.misc.event_filters import PanningEventFilter, ZoomEventFilter
 from dial.node_editor.gui import GraphicsConnection, GraphicsNode, GraphicsPort
 from dial.utils import log
 
@@ -15,24 +15,14 @@ class NodeEditorView(QGraphicsView):
     def __init__(self, tabs_widget, parent=None):
         super().__init__(parent)
 
-        self.scale_factor_increment = 0.2
-
         self.new_connection = None
 
         self.__tabs_widget = tabs_widget
 
-        self.__mouse_button_press_event = {
-            Qt.LeftButton: self.__start_dragging_connection,
-        }
-
-        self.__mouse_button_release_event = {
-            Qt.LeftButton: self.__stop_dragging_connection,
-        }
-
-        self.__mouse_double_click_event = {Qt.LeftButton: self.__toggle_widget_dialog}
-
         self.__panning_event_filter = PanningEventFilter(parent=self)
-        self.installEventFilter(self.__panning_event_filter)
+        self.__zoom_event_filter = ZoomEventFilter(parent=self)
+
+        self.installEventFilter(self.__zoom_event_filter)
 
         self.__setup_ui()
 
@@ -45,6 +35,10 @@ class NodeEditorView(QGraphicsView):
             | QPainter.SmoothPixmapTransform
         )
 
+        # View actions
+        self.setPanning(True)
+        self.setZooming(True)
+
         # Hide scrollbars
         self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
@@ -52,55 +46,29 @@ class NodeEditorView(QGraphicsView):
         # Set anchor under mouse (for zooming)
         self.setTransformationAnchor(QGraphicsView.AnchorUnderMouse)
 
-    # def mousePressEvent(self, event: QMouseEvent):
-    #     """Performs an action when any mouse button is pressed."""
-    #     try:
-    #         self.__mouse_button_press_event[event.button()](event)
-    #     except KeyError:
-    #         pass
+    def setPanning(self, toggle: bool):
+        """Toggles if the view can be panned or not with the mouse."""
+        self.__toggle_event_filter(toggle, self.__panning_event_filter)
 
-    # def mouseDoubleClickEvent(self, event: QMouseEvent):
-    #     """Performs an action when any mouse button is pressed twice."""
-
-    #     try:
-    #         self.__mouse_double_click_event[event.button()](event)
-    #     except KeyError:
-    #         pass
+    def setZooming(self, toggle: bool):
+        """Toggles if the view can be zoomed or not with the mouse wheel."""
+        self.__toggle_event_filter(toggle, self.__zoom_event_filter)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
-        """Performs an action when any mouse button is released."""
-        # try:
-        #     self.__mouse_button_release_event[event.button()](event)
-        # except KeyError:
-        #     pass
+        # TODO: Explain why
         event.ignore()
         super().mouseReleaseEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent):
+        # TODO: Explain why
         event.ignore()
         super().mouseReleaseEvent(event)
 
-    # def mouseMoveEvent(self, event: QMouseEvent):
-    #     """Performs an action when the mouse moves (while clicking a mouse button)."""
-    #     if self.dragMode() == QGraphicsView.ScrollHandDrag:
-    #         self.__panning_view(event)
-    #     elif self.__is_dragging_connection():
-    #         self.__dragging_connection(event)
-    #     else:
-    #         super().mouseMoveEvent(event)
-
     def wheelEvent(self, event: QWheelEvent):
-        """Zooms in/out the view using the mouse wheel."""
-        if event.delta() > 0:
-            self.scale(
-                1.0 + self.scale_factor_increment, 1.0 + self.scale_factor_increment
-            )
-        else:
-            self.scale(
-                1.0 - self.scale_factor_increment, 1.0 - self.scale_factor_increment
-            )
-
-        event.accept()
+        # TODO: Explain why
+        event.ignore()
+        # Don't call!!
+        # super().wheelEvent(event)
 
     def __toggle_widget_dialog(self, event: QMouseEvent):
         """Shows the Node `inner_widget` on a new dialog. The content of the node is
@@ -241,3 +209,9 @@ class NodeEditorView(QGraphicsView):
     def __item_clicked_on(self, event: QMouseEvent) -> Union["GraphicsPort", Any]:
         """Returns the graphical item under the mouse."""
         return self.itemAt(event.pos())
+
+    def __toggle_event_filter(self, toggle: bool, event_filter: QObject):
+        if toggle:
+            self.installEventFilter(event_filter)
+        else:
+            self.uninstallEventFilter(event_filter)
