@@ -83,6 +83,12 @@ class GraphicsNode(QGraphicsItem):
         """Returns the associated node."""
         return self.__node
 
+    def setInnerWidget(self, widget: QWidget):
+        """Sets a new widget inside the node."""
+        self.prepareGeometryChange()
+        self.proxy_widget.setWidget(widget)
+        self.recalculateGeometry()
+
     def __title_height(self):
         """Returns the height of the title graphics item."""
         return self.__graphics_title.boundingRect().height()

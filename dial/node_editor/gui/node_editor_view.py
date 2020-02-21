@@ -30,6 +30,8 @@ class NodeEditorView(QGraphicsView):
             Qt.LeftButton: self.__stop_dragging_connection,
         }
 
+        self.__mouse_double_click_event = {Qt.LeftButton: self.__toggle_widget_dialog}
+
         self.__setup_ui()
 
     def __setup_ui(self):
@@ -57,44 +59,11 @@ class NodeEditorView(QGraphicsView):
 
     def mouseDoubleClickEvent(self, event: QMouseEvent):
         """Performs an action when any mouse button is pressed twice."""
-        item = self.__item_clicked_on(event)
 
-        if isinstance(item, GraphicsNode):
-
-            button = QPushButton("Show here")
-            button.setMinimumSize(200, 100)
-
-            item.prepareGeometryChange()
-            item.proxy_widget.setWidget(button)
-
-            dialog = QDialog(self)
-
-            layout = QVBoxLayout()
-            layout.addWidget(item.node.inner_widget)
-
-            prev_size = item.node.inner_widget.size()
-
-            dialog.setLayout(layout)
-
-            dialog.show()
-
-            def show_widget_back():
-                item.node.inner_widget.setParent(None)
-
-                item.node.inner_widget.resize(prev_size)
-
-                item.prepareGeometryChange()
-                item.proxy_widget.setWidget(item.node.inner_widget)
-
-                dialog.close()
-
-                item.recalculateGeometry()
-
-            dialog.finished.connect(show_widget_back)
-
-            button.clicked.connect(show_widget_back)
-
-            item.recalculateGeometry()
+        try:
+            self.__mouse_double_click_event[event.button()](event)
+        except KeyError:
+            pass
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         """Performs an action when any mouse button is released."""
@@ -124,6 +93,53 @@ class NodeEditorView(QGraphicsView):
             )
 
         event.accept()
+
+    def __toggle_widget_dialog(self, event: QMouseEvent):
+        """Shows the Node `inner_widget` on a new dialog. The content of the node is
+        substituted with a button that hides the dialog and shows the inner_widget back
+        in the node when pressed.
+        """
+
+        item = self.__item_clicked_on(event)
+
+        if not isinstance(item, GraphicsNode):
+            return
+
+        # Don't create a dialog if the node doesn't has an inner_widget
+        if not item.node.inner_widget:
+            return
+
+        node_inner_widget = item.node.inner_widget
+        previous_node_size = node_inner_widget.size()
+
+        show_here_button = QPushButton("Show here")
+        show_here_button.setMinimumSize(200, 100)
+
+        # Replace the node widget with the button
+        item.setInnerWidget(show_here_button)
+
+        # Create a new dialog for displaying the node widget
+        dialog = QDialog(self)
+
+        layout = QVBoxLayout()
+        layout.addWidget(node_inner_widget)
+        dialog.setLayout(layout)
+
+        dialog.show()
+
+        def place_widget_back_in_node():
+            # Widgets embedded in nodes can't have parents
+            node_inner_widget.setParent(None)
+
+            node_inner_widget.resize(previous_node_size)
+            item.setInnerWidget(node_inner_widget)
+
+            dialog.close()
+
+        # The widget will be displayed back in the node when the dialog is closed or
+        # when the "show here" button is pressed
+        dialog.finished.connect(place_widget_back_in_node)
+        show_here_button.clicked.connect(place_widget_back_in_node)
 
     def __start_panning_view(self, event: QMouseEvent):
         """Responds to the event of start dragging the view for panning it.
@@ -185,25 +201,25 @@ class NodeEditorView(QGraphicsView):
         Args:
             event: Mouse event.
         """
-
         item = self.__item_clicked_on(event)
 
-        if self.__clicked_on_graphics_port(item):
-            log.get_logger(__name__).debug("Start dragging")
-
-            self.new_connection = self.__create_new_connection()
-            self.new_connection.start_graphics_port = item
-            self.new_connection.end = self.new_connection.start_graphics_port.pos()
-
-            GraphicsPort.drawing_state = GraphicsPort.DrawingState.Dragging
-            GraphicsPort.drawing_type = item.port.port_type
-            self.scene().update()
-
-            # Its important to not pass the event to parent classes to avoid selecting
-            # items when we start dragging. That's why we return here.
+        if not isinstance(item, GraphicsPort):
+            super().mousePressEvent(event)
             return
 
-        super().mousePressEvent(event)
+        log.get_logger(__name__).debug("Start dragging")
+
+        self.new_connection = self.__create_new_connection()
+        self.new_connection.start_graphics_port = item
+        self.new_connection.end = self.new_connection.start_graphics_port.pos()
+
+        GraphicsPort.drawing_state = GraphicsPort.DrawingState.Dragging
+        GraphicsPort.drawing_type = item.port.port_type
+        self.scene().update()
+
+        # Its important to don't pass the event to parent classes to avoid selecting
+        # items when we start dragging.
+        # DON'T include `super().mousePressEvent(event)` here
 
     def __stop_dragging_connection(self, event: QMouseEvent):
         """Stops dragging the connection.
@@ -221,8 +237,8 @@ class NodeEditorView(QGraphicsView):
 
         item = self.__item_clicked_on(event)
 
-        # The conection must end on a GraphicsPort item
-        if self.__clicked_on_graphics_port(item) and item.port.is_compatible_with(
+        # The conection must end on a COMPATIBLE GraphicsPort item
+        if isinstance(item, GraphicsPort) and item.port.is_compatible_with(
             self.new_connection.start_graphics_port.port
         ):
             self.new_connection.end_graphics_port = item
@@ -268,7 +284,3 @@ class NodeEditorView(QGraphicsView):
     def __item_clicked_on(self, event: QMouseEvent) -> Union["GraphicsPort", Any]:
         """Returns the graphical item under the mouse."""
         return self.itemAt(event.pos())
-
-    def __clicked_on_graphics_port(self, item) -> bool:
-        """Checks if the passed item is a GraphicsPort or not."""
-        return isinstance(item, GraphicsPort)

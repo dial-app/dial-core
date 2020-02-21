@@ -2,7 +2,7 @@
 
 """The main window for the program."""
 from PySide2.QtCore import QSize
-from PySide2.QtWidgets import QApplication, QMainWindow, QTabWidget
+from PySide2.QtWidgets import QApplication, QMainWindow, QTabBar, QTabWidget
 
 from dial import __version__
 from dial.node_editor.gui import NodeEditorWindow
@@ -58,7 +58,6 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(self.__tabs_widget)
 
-        # Configure Tabs widget
         self.__tabs_widget.setMovable(True)
         self.__tabs_widget.setTabsClosable(True)
 
@@ -67,6 +66,10 @@ class MainWindow(QMainWindow):
         )
 
         self.__tabs_widget.addTab(self.__node_editor, "Editor")
+
+        # Remove "delete" button from the tab
+        self.__tabs_widget.tabBar().tabButton(0, QTabBar.RightSide).deleteLater()
+        self.__tabs_widget.tabBar().setTabButton(0, QTabBar.RightSide, None)
 
     def __toggle_log_window(self):
         self.__logger_dialog.show()
