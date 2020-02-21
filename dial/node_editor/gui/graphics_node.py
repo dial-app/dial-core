@@ -22,6 +22,7 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
+from dial.misc.event_filters import ResizableItemEventFilter
 from dial.node_editor import Node
 
 from .graphics_port import GraphicsPort
@@ -43,6 +44,9 @@ class GraphicsNode(QGraphicsItem):
         self.__node.graphics_node = self  # Add an instance variable to self
 
         self.__state = self.State.NoFlags
+
+        self.__resizable_item_event_filter = ResizableItemEventFilter(parent=self)
+        self.installSceneEventFilter(self.__resizable_item_event_filter)
 
         # Graphic items
         self.__node_widget_proxy = QGraphicsProxyWidget(parent=self)

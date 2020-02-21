@@ -3,7 +3,7 @@
 from enum import Enum
 
 from PySide2.QtCore import QEvent, QObject, Qt
-from PySide2.QtGui import QMouseEvent
+from PySide2.QtGui import QGuiApplication, QMouseEvent
 from PySide2.QtWidgets import QGraphicsView
 
 
@@ -41,6 +41,10 @@ class PanningEventFilter(QObject):
 
         self.button_used_for_panning = Qt.MiddleButton
 
+    def is_panning(self, event: QMouseEvent) -> bool:
+        """Checks if the view is currently being panned."""
+        return self.state == self.State.Panning
+
     def eventFilter(self, obj: QObject, event: QEvent) -> bool:
         """Intercepts events emitted by `obj`. Implements a panning effect when the mouse
         is dragged throughout the scene.
@@ -55,13 +59,10 @@ class PanningEventFilter(QObject):
             if the event should be filtered out or not (Stopping it being handled by
             other objects).
         """
-        if not isinstance(obj, QGraphicsView):
-            return super().eventFilter(obj, event)
-
         if self.__panning_button_clicked(event):
             return self.__start_panning_view(obj, event)
 
-        if self.__is_panning_view(event):
+        if event.type() == QEvent.MouseMove and self.is_panning(event):
             return self.__pan_view(obj, event)
 
         if self.__panning_button_released(event):
@@ -89,12 +90,6 @@ class PanningEventFilter(QObject):
             and event.button() == self.button_used_for_panning
         )
 
-    def __is_panning_view(self, event: QMouseEvent) -> bool:
-        """Checks if the view is currently being panned."""
-        return (
-            event.type() == QMouseEvent.MouseMove and self.state == self.State.Panning
-        )
-
     def __start_panning_view(self, view: QGraphicsView, event: QMouseEvent) -> bool:
         """Responds to the event of start panning the view.
 
@@ -105,7 +100,9 @@ class PanningEventFilter(QObject):
             view: The QGraphicsView object to pan.
             event: Mouse event.
         """
-        view.setDragMode(QGraphicsView.ScrollHandDrag)
+        QGuiApplication.setOverrideCursor(Qt.ClosedHandCursor)
+
+        print("start")
 
         self.__panning_start_x = event.x()
         self.__panning_start_y = event.y()
@@ -149,7 +146,8 @@ class PanningEventFilter(QObject):
             view: The QGraphicsView object to pan.
             event: Mouse event.
         """
-        view.setDragMode(QGraphicsView.NoDrag)
+        QGuiApplication.restoreOverrideCursor()
+        print("end")
 
         self.state = self.State.Idle
 

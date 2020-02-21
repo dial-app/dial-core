@@ -42,9 +42,6 @@ class ZoomEventFilter(QObject):
             if the event should be filtered out or not (Stopping it being handled by
             other objects).
         """
-        if not isinstance(obj, QGraphicsView):
-            return super().eventFilter(obj, event)
-
         if event.type() == QEvent.Wheel:
             return self.__zoom_view(obj, event)
 

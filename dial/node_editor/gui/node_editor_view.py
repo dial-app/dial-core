@@ -54,21 +54,35 @@ class NodeEditorView(QGraphicsView):
         """Toggles if the view can be zoomed or not with the mouse wheel."""
         self.__toggle_event_filter(toggle, self.__zoom_event_filter)
 
-    def mouseReleaseEvent(self, event: QMouseEvent):
+    def mousePressEvent(self, event: QMouseEvent):
         # TODO: Explain why
-        event.ignore()
-        super().mouseReleaseEvent(event)
+        # event.ignore()
+        if event.button() == self.__panning_event_filter.button_used_for_panning:
+            event.ignore()
+            return
+
+        super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent):
         # TODO: Explain why
-        event.ignore()
+        # event.ignore()
+        if self.__panning_event_filter.is_panning(event):
+            event.ignore()
+            return
+
+        super().mouseMoveEvent(event)
+
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        # TODO: Explain why
+        if self.__panning_event_filter.is_panning(event):
+            event.ignore()
+            return
+
         super().mouseReleaseEvent(event)
 
     def wheelEvent(self, event: QWheelEvent):
         # TODO: Explain why
         event.ignore()
-        # Don't call!!
-        # super().wheelEvent(event)
 
     def __toggle_widget_dialog(self, event: QMouseEvent):
         """Shows the Node `inner_widget` on a new dialog. The content of the node is
@@ -211,6 +225,7 @@ class NodeEditorView(QGraphicsView):
         return self.itemAt(event.pos())
 
     def __toggle_event_filter(self, toggle: bool, event_filter: QObject):
+        """Toggles (Installs/Uninstalls) the specified event filter on this object."""
         if toggle:
             self.installEventFilter(event_filter)
         else:
