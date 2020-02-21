@@ -1,36 +1,54 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Widget used for displaying the outputs of a Python logger onto a plain text widget.
+"""The LoggerTextboxWidget class provides a textbox widget that can also work as a
+logging handler for the Python logging system.
+
+Examples:
+    textbox_logger = LoggerTextboxWidget()
+    logging.getLogger().addHandler(textbox_logger)
 """
 
 import logging
 
 from PySide2.QtWidgets import QPlainTextEdit, QVBoxLayout, QWidget
 
-from dial.utils import log
-
 
 class LoggerTextboxWidget(logging.Handler, QWidget):
-    """
-    Widget used for displaying the outputs of a Python logger onto a plain text widget.
+    """The LoggerTextboxWidget class provides a textbox widget that can also work as a
+    logging handler for the Python logging system.
+
+    Examples:
+        textbox_logger = LoggerTextboxWidget()
+        logging.getLogger().addHandler(textbox_logger)
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, formatter: logging.Formatter, parent=None):
         logging.Handler.__init__(self)
         QWidget.__init__(self, parent)
 
-        self.setFormatter(log.FORMATTER)
+        self.setFormatter(formatter)
 
         self._textbox = QPlainTextEdit(self)
 
         self.__setup_ui()
 
-    def __setup_ui(self):
-        """
-        Setup the widget settings and layout configuration.
-        """
+    @property
+    def text(self) -> str:
+        """Returns the text written on the textbox."""
+        return self._textbox.toPlainText()
 
+    def set_plain_text(self, text: str):
+        """Replaces the textbox content with `text`."""
+        self._textbox.setPlainText(text)
+
+    def emit(self, record):
+        """This method is called each time a logger emits a message. It applies the
+        corresponding format and sends it to the textbox."""
+        msg = self.format(record)
+        self._textbox.appendPlainText(msg)
+
+    def __setup_ui(self):
+        """Configures the widget and layout settings."""
         # Log messages window must be readonly
         self._textbox.setReadOnly(True)
 
@@ -41,25 +59,3 @@ class LoggerTextboxWidget(logging.Handler, QWidget):
         layout.addWidget(self._textbox)
 
         self.setLayout(layout)
-
-    @property
-    def text(self) -> str:
-        """
-        Return the text content of the logger window.
-        """
-        return self._textbox.toPlainText()
-
-    def set_plain_text(self, text: str):
-        """
-        Set new Plain Text on the textbox.
-        """
-        self._textbox.setPlainText(text)
-
-    def emit(self, record):
-        """
-        This method is called each time a logger emits a message. Apply the
-        corresponding format and send to the textbox.
-        """
-
-        msg = self.format(record)
-        self._textbox.appendPlainText(msg)

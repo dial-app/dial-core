@@ -1,8 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""Miscellaneous items used throughout the Dial application.
+"""This package has some miscellaneous items used throughout the Dial application.
 
-This includes commonly used identifiers and generic/utility classes related to Qt.
+This includes commonly used identifiers and generic/utility classes and widgets related
+to Qt.
 """
 
 from .abstract_tree_model import AbstractTreeModel, AbstractTreeNode

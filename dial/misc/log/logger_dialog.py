@@ -1,7 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Pop-up window displaying the LoggerTextbox widget.
+"""The LoggerDialog class provides a dialog window prepared for displaying messages
+from the Python logging system.
+
+Examples:
+    logger_dialog = LoggerDialog()
+    logging.getLogger().addHandler(logger_dialog.handler)
 """
 
 import logging
@@ -13,8 +17,12 @@ from .logger_textbox import LoggerTextboxWidget
 
 
 class LoggerDialog(QDialog):
-    """
-    Pop-up window displaying the LoggerTextbox widget.
+    """The LoggerDialog class provides a dialog window prepared for displaying messages
+    from the Python logging system.
+
+    Examples:
+        logger_dialog = LoggerDialog()
+        logging.getLogger().addHandler(logger_dialog.handler)
     """
 
     def __init__(self, textbox_widget: LoggerTextboxWidget, parent: QWidget = None):
@@ -26,24 +34,21 @@ class LoggerDialog(QDialog):
         self.__setup_ui()
 
     def handler(self) -> logging.Handler:
+        """Returns a logging handler associated to this dialog. Must be used to send log
+        messages to it.
         """
-        Return log handler associated to this dialog (And used to write on it).
-        """
-
         return self.textbox
 
     def sizeHint(self):
+        """Preferred size of this dialog."""
         return QSize(800, 600)
 
     def __setup_ui(self):
-        """
-        Setup the widget settings and layout configuration.
-        """
+        """Configures the widget and layout settings."""
 
-        self.setWindowTitle("Log")
+        self.setWindowTitle("Logging window")
 
         layout = QVBoxLayout()
-
         layout.addWidget(self.textbox)
         layout.setContentsMargins(0, 0, 0, 0)
 

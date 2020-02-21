@@ -68,9 +68,7 @@ def module_logger() -> logging.Logger:
 
 
 def __get_console_handler() -> logging.StreamHandler:
-    """
-    Returns a log handler that sends its output to the terminal (stdout).
-    """
+    """Returns a log handler that sends its output to the terminal (stdout)."""
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(FORMATTER)
 
@@ -78,9 +76,7 @@ def __get_console_handler() -> logging.StreamHandler:
 
 
 def __get_string_handler() -> logging.StreamHandler:
-    """
-    Returns a log handler that sends its output to a string.
-    """
+    """Returns a log handler that sends its output to a string."""
     string_handler = logging.StreamHandler(LOG_STREAM)
     string_handler.setFormatter(FORMATTER)
 
