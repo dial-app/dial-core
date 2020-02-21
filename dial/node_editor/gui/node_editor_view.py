@@ -120,6 +120,7 @@ class NodeEditorView(QGraphicsView):
 
         # Create a new dialog for displaying the node widget
         dialog = QDialog(self)
+        dialog.setWindowTitle(item.node.title)
 
         layout = QVBoxLayout()
         layout.addWidget(node_inner_widget)
