@@ -66,6 +66,8 @@ class GraphicsPort(QGraphicsItem):
 
         self.graphics_node = parent
 
+        self.setCursor(Qt.ArrowCursor)
+
         self.__port = port
 
         # Add add an instance attribute to this GraphicsPort.
@@ -137,6 +139,14 @@ class GraphicsPort(QGraphicsItem):
         self.__connections.discard(connection_item)
 
     def boundingRect(self) -> QRectF:
+        """Returns an enclosing rect for the port, PLUS a margin. All the boundingRect()
+        area is clickable by the user and can be used as a start/end zone for drag/drop
+        connections.
+
+        Important:
+            Do not use this function for painting. The area for painting doesn't
+            includes the margins, only the radius.
+        """
         return QRectF(
             -self.radius - self.margin,
             -self.radius - self.margin,

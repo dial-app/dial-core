@@ -61,6 +61,10 @@ class NodeEditorView(QGraphicsView):
             event.ignore()
             return
 
+        if event.button() == Qt.LeftButton:
+            self.__start_dragging_connection(event)
+            return
+
         super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent):
@@ -70,6 +74,10 @@ class NodeEditorView(QGraphicsView):
             event.ignore()
             return
 
+        if event.button() == Qt.LeftButton:
+            self.__dragging_connection(event)
+            return
+
         super().mouseMoveEvent(event)
 
     def mouseReleaseEvent(self, event: QMouseEvent):
@@ -77,6 +85,9 @@ class NodeEditorView(QGraphicsView):
         if self.__panning_event_filter.is_panning():
             event.ignore()
             return
+
+        if event.button() == Qt.LeftButton:
+            self.__stop_dragging_connection(event)
 
         super().mouseReleaseEvent(event)
 
@@ -169,8 +180,6 @@ class NodeEditorView(QGraphicsView):
         Args:
             event: Mouse event.
         """
-        super().mouseReleaseEvent(event)
-
         if not self.__is_dragging_connection():
             return
 
@@ -190,6 +199,8 @@ class NodeEditorView(QGraphicsView):
 
         # Reset the connection item
         self.new_connection = None
+
+        super().mouseReleaseEvent(event)
 
     def __dragging_connection(self, event: QMouseEvent):
         """Drags a connection while the mouse is moving.
