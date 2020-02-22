@@ -24,7 +24,7 @@ class ResizableItemEventFilter(QObject):
         self.__state = self.State.Idle
         self.__margins_clicked = self.MarginClicked.NoMargin
 
-        self.resize_margins = 5
+        self.resize_margins = 12
 
         self.start_resizing_x = 0
         self.start_resizing_y = 0
@@ -77,21 +77,40 @@ class ResizableItemEventFilter(QObject):
         self.__state = self.State.Resizing
 
         self.start_resize_pos = event.scenePos()
-
-        print("Clicked")
+        self.start_item_pos = item.pos()
+        self.start_geometry = item.proxy_widget.geometry()
 
     def __resize_item(self, item: QGraphicsItem, event: QEvent):
-        diff = event.pos() - self.start_resize_pos
+        diff = self.start_resize_pos - event.scenePos()
 
-        item.moveBy(diff.x(), diff.y())
+        new_x = 0
+        new_y = 0
+        new_w = 0
+        new_h = 0
 
-        self.start_resize_pos = event.pos()
+        if self.__margins_clicked & self.MarginClicked.Left:
+            new_x = min(-diff.x(), 0)
+            new_w = diff.x()
 
-        print(diff)
+        if self.__margins_clicked & self.MarginClicked.Right:
+            new_w = -diff.x()
+
+        if self.__margins_clicked & self.MarginClicked.Top:
+            new_y = min(-diff.y(), 0)
+            new_h = diff.y()
+
+        if self.__margins_clicked & self.MarginClicked.Bottom:
+            new_h = -diff.y()
+
+        item.prepareGeometryChange()
+
+        item.proxy_widget.setGeometry(self.start_geometry.adjusted(0, 0, new_w, new_h))
+        item.setPos(self.start_item_pos.x() + new_x, self.start_item_pos.y() + new_y)
+
+        item.recalculateGeometry()
 
     def __stop_resizing_item(self, item: QGraphicsItem, event: QEvent):
         self.__state = self.State.Idle
-        print("Released")
 
     def is_inside_resize_margins(self, item: QGraphicsItem, event: QEvent) -> bool:
         return self.__margins_clicked != self.MarginClicked.NoMargin

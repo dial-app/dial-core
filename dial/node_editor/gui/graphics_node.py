@@ -180,21 +180,21 @@ class GraphicsNode(QGraphicsObject):
     #     print("Clicked outside")
     #     super().mousePressEvent(event)
 
-    def mouseMoveEvent(self, event: QMouseEvent):
-        if self.__resizable_item_event_filter.is_resizing():
-            event.ignore()
-            return
+    # def mouseMoveEvent(self, event: QMouseEvent):
+    #     if self.__resizable_item_event_filter.is_resizing():
+    #         event.ignore()
+    #         return
 
-        print("Clicked moving")
-        super().mouseMoveEvent(event)
+    #     print("Clicked moving")
+    #     super().mouseMoveEvent(event)
 
-    def mouseReleaseEvent(self, event: QMouseEvent):
-        if self.__resizable_item_event_filter.is_resizing():
-            event.ignore()
-            return
+    # def mouseReleaseEvent(self, event: QMouseEvent):
+    #     if self.__resizable_item_event_filter.is_resizing():
+    #         event.ignore()
+    #         return
 
-        print("Clicked outside released")
-        super().mouseReleaseEvent(event)
+    #     print("Clicked outside released")
+    #     super().mouseReleaseEvent(event)
 
     # def mouseMoveEvent(self, event: QMouseEvent):
     #     if self.cursor() != Qt.ArrowCursor:
@@ -230,12 +230,6 @@ class GraphicsNode(QGraphicsObject):
     #     super().mouseMoveEvent(event)
 
     def recalculateGeometry(self):
-        # Reposition inner widget
-        # self.__node_widget_proxy.setPos(
-        #     self.padding, self.__title_height() + self.padding
-        # )
-
-        # Reposition ports
         for graphics_port in self.__output_graphics_ports:
             graphics_port.setX(self.boundingRect().width())
 
@@ -247,12 +241,6 @@ class GraphicsNode(QGraphicsObject):
         self.__paint_background(painter)
         self.__paint_title_background(painter)
         self.__paint_outline(painter)
-
-        bg = QPainterPath()
-        bg.addRect(self.boundingRect().adjusted(10, 10, -10, -10))
-
-        painter.setPen(QPen(QColor("#FF0000")))
-        painter.drawPath(bg)
 
     def __paint_background(self, painter: QPainter):
         path_background = QPainterPath()
