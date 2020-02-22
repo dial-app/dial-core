@@ -34,14 +34,18 @@ class PanningEventFilter(QObject):
     def __init__(self, parent: QObject = None):
         super().__init__(parent)
 
-        self.state = self.State.Idle
+        self.__state = self.State.Idle
 
         self.__panning_start_x = 0
         self.__panning_start_y = 0
 
         self.button_used_for_panning = Qt.MiddleButton
 
-    def is_panning(self, event: QMouseEvent) -> bool:
+    @property
+    def state(self) -> "PanningEventFilter.State":
+        return self.__state
+
+    def is_panning(self) -> bool:
         """Checks if the view is currently being panned."""
         return self.state == self.State.Panning
 
@@ -60,13 +64,16 @@ class PanningEventFilter(QObject):
             other objects).
         """
         if self.__panning_button_clicked(event):
-            return self.__start_panning_view(obj, event)
+            self.__start_panning_view(obj, event)
+            return True
 
-        if event.type() == QEvent.MouseMove and self.is_panning(event):
-            return self.__pan_view(obj, event)
+        if event.type() == QEvent.MouseMove and self.is_panning():
+            self.__pan_view(obj, event)
+            return True
 
         if self.__panning_button_released(event):
-            return self.__stop_panning_view(obj, event)
+            self.__stop_panning_view(obj, event)
+            return True
 
         return super().eventFilter(obj, event)
 
@@ -90,7 +97,7 @@ class PanningEventFilter(QObject):
             and event.button() == self.button_used_for_panning
         )
 
-    def __start_panning_view(self, view: QGraphicsView, event: QMouseEvent) -> bool:
+    def __start_panning_view(self, view: QGraphicsView, event: QMouseEvent):
         """Responds to the event of start panning the view.
 
         Changes the mouse icon to a dragging hand, and saves the last clicked position.
@@ -102,16 +109,12 @@ class PanningEventFilter(QObject):
         """
         QGuiApplication.setOverrideCursor(Qt.ClosedHandCursor)
 
-        print("start")
-
         self.__panning_start_x = event.x()
         self.__panning_start_y = event.y()
 
-        self.state = self.State.Panning
+        self.__state = self.State.Panning
 
-        return True
-
-    def __pan_view(self, view: QGraphicsView, event: QMouseEvent) -> bool:
+    def __pan_view(self, view: QGraphicsView, event: QMouseEvent):
         """Pans the view using the mouse movement.
 
         The scrollbars are moved along the view (They're disabled by default, but if
@@ -135,9 +138,7 @@ class PanningEventFilter(QObject):
         self.__panning_start_x = event.x()
         self.__panning_start_y = event.y()
 
-        return True
-
-    def __stop_panning_view(self, view: QGraphicsView, event: QMouseEvent) -> bool:
+    def __stop_panning_view(self, view: QGraphicsView, event: QMouseEvent):
         """Responds to the event of start dragging the view for panning it.
 
         Changes the mouse icon back to the default icon.
@@ -147,8 +148,5 @@ class PanningEventFilter(QObject):
             event: Mouse event.
         """
         QGuiApplication.restoreOverrideCursor()
-        print("end")
 
-        self.state = self.State.Idle
-
-        return True
+        self.__state = self.State.Idle

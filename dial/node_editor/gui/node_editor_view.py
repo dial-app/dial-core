@@ -66,7 +66,7 @@ class NodeEditorView(QGraphicsView):
     def mouseMoveEvent(self, event: QMouseEvent):
         # TODO: Explain why
         # event.ignore()
-        if self.__panning_event_filter.is_panning(event):
+        if self.__panning_event_filter.is_panning():
             event.ignore()
             return
 
@@ -74,7 +74,7 @@ class NodeEditorView(QGraphicsView):
 
     def mouseReleaseEvent(self, event: QMouseEvent):
         # TODO: Explain why
-        if self.__panning_event_filter.is_panning(event):
+        if self.__panning_event_filter.is_panning():
             event.ignore()
             return
 

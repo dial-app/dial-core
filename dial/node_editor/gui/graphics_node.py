@@ -15,6 +15,7 @@ from PySide2.QtGui import (
 )
 from PySide2.QtWidgets import (
     QGraphicsItem,
+    QGraphicsObject,
     QGraphicsProxyWidget,
     QGraphicsSceneHoverEvent,
     QGraphicsTextItem,
@@ -28,7 +29,7 @@ from dial.node_editor import Node
 from .graphics_port import GraphicsPort
 
 
-class GraphicsNode(QGraphicsItem):
+class GraphicsNode(QGraphicsObject):
     class State(Flag):
         NoFlags = 0
         ResizeLeft = auto()
@@ -46,7 +47,8 @@ class GraphicsNode(QGraphicsItem):
         self.__state = self.State.NoFlags
 
         self.__resizable_item_event_filter = ResizableItemEventFilter(parent=self)
-        self.installSceneEventFilter(self.__resizable_item_event_filter)
+
+        self.installEventFilter(self.__resizable_item_event_filter)
 
         # Graphic items
         self.__node_widget_proxy = QGraphicsProxyWidget(parent=self)
@@ -170,106 +172,70 @@ class GraphicsNode(QGraphicsItem):
 
         return super().itemChange(change, value)
 
-    def hoverMoveEvent(self, event: QGraphicsSceneHoverEvent):
-        x_pos = event.pos().x()
-        y_pos = event.pos().y()
+    # def mousePressEvent(self, event: QMouseEvent):
+    #     if self.__resizable_item_event_filter.is_inside_resize_margins(self, event):
+    #         event.ignore()
+    #         return
 
-        # Horizontal margins
-        if x_pos < self.resize_cursor_margin:
-            self.__state |= self.State.ResizeLeft
-            self.setCursor(Qt.SizeHorCursor)
-        elif self.boundingRect().width() - x_pos < self.resize_cursor_margin:
-            self.__state |= self.State.ResizeRight
-            self.setCursor(Qt.SizeHorCursor)
-        else:
-            self.__state &= ~self.State.ResizeLeft
-            self.__state &= ~self.State.ResizeRight
-
-        if y_pos < self.resize_cursor_margin:
-            self.__state |= self.State.ResizeUp
-            self.setCursor(Qt.SizeVerCursor)
-        elif self.boundingRect().height() - y_pos < self.resize_cursor_margin:
-            self.__state |= self.State.ResizeDown
-            self.setCursor(Qt.SizeVerCursor)
-        else:
-            self.__state &= ~self.State.ResizeUp
-            self.__state &= ~self.State.ResizeDown
-
-        if self.__state == (self.State.ResizeLeft | self.State.ResizeUp):
-            self.setCursor(Qt.SizeFDiagCursor)
-
-        if self.__state == (self.State.ResizeLeft | self.State.ResizeDown):
-            self.setCursor(Qt.SizeBDiagCursor)
-
-        if self.__state == (self.State.ResizeRight | self.State.ResizeUp):
-            self.setCursor(Qt.SizeBDiagCursor)
-
-        if self.__state == (self.State.ResizeRight | self.State.ResizeDown):
-            self.setCursor(Qt.SizeFDiagCursor)
-
-        if self.__state == self.State.NoFlags:
-            self.unsetCursor()
-
-        super().hoverMoveEvent(event)
-
-    def hoverLeaveEvent(self, event: QGraphicsSceneHoverEvent):
-        self.unsetCursor()
-        self.__state = self.State.NoFlags
-
-        super().hoverLeaveEvent(event)
-
-    def mousePressEvent(self, event: QMouseEvent):
-        self.start_resizing_x = event.pos().x()
-        self.start_resizing_y = event.pos().y()
-
-        super().mousePressEvent(event)
+    #     print("Clicked outside")
+    #     super().mousePressEvent(event)
 
     def mouseMoveEvent(self, event: QMouseEvent):
-        if self.cursor() != Qt.ArrowCursor:
-            self.prepareGeometryChange()
-
-            diff_x = self.start_resizing_x - event.pos().x()
-            diff_y = self.start_resizing_y - event.pos().y()
-
-            self.start_resizing_x = event.pos().x()
-            self.start_resizing_y = event.pos().y()
-
-            new_x = 0
-            new_y = 0
-            new_w = 0
-            new_h = 0
-
-            if self.__state & self.State.ResizeLeft:
-                new_x = -diff_x
-
-            if self.__state & self.State.ResizeRight:
-                new_w = -diff_x
-
-            if self.__state & self.State.ResizeUp:
-                new_y = -diff_y
-
-            if self.__state & self.State.ResizeDown:
-                new_h = -diff_y
-
-                self.recalculateGeometry(new_x, new_y, new_w, new_h)
-
+        if self.__resizable_item_event_filter.is_resizing():
+            event.ignore()
             return
 
+        print("Clicked moving")
         super().mouseMoveEvent(event)
 
-    def recalculateGeometry(
-        self, new_x: int = 0, new_y: int = 0, new_w: int = 0, new_h: int = 0
-    ):
-        self.__node_widget_proxy.setGeometry(
-            self.__node_widget_proxy.geometry().adjusted(new_x, new_y, new_w, new_h)
-        )
+    def mouseReleaseEvent(self, event: QMouseEvent):
+        if self.__resizable_item_event_filter.is_resizing():
+            event.ignore()
+            return
 
-        self.setPos(self.pos().x() + new_x, self.pos().y() + new_y)
+        print("Clicked outside released")
+        super().mouseReleaseEvent(event)
 
-        self.__node_widget_proxy.setPos(
-            self.padding, self.__title_height() + self.padding
-        )
+    # def mouseMoveEvent(self, event: QMouseEvent):
+    #     if self.cursor() != Qt.ArrowCursor:
+    #         self.prepareGeometryChange()
 
+    #         diff_x = self.start_resizing_x - event.pos().x()
+    #         diff_y = self.start_resizing_y - event.pos().y()
+
+    #         self.start_resizing_x = event.pos().x()
+    #         self.start_resizing_y = event.pos().y()
+
+    #         new_x = 0
+    #         new_y = 0
+    #         new_w = 0
+    #         new_h = 0
+
+    #         # if self.__state & self.State.ResizeLeft:
+    #         #     new_x = -diff_x
+
+    #         # if self.__state & self.State.ResizeRight:
+    #         #     new_w = -diff_x
+
+    #         # if self.__state & self.State.ResizeUp:
+    #         #     new_y = -diff_y
+
+    #         # if self.__state & self.State.ResizeDown:
+    #         #     new_h = -diff_y
+
+    #         self.recalculateGeometry()
+
+    #         return
+
+    #     super().mouseMoveEvent(event)
+
+    def recalculateGeometry(self):
+        # Reposition inner widget
+        # self.__node_widget_proxy.setPos(
+        #     self.padding, self.__title_height() + self.padding
+        # )
+
+        # Reposition ports
         for graphics_port in self.__output_graphics_ports:
             graphics_port.setX(self.boundingRect().width())
 
@@ -281,6 +247,12 @@ class GraphicsNode(QGraphicsItem):
         self.__paint_background(painter)
         self.__paint_title_background(painter)
         self.__paint_outline(painter)
+
+        bg = QPainterPath()
+        bg.addRect(self.boundingRect().adjusted(10, 10, -10, -10))
+
+        painter.setPen(QPen(QColor("#FF0000")))
+        painter.drawPath(bg)
 
     def __paint_background(self, painter: QPainter):
         path_background = QPainterPath()
