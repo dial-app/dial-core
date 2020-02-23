@@ -53,10 +53,13 @@ class Port:
     def is_compatible_with(self, port: "Port") -> bool:
         """Checks if this port is compatible with another port.
 
+        Two ports are compatible if they're of the same type and don't belong to the
+        same node.
+
         Args:
             port: Port being compared with.
         """
-        return self.__port_type == port.port_type
+        return self.__port_type == port.port_type and self.node != port.node
 
     @log_on_end(DEBUG, "{self} connected to {port}")
     @log_on_error(
