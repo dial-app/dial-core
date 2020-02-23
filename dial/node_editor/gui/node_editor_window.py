@@ -1,11 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtWidgets import QVBoxLayout, QWidget
+from PySide2.QtGui import QContextMenuEvent
+from PySide2.QtWidgets import QMenu, QVBoxLayout, QWidget
 
-from dial.node_editor import Scene
-from dial.nodes.dataset_editor import DatasetEditorNodeFactory
-from dial.nodes.layers_editor import LayersEditorNodeFactory
-from dial.nodes.model_compiler import ModelCompilerNodeFactory
+from dial.node_editor import NodeFactorySingleton, Scene
 
 from .graphics_scene import GraphicsScene
 from .node_editor_view import NodeEditorView
@@ -25,7 +23,7 @@ class NodeEditorWindow(QWidget):
 
         self.__setup_ui()
 
-        self.add_example_nodes()
+        # self.add_example_nodes()
 
         self.show()
 
@@ -36,14 +34,20 @@ class NodeEditorWindow(QWidget):
 
         self.setLayout(self.__main_layout)
 
-    def add_example_nodes(self):
-        # my_node = Node(title="Example Node 1")
+    def contextMenuEvent(self, event: QContextMenuEvent):
+        menu = QMenu(self)
 
-        dataset_node = DatasetEditorNodeFactory()
-        layers_node = LayersEditorNodeFactory()
-        compiler_node = ModelCompilerNodeFactory()
+        menu.popup(event.globalPos())
+        menu.addAction("Open")
+        print("Cmenu")
 
-        # self.__scene.add_node(my_node)
-        self.__scene.add_node(dataset_node)
-        self.__scene.add_node(layers_node)
-        self.__scene.add_node(compiler_node)
+    # # TODO: Remove from here
+    # def add_example_nodes(self):
+    #     dataset_node = NodeFactorySingleton().get_node("Dataset Editor")
+    #     layers_node = NodeFactorySingleton().get_node("Layers Editor")
+    #     compiler_node = NodeFactorySingleton().get_node("Model Compiler")
+
+    #     # self.__scene.add_node(my_node)
+    #     self.__scene.add_node(dataset_node)
+    #     self.__scene.add_node(layers_node)
+    #     self.__scene.add_node(compiler_node)

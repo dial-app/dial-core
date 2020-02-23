@@ -6,6 +6,8 @@ Dependency Injection containers.
 
 import dependency_injector.providers as providers
 
+from dial.node_editor import NodeFactorySingleton
+
 from .model_compiler_node import ModelCompilerNode
 from .model_compiler_widget import ModelCompilerWidget
 from .parameters_form import ParametersFormFactory
@@ -17,3 +19,5 @@ ModelCompilerWidgetFactory = providers.Factory(
 ModelCompilerNodeFactory = providers.Factory(
     ModelCompilerNode, model_compiler_widget=ModelCompilerWidgetFactory
 )
+
+NodeFactorySingleton().register_node("Model Compiler", ModelCompilerNodeFactory)

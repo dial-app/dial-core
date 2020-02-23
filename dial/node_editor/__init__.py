@@ -2,11 +2,12 @@
 
 from .input_port import InputPort
 from .node import Node
+from .node_factory import NodeFactorySingleton
 from .output_port import OutputPort
 from .port import Port
 from .scene import Scene
 
-__all__ = ["Node", "Port", "InputPort", "OutputPort", "Scene"]
+__all__ = ["Node", "Port", "InputPort", "OutputPort", "Scene", "NodeFactorySingleton"]
 
 """
 scene = NodeEditorScene()
