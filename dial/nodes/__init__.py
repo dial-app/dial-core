@@ -5,3 +5,9 @@
 From editing datasets to compiling models, this nodes should satisfy most of the needs
 when working with classical Deep Learning problems.
 """
+
+from dial.node_editor import NodeFactorySingleton
+
+from .dataset_editor import DatasetEditorNodeFactory
+
+NodeFactorySingleton().register_node("Dataset Editor", DatasetEditorNodeFactory)

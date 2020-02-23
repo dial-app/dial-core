@@ -2,10 +2,11 @@
 
 from typing import TYPE_CHECKING
 
-from PySide2.QtWidgets import QMenu, QVBoxLayout, QWidget
+from PySide2.QtWidgets import QMenu, QMenuBar, QVBoxLayout, QWidget
 
 from dial.node_editor import Scene
 
+from .context_menu import DialContextMenu
 from .graphics_scene import GraphicsScene
 from .node_editor_view import NodeEditorView
 
@@ -40,11 +41,8 @@ class NodeEditorWindow(QWidget):
         self.setLayout(self.__main_layout)
 
     def contextMenuEvent(self, event: "QContextMenuEvent"):
-        menu = QMenu(self)
-
-        # TODO: Finish
-        menu.popup(event.globalPos())
-        menu.addAction("Open")
+        menubar = DialContextMenu(parent=self)
+        menubar.popup(event.globalPos())
 
     # # TODO: Remove from here
     # def add_example_nodes(self):

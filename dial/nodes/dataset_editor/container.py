@@ -6,8 +6,6 @@ Dependency Injection containers.
 
 import dependency_injector.providers as providers
 
-from dial.node_editor import NodeFactorySingleton
-
 from .dataset_editor_node import DatasetEditorNode
 from .dataset_editor_widget import DatasetEditorWidget
 from .dataset_table import TrainTestTabsFactory
@@ -19,5 +17,3 @@ DatasetEditorWidgetFactory = providers.Factory(
 DatasetEditorNodeFactory = providers.Factory(
     DatasetEditorNode, dataset_editor_widget=DatasetEditorWidgetFactory
 )
-
-NodeFactorySingleton().register_node("Dataset Editor", DatasetEditorNodeFactory)

@@ -39,3 +39,4 @@ class NodeFactory(containers.DynamicContainer):
 
 
 NodeFactorySingleton = providers.Singleton(NodeFactory)
+# NodeFactorySingleton().register_node("Dataset Editor", DatasetEditorNodeFactory)
