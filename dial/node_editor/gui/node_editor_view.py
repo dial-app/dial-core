@@ -74,7 +74,7 @@ class NodeEditorView(QGraphicsView):
             event.ignore()
             return
 
-        if event.button() == Qt.LeftButton:
+        if self.__is_dragging_connection():
             self.__dragging_connection(event)
             return
 
@@ -211,7 +211,7 @@ class NodeEditorView(QGraphicsView):
         self.new_connection.end = self.mapToScene(event.pos())
 
         item = self.__item_clicked_on(event)
-        if self.__clicked_on_graphics_port(item):
+        if isinstance(item, GraphicsPort):
             self.new_connection.end = item.pos()
 
         super().mouseMoveEvent(event)
