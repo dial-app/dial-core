@@ -10,6 +10,7 @@ For defining custom classes that extends these libraries, please go to the `misc
 package.
 """
 
+from .enum import Dial
 from .timer import Timer
 
-__all__ = ["Timer"]
+__all__ = ["Timer", "Dial"]
