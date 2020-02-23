@@ -1,7 +1,14 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from PySide2.QtCore import QSize, Qt
 from PySide2.QtWidgets import QDockWidget, QMainWindow
+
+if TYPE_CHECKING:
+    from .layers_tree import LayersTreeWidget
+    from .model_table import ModelTableWidget
+    from PySide2.QtWidgets import QWidget
 
 
 class LayersEditorWidget(QMainWindow):
@@ -10,7 +17,10 @@ class LayersEditorWidget(QMainWindow):
     """
 
     def __init__(
-        self, layers_tree, model_table, parent=None,
+        self,
+        layers_tree: "LayersTreeWidget",
+        model_table: "ModelTableWidget",
+        parent: "QWidget" = None,
     ):
         super().__init__(parent)
 
@@ -26,7 +36,7 @@ class LayersEditorWidget(QMainWindow):
         # Configure interface
         self.__setup_ui()
 
-    def sizeHint(self):
+    def sizeHint(self) -> "QSize":
         return QSize(600, 300)
 
     def __setup_ui(self):

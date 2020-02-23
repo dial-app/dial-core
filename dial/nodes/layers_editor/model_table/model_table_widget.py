@@ -1,6 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from PySide2.QtWidgets import QVBoxLayout, QWidget
+
+if TYPE_CHECKING:
+    from .containers import ModelTableMVFactory
 
 
 class ModelTableWidget(QWidget):
@@ -8,7 +13,9 @@ class ModelTableWidget(QWidget):
     Widget for displaying the model definition.
     """
 
-    def __init__(self, modeltable_mv_factory, parent=None):
+    def __init__(
+        self, modeltable_mv_factory: "ModelTableMVFactory", parent: "QWidget" = None
+    ):
         super().__init__(parent)
 
         self.__model = modeltable_mv_factory.Model(parent=self)
@@ -25,6 +32,4 @@ class ModelTableWidget(QWidget):
         self.setLayout(self.__main_layout)
 
     def set_model(self, model):
-        """
-        """
         self.__model.load_layers(model.layers)

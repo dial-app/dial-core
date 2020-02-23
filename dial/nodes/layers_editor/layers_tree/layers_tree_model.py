@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import List, Optional
+from typing import TYPE_CHECKING, List, Optional
 
 from PySide2.QtCore import (
     QByteArray,
@@ -10,15 +10,22 @@ from PySide2.QtCore import (
     QModelIndex,
     Qt,
 )
-from PySide2.QtWidgets import QWidget
 from tensorflow import keras
 
-from dial.misc import AbstractTreeModel, AbstractTreeNode, Dial
+from dial.gui.widgets.abstract_tree_model import AbstractTreeModel, AbstractTreeNode
+from dial.misc import Dial
+
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QWidget
 
 
 class LayerNode(AbstractTreeNode):
     def __init__(
-        self, display_name, layer, layer_name=None, parent: AbstractTreeNode = None
+        self,
+        display_name: str,
+        layer: "keras.layers.Layer",
+        layer_name: str = None,
+        parent: "AbstractTreeNode" = None,
     ):
         super().__init__(
             [display_name, layer], parent,
@@ -33,12 +40,12 @@ class LayerNode(AbstractTreeNode):
         return self.values[0]
 
     @property
-    def layer(self):
+    def layer(self) -> "keras.layers.Layer":
         return self.values[1]
 
 
 class TitleNode(AbstractTreeNode):
-    def __init__(self, name, parent: AbstractTreeNode = None):
+    def __init__(self, name: str, parent: "AbstractTreeNode" = None):
         super().__init__([name], parent)
 
     @property
@@ -47,12 +54,12 @@ class TitleNode(AbstractTreeNode):
 
 
 class LayersTreeModel(AbstractTreeModel):
-    def __init__(self, parent: QWidget):
+    def __init__(self, parent: "QWidget" = None):
         super().__init__(parent)
 
         self.setup_model_data()
 
-    def columnCount(self, parent=QModelIndex()):
+    def columnCount(self, parent=QModelIndex()) -> int:
         return 1
 
     def setup_model_data(self):
@@ -86,7 +93,7 @@ class LayersTreeModel(AbstractTreeModel):
         self.root_node.append(basic_layers)
         self.root_node.append(activation_layers)
 
-    def flags(self, index: QModelIndex):
+    def flags(self, index: "QModelIndex"):
         """
         Flag items depending on its type.
 
@@ -109,7 +116,7 @@ class LayersTreeModel(AbstractTreeModel):
         """
         return [Dial.KerasLayerListMIME.value]
 
-    def mimeData(self, indexes: List[QModelIndex]) -> QMimeData:
+    def mimeData(self, indexes: List["QModelIndex"]) -> "QMimeData":
         """
         Returns a serialized object representing a List of Keras Layer. Used for
         drag/drop operations, for example.

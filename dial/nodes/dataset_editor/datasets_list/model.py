@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING, Any, List, Optional
+from typing import TYPE_CHECKING, Any, Optional
 
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
@@ -9,12 +9,14 @@ from dial.utils import log
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QObject
 
+    # from dial.datasets import DatasetLoader
+
 
 LOGGER = log.get_logger(__name__)
 
 
 class DatasetsListModel(QAbstractListModel):
-    def __init__(self, datasets_list: List["DatasetLoader"], parent: "QObject" = None):
+    def __init__(self, datasets_list, parent: "QObject" = None):
         super().__init__(parent)
 
         self.__datasets_list = datasets_list

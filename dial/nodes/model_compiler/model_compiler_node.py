@@ -1,14 +1,22 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from tensorflow.keras import Model
 
 from dial.datasets import Dataset
 from dial.misc import Dial
 from dial.node_editor import InputPort, Node, OutputPort
 
+if TYPE_CHECKING:
+    from PySide2.QtCore import QObject
+    from .model_compiler_widget import ModelCompilerWidget
+
 
 class ModelCompilerNode(Node):
-    def __init__(self, model_compiler_widget, parent=None):
+    def __init__(
+        self, model_compiler_widget: "ModelCompilerWidget", parent: "QObject" = None
+    ):
         super().__init__(
             title="Model Compiler Node",
             inner_widget=model_compiler_widget,

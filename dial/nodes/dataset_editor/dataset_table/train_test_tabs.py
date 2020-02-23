@@ -4,9 +4,8 @@ from typing import TYPE_CHECKING
 
 from PySide2.QtWidgets import QTabWidget
 
-from dial.datasets import Dataset
-
 if TYPE_CHECKING:
+    from dial.datasets import Dataset
     from PySide2.QtWidgets import QWidget
     from .containers import DatasetTableMVFactory
 

@@ -12,11 +12,11 @@ from .model_table_view import ModelTableView
 from .model_table_widget import ModelTableWidget
 
 
-class ModelTableMV(containers.DeclarativeContainer):
+class ModelTableMVFactory(containers.DeclarativeContainer):
     Model = providers.Factory(ModelTableModel)
     View = providers.Factory(ModelTableView)
 
 
 ModelTableFactory = providers.Factory(
-    ModelTableWidget, modeltable_mv_factory=ModelTableMV
+    ModelTableWidget, modeltable_mv_factory=ModelTableMVFactory
 )

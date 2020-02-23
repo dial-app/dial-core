@@ -15,7 +15,7 @@ class ParametersForm(QWidget):
     batch_size_changed = Signal(int)
     compile_model = Signal()
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: "QWidget" = None):
         super().__init__(parent)
 
         # Initialize widgets

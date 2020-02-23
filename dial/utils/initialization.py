@@ -1,8 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
-
 """
 Functions to check that python versions, libraries... used by the program are correct.
 """
+
 
 import argparse
 import signal
@@ -14,7 +14,7 @@ from dial import __description__, __requirements__
 from dial.utils import log
 
 
-def initialize_application(args: argparse.Namespace):
+def initialize_application(args: "argparse.Namespace"):
     """Performs all the necessary steps before running the application. This checks
     python version, installed modules, graphics configurations, initialize logging
     system...
@@ -36,7 +36,7 @@ def initialize_application(args: argparse.Namespace):
         sys.exit(1)
 
 
-def __non_gui_initialization(args: argparse.Namespace):
+def __non_gui_initialization(args: "argparse.Namespace"):
     """Performs all the necessary initialization before the GUI initialization."""
     # Init logs system
     log.init_logs(args)
@@ -51,7 +51,7 @@ def __non_gui_initialization(args: argparse.Namespace):
     signal.signal(signal.SIGINT, signal.SIG_DFL)
 
 
-def __gui_initialization(args: argparse.Namespace):
+def __gui_initialization(args: "argparse.Namespace"):
     """Performs all the initialization of the GUI components.
 
     Args:
@@ -71,7 +71,7 @@ def parse_args(sys_args: List):
     return get_arg_parser().parse_args(sys_args)
 
 
-def get_arg_parser() -> argparse.ArgumentParser:
+def get_arg_parser() -> "argparse.ArgumentParser":
     """
     Returns:
         An argument parser for this application.

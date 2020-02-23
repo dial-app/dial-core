@@ -27,7 +27,7 @@ class Timer:
 
         self.running = False
 
-    def interval(self) -> timedelta:
+    def interval(self) -> "timedelta":
         """Returns the interval betweent the start and end"""
         if self.running:
             return datetime.now() - self.start

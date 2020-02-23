@@ -16,7 +16,7 @@ class Scene(QObject):
     def __init__(self, parent: "QObject" = None):
         super().__init__(parent)
 
-        self.__nodes = []
+        self.__nodes: List["Node"] = []
 
     @property
     def nodes(self) -> List["Node"]:

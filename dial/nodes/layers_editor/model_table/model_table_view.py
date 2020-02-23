@@ -1,19 +1,25 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING, Optional
+
 from PySide2.QtCore import Qt
-from PySide2.QtGui import QContextMenuEvent, QDropEvent
 from PySide2.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QTableView
+
+if TYPE_CHECKING:
+    from PySide2.QtGui import QContextMenuEvent, QDropEvent
+    from PySide2.QtWidgets import QWidget
+    from PySide2.QtCore import QPoint
 
 
 class ModelTableView(QTableView):
     """
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: "QWidget" = None):
         super().__init__(parent)
 
         # Components
-        self.__header_context_menu = None
+        self.__header_context_menu: Optional["QMenu"] = None
 
         # How are headers going to stretch and resize?
         self.horizontalHeader().setSectionResizeMode(QHeaderView.Interactive)
@@ -40,11 +46,11 @@ class ModelTableView(QTableView):
         # Model can be dragged
         self.setDragEnabled(True)
 
-    def dropEvent(self, event: QDropEvent):
-        super().dropEvent(event)
-
+    def dropEvent(self, event: "QDropEvent"):
         if event.dropAction() == Qt.MoveAction:
             self.deleteSelectedRows()
+
+        super().dropEvent(event)
 
     def setModel(self, model):
         # Assign model to view by calling the parent method
@@ -74,7 +80,7 @@ class ModelTableView(QTableView):
                 else header.hideSection(index)
             )
 
-    def contextMenuEvent(self, event: QContextMenuEvent):
+    def contextMenuEvent(self, event: "QContextMenuEvent"):
         menu = QMenu(self)
 
         menu.popup(event.globalPos())
@@ -87,7 +93,7 @@ class ModelTableView(QTableView):
         for i, row_index in enumerate(self.selectedIndexes()):
             self.model().removeRow(row_index.row() - i, row_index)
 
-    def __show_header_context_menu(self, point):
+    def __show_header_context_menu(self, point: "QPoint"):
         """
         Show a context menu for the horizontal header.
         """

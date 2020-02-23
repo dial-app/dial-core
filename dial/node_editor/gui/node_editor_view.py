@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING, Any, Union
+from typing import TYPE_CHECKING, Any, Optional, Union
 
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPainter
@@ -20,7 +20,7 @@ class NodeEditorView(QGraphicsView):
     def __init__(self, tabs_widget: "QTabWidget", parent: "QWidget" = None):
         super().__init__(parent)
 
-        self.new_connection = None
+        self.new_connection: Optional["GraphicsConnection"] = None
 
         self.__tabs_widget = tabs_widget
 
@@ -157,7 +157,7 @@ class NodeEditorView(QGraphicsView):
         Args:
             event: Mouse event.
         """
-        item = self.__item_clicked_on(event)
+        item: "GraphicsPort" = self.__item_clicked_on(event)
 
         if not isinstance(item, GraphicsPort):
             super().mousePressEvent(event)
@@ -186,14 +186,15 @@ class NodeEditorView(QGraphicsView):
         Args:
             event: Mouse event.
         """
-        if not self.__is_dragging_connection():
+        if not self.__is_dragging_connection() or not self.new_connection:
+            super().mouseReleaseEvent(event)
             return
 
         item = self.__item_clicked_on(event)
 
         # The conection must end on a COMPATIBLE GraphicsPort item
         if isinstance(item, GraphicsPort) and item.port.is_compatible_with(
-            self.new_connection.start_graphics_port.port
+            self.new_connection.start_graphics_port.port  # type: ignore
         ):
             self.new_connection.end_graphics_port = item
         else:
@@ -214,6 +215,10 @@ class NodeEditorView(QGraphicsView):
         Args:
             event: Mouse event.
         """
+        if not self.new_connection:
+            super().mouseMoveEvent(event)
+            return
+
         self.new_connection.end = self.mapToScene(event.pos())
 
         item = self.__item_clicked_on(event)

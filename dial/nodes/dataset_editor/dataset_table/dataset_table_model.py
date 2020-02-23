@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QPixmapCache
@@ -24,12 +24,12 @@ class DatasetTableModel(QAbstractTableModel):
     def __init__(self, parent: "QObject" = None):
         super().__init__(parent)
 
-        self.__x = []
-        self.__y = []
+        self.__x: List[Any] = []
+        self.__y: List[Any] = []
         self.__x_type = None
         self.__y_type = None
 
-        self.__dataset = None
+        self.__dataset: Optional["Dataset"] = None
 
         self.__max_row_count = 100
 
@@ -53,8 +53,8 @@ class DatasetTableModel(QAbstractTableModel):
 
         self.__x = []
         self.__y = []
-        self.__x_type = dataset.x_type
-        self.__y_type = dataset.y_type
+        self.__x_type = dataset.x_type  # type: ignore
+        self.__y_type = dataset.y_type  # type: ignore
 
         QPixmapCache.clear()
 
@@ -103,7 +103,7 @@ class DatasetTableModel(QAbstractTableModel):
         return self.rowCount() < len(self.__dataset)
 
     def fetchMore(self, parent: "QModelIndex"):
-        if parent.isValid():
+        if parent.isValid() or not self.__dataset:
             return False
 
         remainder = len(self.__dataset) - self.rowCount()
@@ -115,6 +115,9 @@ class DatasetTableModel(QAbstractTableModel):
         self.insertRows(self.rowCount(), items_to_fetch)
 
     def insertRows(self, row: int, count: int, parent=QModelIndex()) -> bool:
+        if not self.__dataset:
+            return False
+
         self.beginInsertRows(parent, row, row + count - 1)
 
         x_set, y_set = self.__dataset.items(start=row, end=row + count, op="display")

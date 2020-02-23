@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import IntEnum
-from typing import Any, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from PySide2.QtCore import (
     QAbstractTableModel,
@@ -15,6 +15,11 @@ from PySide2.QtCore import (
 
 from dial.misc import Dial
 from dial.utils import log
+
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QObject
+    from tensorflow import keras
+
 
 LOGGER = log.get_logger(__name__)
 
@@ -35,20 +40,20 @@ class ModelTableModel(QAbstractTableModel):
         Trainable = 3
         Activation = 4
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: "QObject" = None):
         super().__init__(parent)
 
-        self.__layers = []
+        self.__layers: List["keras.layers.Layer"] = []
 
         # Count the nº of occurencies of a layer name (To avoid name duplications)
-        self.__layer_name_occurencies = {}
+        self.__layer_name_occurencies: Dict[str, int] = {}
 
         self.__role_map = {
             Qt.DisplayRole: self.__display_role,
             Qt.CheckStateRole: self.__checkstate_role,
         }
 
-    def load_layers(self, layers: List):
+    def load_layers(self, layers: List["keras.layers.Layer"]):
         """
         Set a new `layers` array.
         """
@@ -69,7 +74,7 @@ class ModelTableModel(QAbstractTableModel):
         """
         return len(self.Column)
 
-    def flags(self, index: QModelIndex):
+    def flags(self, index: "QModelIndex") -> int:
         """
         Flag items depending of its column.
 
@@ -95,7 +100,7 @@ class ModelTableModel(QAbstractTableModel):
 
         return general_flags
 
-    def index(self, row: int, column: int, parent: QModelIndex) -> QModelIndex:
+    def index(self, row: int, column: int, parent: "QModelIndex") -> "QModelIndex":
         """
         Get a `QModelIndex` representing a layer item in row X. The same layer is
         returned for all valid columns.
@@ -106,8 +111,8 @@ class ModelTableModel(QAbstractTableModel):
         return self.createIndex(row, column, self.__layers[row])
 
     def headerData(
-        self, section: int, orientation: Qt.Orientation, role: int = Qt.DisplayRole
-    ):
+        self, section: int, orientation: "Qt.Orientation", role: int = Qt.DisplayRole
+    ) -> Optional[str]:
         """
         Return the name of the headers.
         Horizontal header   -> Column names
@@ -126,7 +131,7 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
-    def data(self, index: QModelIndex, role: int = Qt.DisplayRole) -> Optional[Any]:
+    def data(self, index: "QModelIndex", role: int = Qt.DisplayRole) -> Optional[Any]:
         """ Returns data depending on the specified role.
 
         Args:
@@ -145,7 +150,9 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
-    def setData(self, index: QModelIndex, value: Any, role: int = Qt.EditRole):
+    def setData(
+        self, index: "QModelIndex", value: Any, role: int = Qt.EditRole
+    ) -> bool:
         """
         Sets `value` on the `index` depending on the specified role.
         """
@@ -169,14 +176,14 @@ class ModelTableModel(QAbstractTableModel):
 
         return True
 
-    def supportedDragActions(self) -> Qt.DropActions:
+    def supportedDragActions(self) -> "Qt.DropActions":
         """
         Returns the supported drag actions for the layers. In this case, layers will
         only allow `Qt.MoveAction` (Move a layer from one position to another).
         """
         return Qt.MoveAction
 
-    def supportedDropActions(self) -> Qt.DropActions:
+    def supportedDropActions(self) -> "Qt.DropActions":
         """
         Returns the supported drop actions for the layers. In this case, layers will
         allow `Qt.CopyAction` (add layers from another widget), and `Qt.MoveAction` (add
@@ -191,7 +198,7 @@ class ModelTableModel(QAbstractTableModel):
         """
         return [Dial.KerasLayerListMIME.value]
 
-    def mimeData(self, indexes: List[QModelIndex]) -> QMimeData:
+    def mimeData(self, indexes: List["QModelIndex"]) -> "QMimeData":
         """
         Returns a serialized object representing a List of Keras Layer. Used for
         drag/drop operations, for example.
@@ -215,11 +222,11 @@ class ModelTableModel(QAbstractTableModel):
 
     def dropMimeData(
         self,
-        mime_data: QMimeData,
-        action: Qt.DropAction,
+        mime_data: "QMimeData",
+        action: "Qt.DropAction",
         row: int,
         column: int,
-        parent: QModelIndex,
+        parent: "QModelIndex",
     ):
         """
         Decodes and inserts the MIME data (layers) from a drop operation onto the table.
@@ -312,10 +319,10 @@ class ModelTableModel(QAbstractTableModel):
 
     def moveRows(
         self,
-        source_parent: QModelIndex,
+        source_parent: "QModelIndex",
         source_row: int,
         count: int,
-        destination_parent: QModelIndex,
+        destination_parent: "QModelIndex",
         destination_child: int,
     ) -> bool:
         LOGGER.debug(
@@ -340,7 +347,7 @@ class ModelTableModel(QAbstractTableModel):
 
         return True
 
-    def __display_role(self, index: QModelIndex) -> Optional[str]:
+    def __display_role(self, index: "QModelIndex") -> Optional[str]:
         """
         Returns the text representation of the index value.
         """
@@ -367,7 +374,7 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
-    def __checkstate_role(self, index: QModelIndex) -> Optional[Qt.CheckState]:
+    def __checkstate_role(self, index: "QModelIndex") -> Optional["Qt.CheckState"]:
         """
         Returns a checkbox representatino of the index value.
         """
@@ -379,7 +386,7 @@ class ModelTableModel(QAbstractTableModel):
 
         return None
 
-    def __set_unique_layer_names(self, layers):
+    def __set_unique_layer_names(self, layers: "keras.layers.Layer"):
         for layer in layers:
             layer_name = layer.name.split("_")[0]
             self.__layer_name_occurencies.setdefault(layer_name, 0)
