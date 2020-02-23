@@ -1,8 +1,13 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from PySide2.QtCore import Signal
 from PySide2.QtGui import QKeySequence
-from PySide2.QtWidgets import QAction, QMenuBar, QWidget
+from PySide2.QtWidgets import QAction, QMenuBar
+
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QWidget
 
 
 class MainMenuBar(QMenuBar):
@@ -22,7 +27,7 @@ class MainMenuBar(QMenuBar):
 
     toggle_log_window = Signal()
 
-    def __init__(self, parent: QWidget = None):
+    def __init__(self, parent: "QWidget" = None):
         super().__init__(parent)
 
         self.__create_actions()

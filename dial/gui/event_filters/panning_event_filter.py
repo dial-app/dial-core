@@ -1,22 +1,26 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import Enum
+from typing import TYPE_CHECKING
 
 from PySide2.QtCore import QEvent, QObject, Qt
 from PySide2.QtGui import QGuiApplication, QMouseEvent
-from PySide2.QtWidgets import QGraphicsView
+
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QGraphicsView
 
 
 class PanningEventFilter(QObject):
     """The PanningEventFilter class provides an easy implementation of a panning
     movement for a QGraphicsView object.
 
-    This filter only works with a QGraphicsView object.
+    Important:
+        This filter only works with a QGraphicsView object.
 
     Attributes:
         state: The state of the movement (Panning or not).
         button_used_for_panning: The button that must be pressed and dragged for panning
-        the view (Qt.MiddleButton by default)
+        the view.
 
     Examples:
         view = QGraphicsView()
@@ -31,7 +35,7 @@ class PanningEventFilter(QObject):
         Idle = 0
         Panning = 1
 
-    def __init__(self, parent: QObject = None):
+    def __init__(self, parent: "QObject" = None):
         super().__init__(parent)
 
         self.__state = self.State.Idle
@@ -41,15 +45,11 @@ class PanningEventFilter(QObject):
 
         self.button_used_for_panning = Qt.MiddleButton
 
-    @property
-    def state(self) -> "PanningEventFilter.State":
-        return self.__state
-
     def is_panning(self) -> bool:
         """Checks if the view is currently being panned."""
-        return self.state == self.State.Panning
+        return self.__state == self.State.Panning
 
-    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
+    def eventFilter(self, obj: "QObject", event: "QEvent") -> bool:
         """Intercepts events emitted by `obj`. Implements a panning effect when the mouse
         is dragged throughout the scene.
 
@@ -60,7 +60,7 @@ class PanningEventFilter(QObject):
             event: The generated event.
 
         Returns:
-            if the event should be filtered out or not (Stopping it being handled by
+            If the event should be filtered out or not (Stopping it being handled by
             other objects).
         """
         if self.__panning_button_clicked(event):
@@ -77,7 +77,7 @@ class PanningEventFilter(QObject):
 
         return super().eventFilter(obj, event)
 
-    def __panning_button_clicked(self, event: QMouseEvent) -> bool:
+    def __panning_button_clicked(self, event: "QMouseEvent") -> bool:
         """Checks if the button defined as the "panning button" was clicked.
 
         This starts the panning movement.
@@ -87,7 +87,7 @@ class PanningEventFilter(QObject):
             and event.button() == self.button_used_for_panning
         )
 
-    def __panning_button_released(self, event: QMouseEvent) -> bool:
+    def __panning_button_released(self, event: "QMouseEvent") -> bool:
         """Checks if the button defined as the "panning button" was released.
 
         This ends the panning movement.
@@ -97,7 +97,7 @@ class PanningEventFilter(QObject):
             and event.button() == self.button_used_for_panning
         )
 
-    def __start_panning_view(self, view: QGraphicsView, event: QMouseEvent):
+    def __start_panning_view(self, view: "QGraphicsView", event: "QMouseEvent"):
         """Responds to the event of start panning the view.
 
         Changes the mouse icon to a dragging hand, and saves the last clicked position.
@@ -114,7 +114,7 @@ class PanningEventFilter(QObject):
 
         self.__state = self.State.Panning
 
-    def __pan_view(self, view: QGraphicsView, event: QMouseEvent):
+    def __pan_view(self, view: "QGraphicsView", event: "QMouseEvent"):
         """Pans the view using the mouse movement.
 
         The scrollbars are moved along the view (They're disabled by default, but if
@@ -138,7 +138,7 @@ class PanningEventFilter(QObject):
         self.__panning_start_x = event.x()
         self.__panning_start_y = event.y()
 
-    def __stop_panning_view(self, view: QGraphicsView, event: QMouseEvent):
+    def __stop_panning_view(self, view: "QGraphicsView", event: "QMouseEvent"):
         """Responds to the event of start dragging the view for panning it.
 
         Changes the mouse icon back to the default icon.

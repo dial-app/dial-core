@@ -1,11 +1,17 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QPixmapCache
 
-from dial.datasets import Dataset
 from dial.misc import Dial
 from dial.utils import log
+
+if TYPE_CHECKING:
+    from dial.datasets import Dataset
+    from PySide2.QtWidgets import QObject
+
 
 LOGGER = log.get_logger(__name__)
 
@@ -15,7 +21,7 @@ class DatasetTableModel(QAbstractTableModel):
     Model representing the rows/columns of a dataset.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: "QObject" = None):
         super().__init__(parent)
 
         self.__x = []
@@ -36,7 +42,7 @@ class DatasetTableModel(QAbstractTableModel):
             Dial.TypeRole.value: self.__data_type_role,
         }
 
-    def load_dataset(self, dataset: Dataset):
+    def load_dataset(self, dataset: "Dataset"):
         """
         Load new Dataset data to the model.
         """
@@ -67,7 +73,9 @@ class DatasetTableModel(QAbstractTableModel):
         """
         return len(self.column_names)
 
-    def headerData(self, section, orientation, role):
+    def headerData(
+        self, section: int, orientation: "Qt.Orientation", role=Qt.DisplayRole()
+    ):
         """
         Return the name of the headers
         """
@@ -85,7 +93,7 @@ class DatasetTableModel(QAbstractTableModel):
 
         return None
 
-    def canFetchMore(self, parent: QModelIndex) -> bool:
+    def canFetchMore(self, parent: "QModelIndex") -> bool:
         if parent.isValid():
             return False
 
@@ -94,7 +102,7 @@ class DatasetTableModel(QAbstractTableModel):
 
         return self.rowCount() < len(self.__dataset)
 
-    def fetchMore(self, parent: QModelIndex):
+    def fetchMore(self, parent: "QModelIndex"):
         if parent.isValid():
             return False
 
@@ -118,7 +126,7 @@ class DatasetTableModel(QAbstractTableModel):
 
         return True
 
-    def data(self, index: QModelIndex, role=Qt.DisplayRole):
+    def data(self, index: "QModelIndex", role=Qt.DisplayRole):
         """
         Return the corresponding data depending on the specified role.
         """
@@ -131,7 +139,7 @@ class DatasetTableModel(QAbstractTableModel):
 
         return None
 
-    def index(self, row, column, parent):
+    def index(self, row: int, column: int, parent=QModelIndex()):
         if column == 0:
             return self.createIndex(row, column, self.__x[row])
 

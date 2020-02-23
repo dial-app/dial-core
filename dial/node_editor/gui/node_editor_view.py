@@ -1,18 +1,23 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Any, Union
+from typing import TYPE_CHECKING, Any, Union
 
-from PySide2.QtCore import QObject, Qt
-from PySide2.QtGui import QMouseEvent, QPainter, QWheelEvent
+from PySide2.QtCore import Qt
+from PySide2.QtGui import QPainter
 from PySide2.QtWidgets import QDialog, QGraphicsView, QPushButton, QVBoxLayout
 
-from dial.misc.event_filters import PanningEventFilter, ZoomEventFilter
+from dial.gui.event_filters import PanningEventFilter, ZoomEventFilter
 from dial.node_editor.gui import GraphicsConnection, GraphicsNode, GraphicsPort
 from dial.utils import log
 
+if TYPE_CHECKING:
+    from PySide2.QtCore import QObject
+    from PySide2.QtGui import QMouseEvent, QWheelEvent
+    from PySide2.QtWidgets import QTabWidget, QWidget
+
 
 class NodeEditorView(QGraphicsView):
-    def __init__(self, tabs_widget, parent=None):
+    def __init__(self, tabs_widget: "QTabWidget", parent: "QWidget" = None):
         super().__init__(parent)
 
         self.new_connection = None
@@ -54,7 +59,7 @@ class NodeEditorView(QGraphicsView):
         """Toggles if the view can be zoomed or not with the mouse wheel."""
         self.__toggle_event_filter(toggle, self.__zoom_event_filter)
 
-    def mousePressEvent(self, event: QMouseEvent):
+    def mousePressEvent(self, event: "QMouseEvent"):
         # TODO: Explain why
         # event.ignore()
         if event.button() == self.__panning_event_filter.button_used_for_panning:
@@ -67,7 +72,7 @@ class NodeEditorView(QGraphicsView):
 
         super().mousePressEvent(event)
 
-    def mouseMoveEvent(self, event: QMouseEvent):
+    def mouseMoveEvent(self, event: "QMouseEvent"):
         # TODO: Explain why
         # event.ignore()
         if self.__panning_event_filter.is_panning():
@@ -80,7 +85,7 @@ class NodeEditorView(QGraphicsView):
 
         super().mouseMoveEvent(event)
 
-    def mouseReleaseEvent(self, event: QMouseEvent):
+    def mouseReleaseEvent(self, event: "QMouseEvent"):
         # TODO: Explain why
         if self.__panning_event_filter.is_panning():
             event.ignore()
@@ -91,11 +96,12 @@ class NodeEditorView(QGraphicsView):
 
         super().mouseReleaseEvent(event)
 
-    def wheelEvent(self, event: QWheelEvent):
+    def wheelEvent(self, event: "QWheelEvent"):
         # TODO: Explain why
         event.ignore()
 
-    def __toggle_widget_dialog(self, event: QMouseEvent):
+    # TODO: MOVE to GraphicsNode
+    def __toggle_widget_dialog(self, event: "QMouseEvent"):
         """Shows the Node `inner_widget` on a new dialog. The content of the node is
         substituted with a button that hides the dialog and shows the inner_widget back
         in the node when pressed.
@@ -143,7 +149,7 @@ class NodeEditorView(QGraphicsView):
         dialog.finished.connect(place_widget_back_in_node)
         show_here_button.clicked.connect(place_widget_back_in_node)
 
-    def __start_dragging_connection(self, event: QMouseEvent):
+    def __start_dragging_connection(self, event: "QMouseEvent"):
         """Starts creating a new connection by dragging the mouse.
 
         Only works when the user clicks on a GraphicsPort item.
@@ -171,7 +177,7 @@ class NodeEditorView(QGraphicsView):
         # items when we start dragging.
         # DON'T include `super().mousePressEvent(event)` here
 
-    def __stop_dragging_connection(self, event: QMouseEvent):
+    def __stop_dragging_connection(self, event: "QMouseEvent"):
         """Stops dragging the connection.
 
         If the connection doesn't end on a GraphicsPort, the connection item is removed
@@ -202,7 +208,7 @@ class NodeEditorView(QGraphicsView):
 
         super().mouseReleaseEvent(event)
 
-    def __dragging_connection(self, event: QMouseEvent):
+    def __dragging_connection(self, event: "QMouseEvent"):
         """Drags a connection while the mouse is moving.
 
         Args:
@@ -231,11 +237,11 @@ class NodeEditorView(QGraphicsView):
         """Removes the GraphicsConnection item from the scene."""
         self.scene().removeItem(connection)
 
-    def __item_clicked_on(self, event: QMouseEvent) -> Union["GraphicsPort", Any]:
+    def __item_clicked_on(self, event: "QMouseEvent") -> Union["GraphicsPort", Any]:
         """Returns the graphical item under the mouse."""
         return self.itemAt(event.pos())
 
-    def __toggle_event_filter(self, toggle: bool, event_filter: QObject):
+    def __toggle_event_filter(self, toggle: bool, event_filter: "QObject"):
         """Toggles (Installs/Uninstalls) the specified event filter on this object."""
         if toggle:
             self.installEventFilter(event_filter)

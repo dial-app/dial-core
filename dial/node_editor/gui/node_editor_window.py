@@ -1,16 +1,21 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from PySide2.QtGui import QContextMenuEvent
+from typing import TYPE_CHECKING
+
 from PySide2.QtWidgets import QMenu, QVBoxLayout, QWidget
 
-from dial.node_editor import NodeFactorySingleton, Scene
+from dial.node_editor import Scene
 
 from .graphics_scene import GraphicsScene
 from .node_editor_view import NodeEditorView
 
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QTabWidget
+    from PySide2.QtGui import QContextMenuEvent
+
 
 class NodeEditorWindow(QWidget):
-    def __init__(self, tabs_widget, parent=None):
+    def __init__(self, tabs_widget: "QTabWidget", parent: "QWidget" = None):
         super().__init__(parent)
 
         self.__main_layout = QVBoxLayout()
@@ -34,12 +39,12 @@ class NodeEditorWindow(QWidget):
 
         self.setLayout(self.__main_layout)
 
-    def contextMenuEvent(self, event: QContextMenuEvent):
+    def contextMenuEvent(self, event: "QContextMenuEvent"):
         menu = QMenu(self)
 
+        # TODO: Finish
         menu.popup(event.globalPos())
         menu.addAction("Open")
-        print("Cmenu")
 
     # # TODO: Remove from here
     # def add_example_nodes(self):

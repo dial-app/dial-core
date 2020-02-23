@@ -14,7 +14,7 @@ class LoggerTextboxWidget(logging.Handler, QWidget):
         logging.getLogger().addHandler(textbox_logger)
     """
 
-    def __init__(self, formatter: logging.Formatter, parent=None):
+    def __init__(self, formatter: "logging.Formatter", parent: QWidget = None):
         logging.Handler.__init__(self)
         QWidget.__init__(self, parent)
 

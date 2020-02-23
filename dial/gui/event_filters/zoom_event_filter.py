@@ -1,8 +1,12 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from PySide2.QtCore import QEvent, QObject
-from PySide2.QtGui import QWheelEvent
-from PySide2.QtWidgets import QGraphicsView
+
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QGraphicsView
+    from PySide2.QtGui import QWheelEvent
 
 
 class ZoomEventFilter(QObject):
@@ -23,12 +27,12 @@ class ZoomEventFilter(QObject):
         # Now the `view` can be zoomed using the mouse.
     """
 
-    def __init__(self, parent: QObject = None):
+    def __init__(self, parent: "QObject" = None):
         super().__init__(parent)
 
         self.scale_factor_increment = 0.2
 
-    def eventFilter(self, obj: QObject, event: QEvent) -> bool:
+    def eventFilter(self, obj: "QObject", event: "QEvent") -> bool:
         """Intercepts events emitted by `obj`. In this case, implements a zoom effect
         when the mouse wheel is moved up/down.
 
@@ -47,7 +51,7 @@ class ZoomEventFilter(QObject):
 
         return super().eventFilter(obj, event)
 
-    def __zoom_view(self, view: QGraphicsView, event: QWheelEvent) -> bool:
+    def __zoom_view(self, view: "QGraphicsView", event: "QWheelEvent") -> bool:
         """Zooms in/out the view using the mouse wheel.
         """
         if event.delta() > 0:

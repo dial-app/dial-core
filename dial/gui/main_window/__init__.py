@@ -2,4 +2,7 @@
 
 from .containers import MainWindowFactory
 
+"""This package includes the necessary classes for creating the main window for the
+application."""
+
 __all__ = ["MainWindowFactory"]

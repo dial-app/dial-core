@@ -1,11 +1,12 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Type
+from typing import TYPE_CHECKING, Type
 
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-from .node import Node
+if TYPE_CHECKING:
+    from .node import Node
 
 
 class NodeFactory(containers.DynamicContainer):
@@ -16,7 +17,7 @@ class NodeFactory(containers.DynamicContainer):
     def nodes(self):
         return self.providers
 
-    def register_node(self, identifier: str, node_type: Type[Node], *args, **kwargs):
+    def register_node(self, identifier: str, node_type: Type["Node"], *args, **kwargs):
         """Registers a new type of node.
 
         Args:
@@ -29,7 +30,7 @@ class NodeFactory(containers.DynamicContainer):
 
         self.providers[identifier] = providers.Factory(node_type, *args, **kwargs)
 
-    def get_node(self, identifier: str) -> Node:
+    def get_node(self, identifier: str) -> "Node":
         """Returns an instanced node"""
         return self.providers[identifier]()
 

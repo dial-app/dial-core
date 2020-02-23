@@ -4,16 +4,19 @@
 Starting point for the application GUI.
 """
 
-import argparse
 from datetime import datetime
+from typing import TYPE_CHECKING
 
 from PySide2.QtWidgets import QApplication
 
-from dial.main_window import MainWindowFactory
+from dial.gui.main_window import MainWindowFactory
 from dial.utils import log
 
+if TYPE_CHECKING:
+    import argparse
 
-def run(args: argparse.Namespace):
+
+def run(args: "argparse.Namespace"):
     """
     Show the main window and start the application.
 

@@ -1,8 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Optional
+from typing import TYPE_CHECKING, Optional
 
-from PySide2.QtCore import QModelIndex, Slot
+from PySide2.QtCore import Slot
 from PySide2.QtWidgets import (
     QDialog,
     QDialogButtonBox,
@@ -12,10 +12,12 @@ from PySide2.QtWidgets import (
     QVBoxLayout,
 )
 
-from dial.datasets import DatasetLoader
-
-from .model import DatasetsListModel
-from .view import DatasetsListView
+if TYPE_CHECKING:
+    from PySide2.QtCore import QModelIndex
+    from dial.datasets import DatasetLoader
+    from .model import DatasetsListModel
+    from .view import DatasetsListView
+    from PySide2.QtWidgets import QWidget
 
 
 class DatasetsListDialog(QDialog):
@@ -24,14 +26,17 @@ class DatasetsListDialog(QDialog):
     """
 
     def __init__(
-        self, model: DatasetsListModel, view: DatasetsListView, parent=None,
+        self,
+        model: "DatasetsListModel",
+        view: "DatasetsListView",
+        parent: "QWidget" = None,
     ):
         super().__init__(parent)
 
-        self.setWindowTitle(" datasets")
+        self.setWindowTitle("Datasets")
 
         # Attributes
-        self.__dataset_loader: Optional[DatasetLoader] = None
+        self.__dataset_loader: Optional["DatasetLoader"] = None
 
         # Setup MVC
         self.__model = model
@@ -62,7 +67,7 @@ class DatasetsListDialog(QDialog):
 
         self.__view.activated.connect(self.__selected_loader_changed)
 
-    def selected_loader(self) -> Optional[DatasetLoader]:
+    def selected_loader(self) -> Optional["DatasetLoader"]:
         """
         Return the loaded currently selected by the Dialog.
         """
@@ -87,8 +92,8 @@ class DatasetsListDialog(QDialog):
         self.__main_layout.addWidget(self.__view)
         self.__main_layout.addLayout(right_layout)
 
-    @Slot(QModelIndex)
-    def __selected_loader_changed(self, index: QModelIndex):
+    @Slot("QModelIndex")
+    def __selected_loader_changed(self, index: "QModelIndex"):
         """
         Slot called when a user clicks on any list item.
         """
@@ -96,8 +101,8 @@ class DatasetsListDialog(QDialog):
 
         self.__update_description(self.__dataset_loader)
 
-    @Slot(DatasetLoader)
-    def __update_description(self, dataset: DatasetLoader):
+    @Slot("DatasetLoader")
+    def __update_description(self, dataset: "DatasetLoader"):
         """
         Update the description on the right widget after selecting a new dataset.
         """

@@ -12,7 +12,7 @@ class InputPort(Port):
         super().__init__(name, port_type, allows_multiple_connections=False)
 
     @property
-    def port_connected_to(self) -> Optional[Port]:
+    def port_connected_to(self) -> Optional["Port"]:
         """Returns the port connected to this one (can be None).
 
         Because this is an Input Port, we can ensure it can be connected to only one (1)

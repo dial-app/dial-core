@@ -1,11 +1,14 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import List, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 
-import numpy as np
 from tensorflow import keras
 
-from dial.datasets.datatype import DataType, NumericArray
+from .datatype import NumericArray
+
+if TYPE_CHECKING:
+    import numpy as np
+    from .datatype import DataType
 
 
 class Dataset(keras.utils.Sequence):
@@ -14,10 +17,10 @@ class Dataset(keras.utils.Sequence):
 
     def __init__(
         self,
-        x_data: np.ndarray = None,
-        y_data: np.ndarray = None,
-        x_type: DataType = None,
-        y_type: DataType = None,
+        x_data: "np.ndarray" = None,
+        y_data: "np.ndarray" = None,
+        x_type: "DataType" = None,
+        y_type: "DataType" = None,
         batch_size: int = 32,
         shuffled: bool = False,
     ):
@@ -48,11 +51,11 @@ class Dataset(keras.utils.Sequence):
         self.batch_size = batch_size
 
     @property
-    def input_shape(self):
+    def input_shape(self) -> Tuple:
         return self.x_type.process(self.__x[0]).shape
 
     @property
-    def output_shape(self):
+    def output_shape(self) -> Tuple:
         return self.y_type.process(self.__y[0]).shape
 
     @property
@@ -97,7 +100,7 @@ class Dataset(keras.utils.Sequence):
         """
         return int(np.ceil(len(self.__x) / float(self.batch_size)))
 
-    def __getitem__(self, idx) -> Tuple[List, List]:
+    def __getitem__(self, idx: int) -> Tuple[List, List]:
         """
         Return the batch of dataset items starting on `idx`.
         """

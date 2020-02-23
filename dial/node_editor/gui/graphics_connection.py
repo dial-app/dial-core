@@ -2,16 +2,14 @@
 
 from typing import TYPE_CHECKING, Any, Optional
 
-from PySide2.QtCore import QPointF, QRectF, Qt
-from PySide2.QtGui import QColor, QPainter, QPainterPath, QPainterPathStroker, QPen
-from PySide2.QtWidgets import (
-    QGraphicsItem,
-    QGraphicsPathItem,
-    QStyleOptionGraphicsItem,
-    QWidget,
-)
+from PySide2.QtCore import QPointF, Qt
+from PySide2.QtGui import QColor, QPainterPath, QPainterPathStroker, QPen
+from PySide2.QtWidgets import QGraphicsItem, QGraphicsPathItem
 
 if TYPE_CHECKING:
+    from PySide2.QtGui import QPainter
+    from PySide2.QtCore import QRectF
+    from PySide2.QtWidgets import QWidget, QStyleOptionGraphicsItem
     from .graphics_port import GraphicsPort
 
 
@@ -31,7 +29,7 @@ class GraphicsConnection(QGraphicsPathItem):
 
     """
 
-    def __init__(self, parent: QGraphicsItem = None):
+    def __init__(self, parent: "QGraphicsItem" = None):
         super().__init__(parent)
 
         # A Connection can be selectable
@@ -58,18 +56,18 @@ class GraphicsConnection(QGraphicsPathItem):
         self.update()
 
     @property
-    def color(self) -> QColor:
+    def color(self) -> "QColor":
         """Returns the color of this connection."""
         return self.__color
 
     @color.setter
-    def color(self, color: QColor):
+    def color(self, color: "QColor"):
         """Sets a new color for the connection, updating the QPen used for painting."""
         self.__color = color
         self.__default_pen.setColor(self.__color)
 
     @property
-    def start(self) -> QPointF:
+    def start(self) -> "QPointF":
         """Returns the start position coordinate of this connection."""
         return (
             self.__start
@@ -78,7 +76,7 @@ class GraphicsConnection(QGraphicsPathItem):
         )
 
     @start.setter
-    def start(self, position: QPointF):
+    def start(self, position: "QPointF"):
         """Sets a new start position coordinate for this connection.
 
         When a position is set this way, the connection is disconnected from any
@@ -94,7 +92,7 @@ class GraphicsConnection(QGraphicsPathItem):
         self.__update_path()
 
     @property
-    def end(self) -> QPointF:
+    def end(self) -> "QPointF":
         """Returns the end position of the connection."""
         return (
             self.__end
@@ -103,7 +101,7 @@ class GraphicsConnection(QGraphicsPathItem):
         )
 
     @end.setter
-    def end(self, position: QPointF):
+    def end(self, position: "QPointF"):
         """Sets a new end position coordinate for this connection.
 
         When a position is set this way, the connection is disconnected from any
@@ -175,7 +173,7 @@ class GraphicsConnection(QGraphicsPathItem):
 
         self.setPath(path)
 
-    def itemChange(self, change, value) -> Any:
+    def itemChange(self, change: "QGraphicsItem.GraphicsItemChange", value: Any) -> Any:
         """Checks if any property of the connection has changed.
 
         In this case, we change the color of the connection when it's selected.
@@ -189,19 +187,19 @@ class GraphicsConnection(QGraphicsPathItem):
 
         return super().itemChange(change, value)
 
-    def boundingRect(self) -> QRectF:
+    def boundingRect(self) -> "QRectF":
         return self.shape().boundingRect().normalized()
 
-    def shape(self) -> QPainterPath:
+    def shape(self) -> "QPainterPath":
         path_stroker = QPainterPathStroker()
         path_stroker.setWidth(self.margin)
         return path_stroker.createStroke(self.path())
 
     def paint(
         self,
-        painter: QPainter,
-        option: QStyleOptionGraphicsItem,
-        widget: QWidget = None,
+        painter: "QPainter",
+        option: "QStyleOptionGraphicsItem",
+        widget: "QWidget" = None,
     ):
         """Paints the connection between the start and end points."""
 

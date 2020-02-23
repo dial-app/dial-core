@@ -1,8 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-import numpy as np
+from typing import TYPE_CHECKING
 
 from .datatype import DataType
+
+if TYPE_CHECKING:
+    import numpy as np
 
 
 class ImageArray(DataType):
@@ -14,8 +17,8 @@ class ImageArray(DataType):
     represents the number of color channels (For RGB images)
     """
 
-    def process(self, data: np.ndarray) -> np.ndarray:
+    def process(self, data: "np.ndarray") -> "np.ndarray":
         return data.flatten()
 
-    def display(self, data: np.ndarray):
+    def display(self, data: "np.ndarray"):
         return data

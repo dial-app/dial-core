@@ -1,18 +1,14 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Classes for loading datasets.
-"""
-
 from abc import ABCMeta, abstractmethod
 from typing import List, Tuple
 
 from tensorflow.keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
-from dial.datasets import datatype
 from dial.utils import Timer
 from dial.utils.log import module_logger
 
+from . import datatype
 from .dataset import Dataset
 
 
@@ -25,15 +21,15 @@ class DatasetLoader(metaclass=ABCMeta):
         self,
         name: str,
         brief: str,
-        x_type: datatype.DataType,
-        y_type: datatype.DataType,
+        x_type: "datatype.DataType",
+        y_type: "datatype.DataType",
     ):
         self.name = name
         self.brief = brief
         self.x_type = x_type
         self.y_type = y_type
 
-    def load(self) -> Tuple[Dataset, Dataset]:
+    def load(self) -> Tuple["Dataset", "Dataset"]:
         """
         Load and return the train/test dataset objects.
         """

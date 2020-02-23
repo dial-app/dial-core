@@ -1,19 +1,25 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import math
-from typing import List, Tuple
+from typing import TYPE_CHECKING, List, Tuple
 
-from PySide2.QtCore import QLine, QRect, QRectF
-from PySide2.QtGui import QColor, QPainter, QPen
+from PySide2.QtCore import QLine, QRect
+from PySide2.QtGui import QColor, QPen
 from PySide2.QtWidgets import QGraphicsScene
 
 from dial.utils.log import DEBUG, log_on_end
 
 from .graphics_node import GraphicsNode
 
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QObject
+    from PySide2.QtCore import QRectF
+    from dial.node_editor import Node, Scene
+    from PySide2.QtGui import QPainter
+
 
 class GraphicsScene(QGraphicsScene):
-    def __init__(self, scene, parent=None):
+    def __init__(self, scene: "Scene", parent: "QObject" = None):
         super().__init__(parent)
 
         self.__scene = scene
@@ -56,11 +62,11 @@ class GraphicsScene(QGraphicsScene):
         )
 
     @log_on_end(DEBUG, "{node} added as a GraphicNode.")
-    def add_node_to_graphics(self, node):
+    def add_node_to_graphics(self, node: "Node"):
         """Add a new Node to the GraphicsScene, making it visible."""
         self.addItem(GraphicsNode(node))
 
-    def drawBackground(self, painter: QPainter, rect: QRectF):
+    def drawBackground(self, painter: "QPainter", rect: "QRectF"):
         """Draws the background for the scene."""
         super().drawBackground(painter, rect)
 
@@ -76,7 +82,7 @@ class GraphicsScene(QGraphicsScene):
         painter.setPen(self._pen_dark)
         painter.drawLines(dark_lines)
 
-    def __calculate_grid_boundaries(self, rect: QRectF) -> QRect:
+    def __calculate_grid_boundaries(self, rect: "QRectF") -> "QRect":
         """Calculates the grid boundaries from the rect."""
         # Get grid boundaries
         left = int(math.floor(rect.left()))
@@ -90,7 +96,7 @@ class GraphicsScene(QGraphicsScene):
 
         return QRect(left, top, right - left + 2, bottom - top + 2)
 
-    def __calculate_grid_lines(self, grid_rect: QRect) -> Tuple[List, List]:
+    def __calculate_grid_lines(self, grid_rect: "QRect") -> Tuple[List, List]:
         """Calculates the coordinates of the horizontal/vertical lines to be drawn.
 
         Args:

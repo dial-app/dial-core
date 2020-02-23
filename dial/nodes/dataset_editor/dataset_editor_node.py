@@ -1,13 +1,19 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from dial.datasets import Dataset
 from dial.node_editor import Node, OutputPort
 
-from .dataset_editor_widget import DatasetEditorWidget
+if TYPE_CHECKING:
+    from .dataset_editor_widget import DatasetEditorWidget
+    from PySide2.QtWidgets import QObject
 
 
 class DatasetEditorNode(Node):
-    def __init__(self, dataset_editor_widget: DatasetEditorWidget, parent=None):
+    def __init__(
+        self, dataset_editor_widget: "DatasetEditorWidget", parent: "QObject" = None
+    ):
         super().__init__(
             title="Dataset Editor Node",
             inner_widget=dataset_editor_widget,

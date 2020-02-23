@@ -3,14 +3,9 @@
 from enum import Enum
 from typing import TYPE_CHECKING, Set
 
-from PySide2.QtCore import QPointF, QRectF, Qt
+from PySide2.QtCore import QRectF, Qt
 from PySide2.QtGui import QBrush, QColor, QPainter, QPen
-from PySide2.QtWidgets import (
-    QGraphicsItem,
-    QGraphicsTextItem,
-    QStyleOptionGraphicsItem,
-    QWidget,
-)
+from PySide2.QtWidgets import QGraphicsItem, QGraphicsTextItem
 
 from dial.node_editor import Port
 
@@ -19,11 +14,8 @@ from .type_colors import TypeColor
 if TYPE_CHECKING:
     from .graphics_connection import GraphicsConnection
     from .graphics_node import GraphicsNode
-
-"""Class representing a port for a node.
-
-Can be used as a start/end point for dragging connections between nodes.
-"""
+    from PySide2.QtCore import QPointF
+    from PySide2.QtWidgets import QWidget, QStyleOptionGraphicsItem
 
 
 class GraphicsPort(QGraphicsItem):
@@ -51,7 +43,10 @@ class GraphicsPort(QGraphicsItem):
     drawing_type = None
 
     def __init__(
-        self, port: Port, port_name_position: PortNamePosition, parent: "GraphicsNode",
+        self,
+        port: "Port",
+        port_name_position: "PortNamePosition",
+        parent: "GraphicsNode",
     ):
         super().__init__(parent)
 
@@ -94,7 +89,7 @@ class GraphicsPort(QGraphicsItem):
         self.dashed_outline_pen.setWidth(2)
 
     @property
-    def color(self) -> QColor:
+    def color(self) -> "QColor":
         """Returns the color of the port."""
         return self.__color
 
@@ -108,7 +103,7 @@ class GraphicsPort(QGraphicsItem):
         """Returns a list of the GraphicsConnections item connected to this port."""
         return self.__connections
 
-    def pos(self) -> QPointF:
+    def pos(self) -> "QPointF":
         """Returns the position of the GraphicsPort (In terms of scene coordinates)."""
         return self.graphics_node.pos() + super().pos()
 
@@ -131,7 +126,7 @@ class GraphicsPort(QGraphicsItem):
         """
         self.__connections.discard(connection_item)
 
-    def boundingRect(self) -> QRectF:
+    def boundingRect(self) -> "QRectF":
         """Returns an enclosing rect for the port, PLUS a margin. All the boundingRect()
         area is clickable by the user and can be used as a start/end zone for drag/drop
         connections.
@@ -149,9 +144,9 @@ class GraphicsPort(QGraphicsItem):
 
     def paint(
         self,
-        painter: QPainter,
-        option: QStyleOptionGraphicsItem,
-        widget: QWidget = None,
+        painter: "QPainter",
+        option: "QStyleOptionGraphicsItem",
+        widget: "QWidget" = None,
     ):
         """Paints the port."""
         painter.setPen(self.outline_pen)

@@ -6,7 +6,7 @@ Dependency Injection containers.
 
 import dependency_injector.providers as providers
 
-from dial.misc.log import LoggerDialogFactory
+from dial.gui.widgets.log import LoggerDialogFactory
 
 from .main_menubar import MainMenuBar
 from .main_window import MainWindow

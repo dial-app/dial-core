@@ -6,7 +6,6 @@ This includes commonly used identifiers and generic/utility classes and widgets 
 to Qt.
 """
 
-from .abstract_tree_model import AbstractTreeModel, AbstractTreeNode
 from .enums import Dial
 
-__all__ = ["Dial", "AbstractTreeNode", "AbstractTreeModel"]
+__all__ = ["Dial"]

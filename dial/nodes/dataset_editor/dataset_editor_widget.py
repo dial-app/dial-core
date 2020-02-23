@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from PySide2.QtCore import QSize
 from PySide2.QtWidgets import (
     QFormLayout,
@@ -12,13 +14,16 @@ from PySide2.QtWidgets import (
 
 from .datasets_list import PredefinedDatasetsList
 
+if TYPE_CHECKING:
+    from .dataset_table import TrainTestTabs
+
 
 class DatasetEditorWidget(QWidget):
     """
     Window for all the dataset related operations (Visualization, loading...)
     """
 
-    def __init__(self, train_test_tabs, parent=None):
+    def __init__(self, train_test_tabs: "TrainTestTabs", parent: "QWidget" = None):
         super().__init__(parent)
 
         # Initialize widgets
@@ -40,7 +45,7 @@ class DatasetEditorWidget(QWidget):
         # Connections
         self.__dataset_loader_button.clicked.connect(self.__load_predefined_dataset)
 
-    def sizeHint(self):
+    def sizeHint(self) -> "QSize":
         return QSize(500, 300)
 
     def __setup_ui(self):

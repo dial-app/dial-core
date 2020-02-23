@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+
 """This module has the necessary components for working with a Tree Based hierarchy for
 Qt Model/View architecture.
 
@@ -10,10 +11,13 @@ Then, the AbstractTreeModel class is the base class used for Tree models. Has
 convenience functions for adding and accessing the tree nodes.
 """
 
-from typing import Any, List, Optional
+
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from PySide2.QtCore import QAbstractItemModel, QModelIndex, Qt
-from PySide2.QtWidgets import QWidget
+
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QWidget
 
 
 class AbstractTreeNode:
@@ -105,12 +109,12 @@ class AbstractTreeModel(QAbstractItemModel):
         root_node: Base node of all nodes.
     """
 
-    def __init__(self, parent: QWidget):
+    def __init__(self, parent: "QWidget"):
         super().__init__(parent)
 
         self.root_node: "AbstractTreeNode" = AbstractTreeNode(["Root"])
 
-    def index(self, row: int, column: int, parent: QModelIndex) -> QModelIndex:
+    def index(self, row: int, column: int, parent: "QModelIndex") -> "QModelIndex":
         """ Returns the index corresponding to an item in the tree model.
 
         A valid index must have a row/column inside bounds
@@ -134,7 +138,7 @@ class AbstractTreeModel(QAbstractItemModel):
 
         return QModelIndex()
 
-    def parent(self, index: QModelIndex) -> QModelIndex:
+    def parent(self, index: "QModelIndex") -> "QModelIndex":
         """Returns an index representing the parent node of `index`.
 
         Args:
@@ -153,7 +157,7 @@ class AbstractTreeModel(QAbstractItemModel):
         # Column value doesn't matter for this, so we just put a 0
         return self.createIndex(parent_node.row, 0, parent_node)
 
-    def rowCount(self, index: QModelIndex) -> int:
+    def rowCount(self, index: "QModelIndex") -> int:
         """Returns the number of rows (items) under `index`."""
         if index.column() > 0:
             return 0
@@ -165,14 +169,14 @@ class AbstractTreeModel(QAbstractItemModel):
 
         return len(index_node.leaves)
 
-    def columnCount(self, index: QModelIndex) -> int:
+    def columnCount(self, index: "QModelIndex") -> int:
         """Returns the number of columns of data for `index`."""
         if index.isValid():
             return index.internalPointer().columns_count()
 
         return self.root_node.columns_count()
 
-    def data(self, index: QModelIndex, role=Qt.DisplayRole) -> Optional[Any]:
+    def data(self, index: "QModelIndex", role=Qt.DisplayRole) -> Optional[Any]:
         """Returns the data for `index`.
 
         Data can be only accessed using `Qt.DisplayRole` role.

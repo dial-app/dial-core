@@ -1,31 +1,32 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Dict, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 from PySide2.QtCore import QObject, Signal
-from PySide2.QtWidgets import QWidget
 
 from dial.utils.log import DEBUG, log_on_end
 
-from .input_port import InputPort
-from .output_port import OutputPort
-from .port import Port
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QWidget
+    from .input_port import InputPort
+    from .output_port import OutputPort
+    from .port import Port
 
 
 class Node(QObject):
     title_changed = Signal(str)
 
     def __init__(
-        self, title: str, inner_widget: QWidget = None, parent: QObject = None
+        self, title: str, inner_widget: "QWidget" = None, parent: "QObject" = None
     ):
         super().__init__(parent)
 
         self.__title = title
 
-        self.__inner_widget: Optional[QWidget] = inner_widget
+        self.__inner_widget: Optional["QWidget"] = inner_widget
 
-        self.__inputs: Dict[str, InputPort] = {}
-        self.__outputs: Dict[str, OutputPort] = {}
+        self.__inputs: Dict[str, "InputPort"] = {}
+        self.__outputs: Dict[str, "OutputPort"] = {}
 
     @property
     def title(self) -> str:
@@ -43,17 +44,17 @@ class Node(QObject):
         self.title_changed.emit(title)
 
     @property
-    def inner_widget(self) -> Optional[QWidget]:
+    def inner_widget(self) -> Optional["QWidget"]:
         """Returns the inner widget set on the node (Or None if not used)."""
         return self.__inner_widget
 
     @property
-    def inputs(self) -> Dict[str, InputPort]:
+    def inputs(self) -> Dict[str, "InputPort"]:
         """Returns a list of the input ports of the node."""
         return self.__inputs
 
     @property
-    def outputs(self) -> Dict[str, OutputPort]:
+    def outputs(self) -> Dict[str, "OutputPort"]:
         """Returns a list of the output ports of the node."""
         return self.__outputs
 
@@ -62,7 +63,7 @@ class Node(QObject):
         for output_port in self.outputs.values():
             output_port.propagate()
 
-    def add_input_port(self, input_port: InputPort):
+    def add_input_port(self, input_port: "InputPort"):
         """Adds a new input port to the list of ports.
 
         Args:
@@ -70,7 +71,7 @@ class Node(QObject):
         """
         self.__add_port_to(self.inputs, input_port)
 
-    def add_output_port(self, output_port: OutputPort):
+    def add_output_port(self, output_port: "OutputPort"):
         """Adds a new output port to the list of ports.
 
         Args:
@@ -111,7 +112,7 @@ class Node(QObject):
             )
 
     @log_on_end(DEBUG, "{port} added to {self}")
-    def __add_port_to(self, ports_dict: Dict[str, Port], port: Port):
+    def __add_port_to(self, ports_dict: Dict[str, "Port"], port: "Port"):
         """Adds a port to a dictionary of ports.
 
         When a port is added, a reference to this Node is added (`port.node = self`)
@@ -124,7 +125,7 @@ class Node(QObject):
         port.node = self
 
     @log_on_end(DEBUG, "{port_name} removed from {self}")
-    def __remove_port_from(self, ports_dict: Dict[str, Port], port_name: str) -> bool:
+    def __remove_port_from(self, ports_dict: Dict[str, "Port"], port_name: str) -> bool:
         """Removes a port from a dictionary of ports.
 
         Before removing, if the ports is present, it is disconnected from all other

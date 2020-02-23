@@ -1,23 +1,27 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import Flag, auto
-from typing import Any, List
+from typing import TYPE_CHECKING, Any, List
 
-from PySide2.QtCore import QRectF, Qt
-from PySide2.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPen
+from PySide2.QtCore import Qt
+from PySide2.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
 from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsObject,
     QGraphicsProxyWidget,
     QGraphicsTextItem,
-    QStyleOptionGraphicsItem,
     QWidget,
 )
 
-from dial.misc.event_filters import ResizableItemEventFilter
-from dial.node_editor import Node
+from dial.gui.event_filters import ResizableItemEventFilter
 
 from .graphics_port import GraphicsPort
+
+if TYPE_CHECKING:
+    from PySide2.QtCore import QRectF
+    from PySide2.QtGui import QPainter
+    from dial.node_editor import Node
+    from PySide2.QtWidgets import QStyleOptionGraphicsItem
 
 
 class GraphicsNode(QGraphicsObject):
@@ -28,7 +32,7 @@ class GraphicsNode(QGraphicsObject):
         ResizeUp = auto()
         ResizeDown = auto()
 
-    def __init__(self, node: Node, parent: QGraphicsItem = None):
+    def __init__(self, node: "Node", parent: "QGraphicsItem" = None):
         super().__init__(parent)
 
         # Components
@@ -72,16 +76,16 @@ class GraphicsNode(QGraphicsObject):
         self.__create_graphic_ports()
 
     @property
-    def proxy_widget(self) -> QGraphicsProxyWidget:
+    def proxy_widget(self) -> "QGraphicsProxyWidget":
         """Returns the widget used for containing the inner widget."""
         return self.__node_widget_proxy
 
     @property
-    def node(self) -> Node:
+    def node(self) -> "Node":
         """Returns the associated node."""
         return self.__node
 
-    def setInnerWidget(self, widget: QWidget):
+    def setInnerWidget(self, widget: "QWidget"):
         """Sets a new widget inside the node."""
         self.prepareGeometryChange()
         self.__node_widget_proxy.setWidget(widget)
@@ -142,7 +146,7 @@ class GraphicsNode(QGraphicsObject):
             x_offset=self.boundingRect().width(),
         )
 
-    def boundingRect(self) -> QRectF:
+    def boundingRect(self) -> "QRectF":
         """Returns a rect enclosing the node."""
         proxy_rect = self.__node_widget_proxy.boundingRect()
 
@@ -150,7 +154,7 @@ class GraphicsNode(QGraphicsObject):
             0, 0, self.padding * 2, self.__title_height() + self.padding * 2
         ).normalized()
 
-    def itemChange(self, change: QGraphicsItem.GraphicsItemChange, value: Any) -> Any:
+    def itemChange(self, change: "QGraphicsItem.GraphicsItemChange", value: Any) -> Any:
         if change == self.ItemSelectedChange:
             self.__outline_pen.setColor(
                 self.outline_selected_color if value else self.outline_default_color
@@ -172,7 +176,7 @@ class GraphicsNode(QGraphicsObject):
             graphics_port.setX(self.boundingRect().width())
 
     def paint(
-        self, painter: QPainter, option: QStyleOptionGraphicsItem, widget: QWidget
+        self, painter: "QPainter", option: "QStyleOptionGraphicsItem", widget: "QWidget"
     ):
         """Paints the GraphicsNode item."""
 
@@ -180,7 +184,7 @@ class GraphicsNode(QGraphicsObject):
         self.__paint_title_background(painter)
         self.__paint_outline(painter)
 
-    def __paint_background(self, painter: QPainter):
+    def __paint_background(self, painter: "QPainter"):
         """Paints the background of the node. Plain color, no lines."""
         path_background = QPainterPath()
         path_background.addRoundedRect(
@@ -192,7 +196,7 @@ class GraphicsNode(QGraphicsObject):
 
         painter.drawPath(path_background.simplified())
 
-    def __paint_title_background(self, painter: QPainter):
+    def __paint_title_background(self, painter: "QPainter"):
         """Paints a little background behind the title text, at the top of the node."""
         title_rect = self.__graphics_title.boundingRect()
 
@@ -226,7 +230,7 @@ class GraphicsNode(QGraphicsObject):
         painter.setBrush(self.title_background_brush)
         painter.drawPath(path_title_background.simplified())
 
-    def __paint_outline(self, painter: QPainter):
+    def __paint_outline(self, painter: "QPainter"):
         """Paints the outline of the node. Depending on if its selected or not, the
         color of the outline changes."""
         path_outline = QPainterPath()

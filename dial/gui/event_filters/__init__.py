@@ -6,7 +6,7 @@ from .zoom_event_filter import ZoomEventFilter
 movements and operations on an object.
 
 For example, by installing a `ZoomEventFilter` object on a QGrapQGraphicsView, you will
-be able to zoom in/out the view with the mouse instantaneously.
+be able to zoom in/out the view using the mouse.
 """
 
 __all__ = ["PanningEventFilter", "ZoomEventFilter", "ResizableItemEventFilter"]

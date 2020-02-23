@@ -1,12 +1,21 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+
+from typing import TYPE_CHECKING
+
 import qimage2ndarray
-from PySide2.QtCore import QModelIndex, QRect, QSize, Qt
-from PySide2.QtGui import QPainter, QPixmap, QPixmapCache
-from PySide2.QtWidgets import QStyledItemDelegate, QStyleOptionViewItem
+from PySide2.QtCore import QRect, QSize, Qt
+from PySide2.QtGui import QPixmap, QPixmapCache
+from PySide2.QtWidgets import QStyledItemDelegate
 
 from dial.datasets import datatype
 from dial.misc import Dial
+
+if TYPE_CHECKING:
+    from PySide2.QtCore import QModelIndex
+    from PySide2.QtGui import QPainter
+    from PySide2.QtWidgets import QStyleOptionViewItem
+    from PySide2.QtWidgets import QObject
 
 
 class DatasetItemDelegate(QStyledItemDelegate):
@@ -14,13 +23,13 @@ class DatasetItemDelegate(QStyledItemDelegate):
     Delegate that knows how to paint any data that can be loaded to a dataset.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: "QObject" = None):
         super().__init__(parent)
 
         self.min_image_size = QSize(100, 100)
 
     def paint(
-        self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex
+        self, painter: "QPainter", option: "QStyleOptionViewItem", index: "QModelIndex"
     ):
         """
         Paint the element according to its type.
@@ -37,7 +46,7 @@ class DatasetItemDelegate(QStyledItemDelegate):
             self.__paint_string(painter, option, index)
 
     def __paint_pixmap(
-        self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex
+        self, painter: "QPainter", option: "QStyleOptionViewItem", index: "QModelIndex"
     ):
         """
         Paint a pixmap centered on the cell.
@@ -70,7 +79,7 @@ class DatasetItemDelegate(QStyledItemDelegate):
         painter.drawPixmap(draw_rect, pix)
 
     def __paint_string(
-        self, painter: QPainter, option: QStyleOptionViewItem, index: QModelIndex
+        self, painter: "QPainter", option: "QStyleOptionViewItem", index: "QModelIndex"
     ):
         """
         Paint a value that can be converted to string.
@@ -91,7 +100,7 @@ class DatasetItemDelegate(QStyledItemDelegate):
         # Paint it
         painter.drawText(option.rect, alignment, display_text)
 
-    def sizeHint(self, option: QStyleOptionViewItem, index: QModelIndex):
+    def sizeHint(self, option: "QStyleOptionViewItem", index: "QModelIndex"):
         """
         Return the size needed by the delegate to display its contents.
         """

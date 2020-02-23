@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""The main window for the program."""
+from typing import TYPE_CHECKING
+
 from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabBar, QTabWidget
 
@@ -8,16 +9,18 @@ from dial import __version__
 from dial.node_editor.gui import NodeEditorWindow
 from dial.utils import log
 
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QWidget
+
+
 LOGGER = log.get_logger(__name__)
 
 
 class MainWindow(QMainWindow):
-    """
-    The main window for the program.
-    """
+    """The main window for the program."""
 
     def __init__(
-        self, menubar, logger_dialog, parent=None,
+        self, menubar, logger_dialog, parent: "QWidget" = None,
     ):
         super().__init__(parent)
 
@@ -38,7 +41,8 @@ class MainWindow(QMainWindow):
         self.__main_menu_bar.quit.connect(QApplication.quit)
         self.__main_menu_bar.toggle_log_window.connect(self.__toggle_log_window)
 
-    def sizeHint(self):
+    def sizeHint(self) -> "QSize":
+        """Returns the size of the main window."""
         return QSize(1000, 800)
 
     def __setup_logger_dialog(self):

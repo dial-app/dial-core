@@ -1,17 +1,20 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import List
+from typing import TYPE_CHECKING, Any, List, Optional
 
 from PySide2.QtCore import QAbstractListModel, QModelIndex, Qt
 
-from dial.datasets import DatasetLoader
 from dial.utils import log
+
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QObject
+
 
 LOGGER = log.get_logger(__name__)
 
 
 class DatasetsListModel(QAbstractListModel):
-    def __init__(self, datasets_list: List[DatasetLoader], parent=None):
+    def __init__(self, datasets_list: List["DatasetLoader"], parent: "QObject" = None):
         super().__init__(parent)
 
         self.__datasets_list = datasets_list
@@ -22,13 +25,13 @@ class DatasetsListModel(QAbstractListModel):
             self.__datasets_list,
         )
 
-    def rowCount(self, parent=QModelIndex()):
+    def rowCount(self, parent=QModelIndex()) -> int:
         return len(self.__datasets_list)
 
-    def index(self, row, column=0, parent=QModelIndex()):
+    def index(self, row: int, column: int = 0, parent=QModelIndex()) -> "QModelIndex":
         return self.createIndex(row, column, self.__datasets_list[row])
 
-    def data(self, index, role=Qt.DisplayRole):
+    def data(self, index, role=Qt.DisplayRole) -> Optional[Any]:
         if role == Qt.DisplayRole:
             return f"{self.__datasets_list[index.row()]}"
 

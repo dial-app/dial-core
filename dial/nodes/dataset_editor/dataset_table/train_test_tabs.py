@@ -1,8 +1,14 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import TYPE_CHECKING
+
 from PySide2.QtWidgets import QTabWidget
 
 from dial.datasets import Dataset
+
+if TYPE_CHECKING:
+    from PySide2.QtWidgets import QWidget
+    from .containers import DatasetTableMVFactory
 
 
 class TrainTestTabs(QTabWidget):
@@ -11,7 +17,9 @@ class TrainTestTabs(QTabWidget):
     widget.
     """
 
-    def __init__(self, datasettable_mv_factory, parent=None):
+    def __init__(
+        self, datasettable_mv_factory: "DatasetTableMVFactory", parent: "QWidget" = None
+    ):
         super().__init__(parent)
 
         self.__train_model = datasettable_mv_factory.Model(parent=self)
@@ -24,12 +32,12 @@ class TrainTestTabs(QTabWidget):
 
         self.__setup_ui()
 
-    def set_train_dataset(self, train_dataset: Dataset):
+    def set_train_dataset(self, train_dataset: "Dataset"):
         """
         """
         self.__train_model.load_dataset(train_dataset)
 
-    def set_test_dataset(self, test_dataset: Dataset):
+    def set_test_dataset(self, test_dataset: "Dataset"):
         """
         """
         self.__test_model.load_dataset(test_dataset)
