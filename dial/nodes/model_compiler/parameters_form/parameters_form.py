@@ -1,14 +1,14 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Form for changing the parameters used for the training process.
-"""
-
 from PySide2.QtCore import Qt, Signal
 from PySide2.QtWidgets import QComboBox, QFormLayout, QPushButton, QSpinBox, QWidget
 
 
 class ParametersForm(QWidget):
+    """
+    Form for changing the parameters used for the training process.
+    """
+
     epoch_value_changed = Signal(int)
     loss_function_changed = Signal(str)
     optimizer_changed = Signal(str)

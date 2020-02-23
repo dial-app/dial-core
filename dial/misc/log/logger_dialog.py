@@ -1,13 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""The LoggerDialog class provides a dialog window prepared for displaying messages
-from the Python logging system.
-
-Examples:
-    logger_dialog = LoggerDialog()
-    logging.getLogger().addHandler(logger_dialog.handler)
-"""
-
 import logging
 
 from PySide2.QtCore import QSize

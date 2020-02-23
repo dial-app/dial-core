@@ -1,8 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-"""
-
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QContextMenuEvent, QDropEvent
 from PySide2.QtWidgets import QAbstractItemView, QHeaderView, QMenu, QTableView

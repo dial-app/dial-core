@@ -1,15 +1,12 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Window for all the model related operations (Create/Modify NN architectures)
-"""
-
 from PySide2.QtCore import QSize, Qt
 from PySide2.QtWidgets import QDockWidget, QMainWindow
 
 
 class LayersEditorWidget(QMainWindow):
     """
+    Window for all the model related operations (Create/Modify NN architectures)
     """
 
     def __init__(

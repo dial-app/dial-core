@@ -1,13 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""The LoggerTextboxWidget class provides a textbox widget that can also work as a
-logging handler for the Python logging system.
-
-Examples:
-    textbox_logger = LoggerTextboxWidget()
-    logging.getLogger().addHandler(textbox_logger)
-"""
-
 import logging
 
 from PySide2.QtWidgets import QPlainTextEdit, QVBoxLayout, QWidget

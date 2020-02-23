@@ -1,13 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Can:
-  * Connect/Discconnect to another port.
-  * Detect and prevent being connected to itself.
-  * Connect to several ports or only one port at a time.
-  * Check if two ports are compatible and can be connected
-"""
-
 from typing import Any, Optional, Set
 
 from dial.utils.log import DEBUG, ERROR, log_on_end, log_on_error

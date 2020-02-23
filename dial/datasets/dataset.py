@@ -1,22 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Notes:
-
-Inputs:
-    - From Keras (Predefined dataset): x_train, x_test, y_train, y_test
-    - From local:
-        * folders (train_folder, test_folder) with data inside (normally images) csv
-        * csv files (train.csv, test.csv) with values inside csv files (train_csv,
-            test_csv).
-        * csv files (train.csv, test.csv). )The csv has a "path" to a resource, p.e:
-            (./foo/1.jpg)
-        * npy files (train.npy, test.npy) that can be loaded to numpy arrays
-
-For a sequence of data (array), define the type of data using (categorical, numerical,
-image...)
-"""
-
 from typing import List, Tuple
 
 import numpy as np
@@ -27,7 +10,6 @@ from dial.datasets.datatype import DataType, NumericArray
 
 class Dataset(keras.utils.Sequence):
     """
-    Dataset generator
     """
 
     def __init__(

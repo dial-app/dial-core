@@ -1,9 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Window for all the model related operations (Create/Modify NN architectures)
-"""
-
 from PySide2.QtWidgets import QGridLayout, QWidget
 
 from dial.utils import log

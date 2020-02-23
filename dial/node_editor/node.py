@@ -1,11 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Can:
- * Connect and disconnect from/to different nodes
- * Add/remove new ports as input/output ports
-"""
-
 from typing import Dict, Optional
 
 from PySide2.QtCore import QObject, Signal

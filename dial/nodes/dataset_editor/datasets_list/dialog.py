@@ -1,9 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Dialog window for selecting between predefined datasets.
-"""
-
 from typing import Optional
 
 from PySide2.QtCore import QModelIndex, Slot

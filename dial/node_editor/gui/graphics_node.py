@@ -4,20 +4,11 @@ from enum import Flag, auto
 from typing import Any, List
 
 from PySide2.QtCore import QRectF, Qt
-from PySide2.QtGui import (
-    QBrush,
-    QColor,
-    QFont,
-    QMouseEvent,
-    QPainter,
-    QPainterPath,
-    QPen,
-)
+from PySide2.QtGui import QBrush, QColor, QFont, QPainter, QPainterPath, QPen
 from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsObject,
     QGraphicsProxyWidget,
-    QGraphicsSceneHoverEvent,
     QGraphicsTextItem,
     QStyleOptionGraphicsItem,
     QWidget,

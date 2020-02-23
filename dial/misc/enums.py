@@ -1,8 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""This module has various identifiers used throughout the Dial application."""
-
-
 from enum import Enum
 
 from PySide2.QtCore import Qt

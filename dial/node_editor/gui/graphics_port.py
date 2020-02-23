@@ -4,14 +4,7 @@ from enum import Enum
 from typing import TYPE_CHECKING, Set
 
 from PySide2.QtCore import QPointF, QRectF, Qt
-from PySide2.QtGui import (
-    QBrush,
-    QColor,
-    QPainter,
-    QPainterPath,
-    QPainterPathStroker,
-    QPen,
-)
+from PySide2.QtGui import QBrush, QColor, QPainter, QPen
 from PySide2.QtWidgets import (
     QGraphicsItem,
     QGraphicsTextItem,

@@ -1,9 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Menu bar for the main window.
-"""
-
 from PySide2.QtCore import Signal
 from PySide2.QtGui import QKeySequence
 from PySide2.QtWidgets import QAction, QMenuBar, QWidget

@@ -1,9 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-"""
-Delegate that knows how to paint any data that can be loaded to a dataset.
-"""
-
 import qimage2ndarray
 from PySide2.QtCore import QModelIndex, QRect, QSize, Qt
 from PySide2.QtGui import QPainter, QPixmap, QPixmapCache

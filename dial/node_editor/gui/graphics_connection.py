@@ -11,16 +11,8 @@ from PySide2.QtWidgets import (
     QWidget,
 )
 
-from dial.utils.log import INFO, log_on_end
-
 if TYPE_CHECKING:
     from .graphics_port import GraphicsPort
-
-"""
-Class representing a line between two points (or ports).
-
-Can be used to drag a connection between two ports, for example.
-"""
 
 
 class GraphicsConnection(QGraphicsPathItem):

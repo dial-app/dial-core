@@ -4,8 +4,8 @@
 
 from enum import Enum, Flag, auto
 
-from PySide2.QtCore import QEvent, QObject, QRectF, Qt
-from PySide2.QtWidgets import QGraphicsItem, QGraphicsSceneMouseEvent
+from PySide2.QtCore import QEvent, QObject, Qt
+from PySide2.QtWidgets import QGraphicsItem
 
 
 class ResizableItemEventFilter(QObject):
