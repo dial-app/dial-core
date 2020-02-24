@@ -24,11 +24,18 @@ class NodeFactory(containers.DynamicContainer):
             identifier: Name of the node.
             node_type: Node type.
         """
-
         if not node_type:
             return
 
-        self.providers[identifier] = providers.Factory(node_type, *args, **kwargs)
+        factory = providers.Factory(node_type, *args, **kwargs)
+        self.register_node_factory(identifier, factory)
+
+    def register_node_factory(self, identifier: str, node_factory: "providers.Factory"):
+        """Registers a new node factory."""
+        if not node_factory:
+            return
+
+        self.providers[identifier] = node_factory
 
     def get_node(self, identifier: str) -> "Node":
         """Returns an instanced node"""

@@ -12,6 +12,6 @@ from .dataset_editor import DatasetEditorNodeFactory
 from .layers_editor import LayersEditorNodeFactory
 from .model_compiler import ModelCompilerNodeFactory
 
-NodeFactorySingleton().register_node("Dataset Editor", DatasetEditorNodeFactory)
-NodeFactorySingleton().register_node("Layers Editor", LayersEditorNodeFactory)
-NodeFactorySingleton().register_node("Model Compiler", ModelCompilerNodeFactory)
+NodeFactorySingleton().register_node_factory("Dataset Editor", DatasetEditorNodeFactory)
+NodeFactorySingleton().register_node_factory("Layers Editor", LayersEditorNodeFactory)
+NodeFactorySingleton().register_node_factory("Model Compiler", ModelCompilerNodeFactory)

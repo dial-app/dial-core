@@ -79,16 +79,16 @@ class ResizableItemEventFilter(QObject):
         if self.__resize_button_clicked(event) and self.__is_inside_resize_margins(
             item, event
         ):
-            self.__start_resizing_item(item, event)
+            self.__start_resizing_node(item, event)
             return True
 
         if self.is_resizing():
             if event.type() == QEvent.GraphicsSceneMouseMove:
-                self.__resizing_item(item, event)
+                self.__resizing_node(item, event)
                 return True
 
             if self.__resize_button_released(event):
-                self.__stop_resizing_item(item, event)
+                self.__stop_resizing_node(item, event)
                 return True
 
         return super().eventFilter(item, event)

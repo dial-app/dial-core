@@ -23,9 +23,14 @@ class NodesMenu(QMenu):
         self.__graphics_scene = graphics_scene
         self.__node_editor_view = node_editor_view
 
-        for node_name, node in node_factory.nodes.items():
+        for node_name, node_factory in node_factory.nodes.items():
             action = QAction(node_name, self)
-            action.triggered.connect(lambda: self.__add_node_to_scene(node()))
+
+            action.triggered.connect(
+                lambda _=False, node_factory=node_factory: self.__add_node_to_scene(
+                    node_factory()
+                )
+            )
 
             self.addAction(action)
 

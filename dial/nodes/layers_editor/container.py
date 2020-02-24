@@ -6,8 +6,6 @@ Dependency Injection containers.
 
 import dependency_injector.providers as providers
 
-from dial.node_editor import NodeFactorySingleton
-
 from .layers_editor_node import LayersEditorNode
 from .layers_editor_widget import LayersEditorWidget
 from .layers_tree import LayersTreeFactory
@@ -20,5 +18,3 @@ LayersEditorWidgetFactory = providers.Factory(
 LayersEditorNodeFactory = providers.Factory(
     LayersEditorNode, layers_editor_widget=LayersEditorWidgetFactory
 )
-
-NodeFactorySingleton().register_node("Layers Editor", LayersEditorNodeFactory)
