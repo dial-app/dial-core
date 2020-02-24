@@ -2,12 +2,12 @@
 
 from typing import TYPE_CHECKING, List, Tuple
 
+import numpy as np
 from tensorflow import keras
 
 from .datatype import NumericArray
 
 if TYPE_CHECKING:
-    import numpy as np
     from .datatype import DataType
 
 

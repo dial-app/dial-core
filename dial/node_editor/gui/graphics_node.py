@@ -6,10 +6,13 @@ from typing import TYPE_CHECKING, Any, List
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QBrush, QColor, QFont, QPainterPath, QPen
 from PySide2.QtWidgets import (
+    QDialog,
     QGraphicsItem,
     QGraphicsObject,
     QGraphicsProxyWidget,
     QGraphicsTextItem,
+    QPushButton,
+    QVBoxLayout,
     QWidget,
 )
 
@@ -19,9 +22,10 @@ from .graphics_port import GraphicsPort
 
 if TYPE_CHECKING:
     from PySide2.QtCore import QRectF
-    from PySide2.QtGui import QPainter
+    from PySide2.QtGui import QPainter, QMouseEvent
+
     from dial.node_editor import Node
-    from PySide2.QtWidgets import QStyleOptionGraphicsItem
+    from PySide2.QtWidgets import QStyleOptionGraphicsItem, QGraphicsSceneMouseEvent
 
 
 class GraphicsNode(QGraphicsObject):
@@ -85,20 +89,6 @@ class GraphicsNode(QGraphicsObject):
         """Returns the associated node."""
         return self.__node
 
-    def setInnerWidget(self, widget: "QWidget"):
-        """Sets a new widget inside the node."""
-        self.prepareGeometryChange()
-        self.__node_widget_proxy.setWidget(widget)
-        self.recalculateGeometry()
-
-    def __title_height(self) -> int:
-        """Returns the height of the title graphics item."""
-        return self.__graphics_title.boundingRect().height()
-
-    def __update_title(self, new_text: str):
-        """Updates the graphics title item with new text."""
-        self.__graphics_title.setPlainText(new_text)
-
     def __setup_ui(self):
         """Configures the graphics item flags and widgets."""
         # GraphicsItem
@@ -146,6 +136,15 @@ class GraphicsNode(QGraphicsObject):
             x_offset=self.boundingRect().width(),
         )
 
+    def setInnerWidget(self, widget: "QWidget"):
+        """Sets a new widget inside the node."""
+        self.prepareGeometryChange()
+        self.__node_widget_proxy.setWidget(widget)
+        self.__node_widget_proxy.setPos(
+            self.padding, self.__title_height() + self.padding
+        )
+        self.recalculateGeometry()
+
     def boundingRect(self) -> "QRectF":
         """Returns a rect enclosing the node."""
         proxy_rect = self.__node_widget_proxy.boundingRect()
@@ -174,6 +173,61 @@ class GraphicsNode(QGraphicsObject):
         """Updates the position of the GraphicsPort when the inner widget is resized."""
         for graphics_port in self.__output_graphics_ports:
             graphics_port.setX(self.boundingRect().width())
+
+    def mouseDoubleClickEvent(self, event: "QGraphicsSceneMouseEvent"):
+        if event.button() == Qt.LeftButton:
+            self.__toggle_widget_dialog(event)
+
+    def __toggle_widget_dialog(self, event: "QMouseEvent"):
+        """Shows the Node `inner_widget` on a new dialog. The content of the node is
+        substituted with a button that hides the dialog and shows the inner_widget back
+        in the node when pressed.
+        """
+
+        # Don't create a dialog if the node doesn't has an inner_widget
+        if not self.node.inner_widget:
+            return
+
+        node_inner_widget = self.node.inner_widget
+        previous_node_size = node_inner_widget.size()
+
+        show_here_button = QPushButton("Show here")
+        show_here_button.setMinimumSize(200, 100)
+
+        # Replace the node widget with the button
+        self.setInnerWidget(show_here_button)
+
+        # Create a new dialog for displaying the node widget
+        dialog = QDialog()
+        dialog.setWindowTitle(self.node.title)
+
+        layout = QVBoxLayout()
+        layout.addWidget(node_inner_widget)
+        dialog.setLayout(layout)
+
+        dialog.show()
+
+        def place_widget_back_in_node():
+            # Widgets embedded in nodes can't have parents
+            node_inner_widget.setParent(None)
+
+            node_inner_widget.resize(previous_node_size)
+            self.setInnerWidget(node_inner_widget)
+
+            dialog.close()
+
+        # The widget will be displayed back in the node when the dialog is closed or
+        # when the "show here" button is pressed
+        dialog.finished.connect(place_widget_back_in_node)
+        show_here_button.clicked.connect(place_widget_back_in_node)
+
+    def __title_height(self) -> int:
+        """Returns the height of the title graphics item."""
+        return self.__graphics_title.boundingRect().height()
+
+    def __update_title(self, new_text: str):
+        """Updates the graphics title item with new text."""
+        self.__graphics_title.setPlainText(new_text)
 
     def paint(
         self, painter: "QPainter", option: "QStyleOptionGraphicsItem", widget: "QWidget"

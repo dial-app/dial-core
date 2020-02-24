@@ -100,55 +100,6 @@ class NodeEditorView(QGraphicsView):
         # TODO: Explain why
         event.ignore()
 
-    # TODO: MOVE to GraphicsNode
-    def __toggle_widget_dialog(self, event: "QMouseEvent"):
-        """Shows the Node `inner_widget` on a new dialog. The content of the node is
-        substituted with a button that hides the dialog and shows the inner_widget back
-        in the node when pressed.
-        """
-
-        item = self.__item_clicked_on(event)
-
-        if not isinstance(item, GraphicsNode):
-            return
-
-        # Don't create a dialog if the node doesn't has an inner_widget
-        if not item.node.inner_widget:
-            return
-
-        node_inner_widget = item.node.inner_widget
-        previous_node_size = node_inner_widget.size()
-
-        show_here_button = QPushButton("Show here")
-        show_here_button.setMinimumSize(200, 100)
-
-        # Replace the node widget with the button
-        item.setInnerWidget(show_here_button)
-
-        # Create a new dialog for displaying the node widget
-        dialog = QDialog(self)
-        dialog.setWindowTitle(item.node.title)
-
-        layout = QVBoxLayout()
-        layout.addWidget(node_inner_widget)
-        dialog.setLayout(layout)
-
-        dialog.show()
-
-        def place_widget_back_in_node():
-            # Widgets embedded in nodes can't have parents
-            node_inner_widget.setParent(None)
-
-            node_inner_widget.resize(previous_node_size)
-            item.setInnerWidget(node_inner_widget)
-
-            dialog.close()
-
-        # The widget will be displayed back in the node when the dialog is closed or
-        # when the "show here" button is pressed
-        dialog.finished.connect(place_widget_back_in_node)
-        show_here_button.clicked.connect(place_widget_back_in_node)
-
     def __start_dragging_connection(self, event: "QMouseEvent"):
         """Starts creating a new connection by dragging the mouse.
 
