@@ -61,6 +61,8 @@ def __gui_initialization(args: "argparse.Namespace"):
 
     QApplication()
 
+    import dial.nodes
+
 
 def parse_args(sys_args: List):
     """Parses the system arguments (sys.arv), returning the app configuration.

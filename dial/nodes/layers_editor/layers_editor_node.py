@@ -2,8 +2,8 @@
 
 from typing import TYPE_CHECKING
 
-from dial.misc import Dial
 from dial.node_editor import Node, OutputPort
+from dial.utils import Dial
 
 if TYPE_CHECKING:
     from .layers_editor_widget import LayersEditorWidget

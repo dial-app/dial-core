@@ -13,7 +13,7 @@ from PySide2.QtCore import (
 from tensorflow import keras
 
 from dial.gui.widgets.abstract_tree_model import AbstractTreeModel, AbstractTreeNode
-from dial.misc import Dial
+from dial.utils import Dial
 
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QWidget

@@ -5,8 +5,7 @@ from typing import TYPE_CHECKING, Any, List, Optional
 from PySide2.QtCore import QAbstractTableModel, QModelIndex, QSize, Qt
 from PySide2.QtGui import QPixmapCache
 
-from dial.misc import Dial
-from dial.utils import log
+from dial.utils import Dial, log
 
 if TYPE_CHECKING:
     from dial.datasets import Dataset
@@ -74,7 +73,7 @@ class DatasetTableModel(QAbstractTableModel):
         return len(self.column_names)
 
     def headerData(
-        self, section: int, orientation: "Qt.Orientation", role=Qt.DisplayRole()
+        self, section: int, orientation: "Qt.Orientation", role=Qt.DisplayRole
     ):
         """
         Return the name of the headers

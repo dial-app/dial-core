@@ -7,7 +7,15 @@ from .output_port import OutputPort
 from .port import Port
 from .scene import Scene
 
-__all__ = ["Node", "Port", "InputPort", "OutputPort", "Scene", "NodeFactorySingleton"]
+__all__ = [
+    "Node",
+    "Port",
+    "InputPort",
+    "OutputPort",
+    "Scene",
+    "NodeFactory",
+    "NodeFactorySingleton",
+]
 
 """
 scene = NodeEditorScene()

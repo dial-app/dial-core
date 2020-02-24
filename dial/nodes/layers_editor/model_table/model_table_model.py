@@ -13,8 +13,7 @@ from PySide2.QtCore import (
     Qt,
 )
 
-from dial.misc import Dial
-from dial.utils import log
+from dial.utils import Dial, log
 
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QObject

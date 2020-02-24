@@ -35,8 +35,8 @@ class NodeFactory(containers.DynamicContainer):
         return self.providers[identifier]()
 
     def clear(self):
+        """Removes all registered nodes."""
         self.providers.clear()
 
 
 NodeFactorySingleton = providers.Singleton(NodeFactory)
-# NodeFactorySingleton().register_node("Dataset Editor", DatasetEditorNodeFactory)

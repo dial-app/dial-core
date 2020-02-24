@@ -41,7 +41,11 @@ class NodeEditorWindow(QWidget):
         self.setLayout(self.__main_layout)
 
     def contextMenuEvent(self, event: "QContextMenuEvent"):
-        menubar = DialContextMenu(parent=self)
+        menubar = DialContextMenu(
+            parent=self,
+            graphics_scene=self.__graphics_scene,
+            node_editor_view=self.__node_editor_view,
+        )
         menubar.popup(event.globalPos())
 
     # # TODO: Remove from here

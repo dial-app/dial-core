@@ -3,7 +3,7 @@
 import math
 from typing import TYPE_CHECKING, List, Tuple
 
-from PySide2.QtCore import QLine, QRect
+from PySide2.QtCore import QLine, QPoint, QRect
 from PySide2.QtGui import QColor, QPen
 from PySide2.QtWidgets import QGraphicsScene
 
@@ -62,9 +62,12 @@ class GraphicsScene(QGraphicsScene):
         )
 
     @log_on_end(DEBUG, "{node} added as a GraphicNode.")
-    def add_node_to_graphics(self, node: "Node"):
+    def add_node_to_graphics(self, node: "Node") -> "GraphicsNode":
         """Add a new Node to the GraphicsScene, making it visible."""
-        self.addItem(GraphicsNode(node))
+        graphics_node = GraphicsNode(node)
+        self.addItem(graphics_node)
+
+        return graphics_node
 
     def drawBackground(self, painter: "QPainter", rect: "QRectF"):
         """Draws the background for the scene."""

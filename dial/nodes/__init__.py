@@ -9,5 +9,9 @@ when working with classical Deep Learning problems.
 from dial.node_editor import NodeFactorySingleton
 
 from .dataset_editor import DatasetEditorNodeFactory
+from .layers_editor import LayersEditorNodeFactory
+from .model_compiler import ModelCompilerNodeFactory
 
 NodeFactorySingleton().register_node("Dataset Editor", DatasetEditorNodeFactory)
+NodeFactorySingleton().register_node("Layers Editor", LayersEditorNodeFactory)
+NodeFactorySingleton().register_node("Model Compiler", ModelCompilerNodeFactory)

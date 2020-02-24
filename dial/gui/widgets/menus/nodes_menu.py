@@ -2,18 +2,35 @@
 
 from typing import TYPE_CHECKING
 
-from PySide2.QtGui import QKeySequence
 from PySide2.QtWidgets import QAction, QMenu
 
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QWidget
-    from dial.node_editor import NodeFactory
+    from dial.node_editor import NodeFactory, Node
+    from dial.node_editor.gui import GraphicsScene, NodeEditorView
 
 
 class NodesMenu(QMenu):
-    def __init__(self, node_factory: "NodeFactory", parent: "QWidget" = None):
+    def __init__(
+        self,
+        node_factory: "NodeFactory",
+        graphics_scene: "GraphicsScene",
+        node_editor_view: "NodeEditorView",
+        parent: "QWidget" = None,
+    ):
         super().__init__("&Nodes", parent)
 
-        for node_name, node in node_factory.nodes:
+        self.__graphics_scene = graphics_scene
+        self.__node_editor_view = node_editor_view
+
+        for node_name, node in node_factory.nodes.items():
             action = QAction(node_name, self)
+            action.triggered.connect(lambda: self.__add_node_to_scene(node()))
+
             self.addAction(action)
+
+    def __add_node_to_scene(self, node: "Node"):
+        graphics_node = self.__graphics_scene.add_node_to_graphics(node)
+
+        global_pos = self.__node_editor_view.mapFromGlobal(self.pos())
+        graphics_node.setPos(self.__node_editor_view.mapToScene(global_pos))

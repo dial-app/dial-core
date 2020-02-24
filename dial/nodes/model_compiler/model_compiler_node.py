@@ -5,8 +5,8 @@ from typing import TYPE_CHECKING
 from tensorflow.keras import Model
 
 from dial.datasets import Dataset
-from dial.misc import Dial
 from dial.node_editor import InputPort, Node, OutputPort
+from dial.utils import Dial
 
 if TYPE_CHECKING:
     from PySide2.QtCore import QObject
