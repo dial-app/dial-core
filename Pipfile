@@ -29,6 +29,7 @@ sphinx = "*"
 sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
 recommonmark = "*"
+docstr-coverage = "*"
 
 [requires]
 python_version = "3.7"
@@ -42,3 +43,4 @@ tests = "pipenv run pytest --cov"
 build = "pipenv run python setup.py sdist bdist bdist_wheel"
 deploy = "pipenv run twine upload dist/*"
 cloc = "cloc --exclude-dir='.mypy_cache' dial"
+doc-coverage = "pipenv run docstr-coverage -fi dial"
