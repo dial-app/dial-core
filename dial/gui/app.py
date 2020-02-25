@@ -15,6 +15,8 @@ from dial.utils import log
 if TYPE_CHECKING:
     import argparse
 
+LOGGER = log.get_logger(__name__)
+
 
 def run(args: "argparse.Namespace"):
     """
@@ -30,8 +32,8 @@ def run(args: "argparse.Namespace"):
     main_window = MainWindowFactory()
     main_window.show()
 
-    log.module_logger().debug("Command Line Arguments: %s", args)
-    log.module_logger().info("Dial.")
-    log.module_logger().info("Started on %s", datetime.now().ctime())
+    LOGGER.debug("Command Line Arguments: %s", args)
+    LOGGER.info("Dial.")
+    LOGGER.info("Started on %s", datetime.now().ctime())
 
     return QApplication.exec_()

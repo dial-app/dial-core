@@ -9,7 +9,6 @@ from .log import (
     add_handler_to_root,
     get_logger,
     init_logs,
-    module_logger,
 )
 from .log_decorator import log_exception, log_on_end, log_on_error, log_on_start
 
@@ -24,7 +23,6 @@ __all__ = [
     "LOG_STREAM",
     "add_handler_to_root",
     "get_logger",
-    "module_logger",
     "init_logs",
     "log_exception",
     "log_on_start",

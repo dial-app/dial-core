@@ -5,11 +5,12 @@ from typing import List, Tuple
 
 from tensorflow.keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
-from dial.utils import Timer
-from dial.utils.log import module_logger
+from dial.utils import Timer, log
 
 from . import datatype
 from .dataset import Dataset
+
+LOGGER = log.get_logger(__name__)
 
 
 class DatasetLoader(metaclass=ABCMeta):
@@ -36,7 +37,7 @@ class DatasetLoader(metaclass=ABCMeta):
         with Timer() as timer:
             (x_train, y_train), (x_test, y_test) = self._load_data()
 
-        module_logger().info("Fetched dataset data in %s ms", timer.elapsed())
+        LOGGER.info("Fetched dataset data in %s ms", timer.elapsed())
 
         train_dataset = Dataset(x_train, y_train, self.x_type, self.y_type)
         test_dataset = Dataset(x_test, y_test, self.x_type, self.y_type)

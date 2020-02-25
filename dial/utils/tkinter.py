@@ -3,7 +3,7 @@
 """
 Utility methods to work with Tkinter.
 
-Used for showing window messages if we can't access PySide2 (PyQt5), as Tkinter is
+Used for showing window messages if we can't access PySide2 (Qt), as Tkinter is
 guaranteed to be installed along Python3.
 """
 

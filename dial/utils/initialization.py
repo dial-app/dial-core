@@ -12,6 +12,9 @@ from typing import List, Tuple
 
 from dial import __description__, __requirements__
 from dial.utils import log
+from dial.utils.log import DEBUG, log_on_end
+
+LOGGER = log.get_logger(__name__)
 
 
 def initialize_application(args: "argparse.Namespace"):
@@ -28,7 +31,7 @@ def initialize_application(args: "argparse.Namespace"):
         __gui_initialization(args)
 
     except (ImportError, SystemError) as err:
-        log.module_logger().exception(err)
+        LOGGER.exception(err)
 
         from dial.utils import tkinter
 
@@ -61,7 +64,8 @@ def __gui_initialization(args: "argparse.Namespace"):
 
     QApplication()
 
-    import dial.nodes
+    # TODO: Solve this import issue
+    import dial.nodes  # noqa
 
 
 def parse_args(sys_args: List):
@@ -96,6 +100,7 @@ def get_arg_parser() -> "argparse.ArgumentParser":
     return parser
 
 
+@log_on_end(DEBUG, f"Python Version: {sys.version}", logger=LOGGER)
 def check_python_version():
     """
     Check if Python version installed is correct.
@@ -107,15 +112,17 @@ def check_python_version():
     if sys.version_info[0] < 3 or sys.version_info[1] < 6:
         raise SystemError("Must use Python 3.6 or newer.")
 
-    log.module_logger().debug("Python Version: %s", sys.version)
 
-
+@log_on_end(DEBUG, "{result.name} module found ({result.origin})", logger=LOGGER)
 def check_module_installed(module_name: str):
     """
     Check if PySide2 version installed is correct.
 
     Raises:
         ImportError: If the module is not installed.
+
+    Returns:
+        A module specification object if found.
     """
     spec = find_spec(module_name)
 
@@ -125,7 +132,7 @@ def check_module_installed(module_name: str):
             f'"pip install --user {module_name}" to install it.'
         )
 
-    log.module_logger().debug("%s module found (%s)", spec.name, spec.origin)
+    return spec
 
 
 def check_required_modules(requirements: List[Tuple[str, str]]):

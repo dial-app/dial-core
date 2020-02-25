@@ -46,7 +46,11 @@ def init_logs(args: "argparse.Namespace"):
     add_handler_to_root(__get_console_handler())
     add_handler_to_root(__get_string_handler())
 
-    module_logger().debug("Logging system initialized.")
+    for name in logging.root.manager.loggerDict:  # type: ignore
+        logger = logging.getLogger(name)
+        logger.setLevel(LOG_LEVEL)
+
+    get_logger(__name__).debug("Logging system initialized.")
 
 
 def add_handler_to_root(handler: "logging.Handler"):
@@ -64,11 +68,6 @@ def get_logger(logger_name: str) -> "logging.Logger":
     logger.setLevel(LOG_LEVEL)
 
     return logger
-
-
-def module_logger() -> "logging.Logger":
-    """Returns a configured Logger object using its module name as identifier."""
-    return get_logger(__name__)
 
 
 def __get_console_handler() -> "logging.StreamHandler":
