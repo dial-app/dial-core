@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from dial.datasets.datatype import NumericArray
+from dial.base.datasets.datatype import NumericArray
 
 
 @pytest.fixture

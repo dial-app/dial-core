@@ -2,7 +2,7 @@
 
 import pytest
 
-from dial.datasets.datatype import Categorical
+from dial.base.datasets.datatype import Categorical
 
 
 @pytest.fixture

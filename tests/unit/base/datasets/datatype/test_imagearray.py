@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from dial.datasets.datatype import ImageArray
+from dial.base.datasets.datatype import ImageArray
 
 
 @pytest.fixture

@@ -2,7 +2,7 @@
 
 import pytest
 
-from dial.datasets.datatype import Numeric
+from dial.base.datasets.datatype import Numeric
 
 
 @pytest.fixture

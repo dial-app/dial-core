@@ -1,11 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING
+import numpy as np
 
 from .datatype import DataType
-
-if TYPE_CHECKING:
-    import numpy as np
 
 
 class NumericArray(DataType):

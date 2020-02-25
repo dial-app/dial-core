@@ -51,7 +51,9 @@ class Port:
         Args:
             port: Port being compared with.
         """
-        return self.__port_type == port.port_type and self.node != port.node
+        return self.__port_type == port.port_type and (
+            not self.node or self.node != port.node
+        )
 
     @log_on_end(DEBUG, "{self} connected to {port}")
     @log_on_error(
