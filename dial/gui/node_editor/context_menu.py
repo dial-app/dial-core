@@ -9,7 +9,7 @@ from dial.node_editor import NodeFactorySingleton
 
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QWidget
-    from dial.node_editor.gui import GraphicsScene, NodeEditorView
+    from dial.gui.node_editor import GraphicsScene, NodeEditorView
 
 
 class DialContextMenu(QMenu):

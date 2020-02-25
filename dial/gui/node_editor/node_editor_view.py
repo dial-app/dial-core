@@ -4,10 +4,10 @@ from typing import TYPE_CHECKING, Any, Optional, Union
 
 from PySide2.QtCore import Qt
 from PySide2.QtGui import QPainter
-from PySide2.QtWidgets import QDialog, QGraphicsView, QPushButton, QVBoxLayout
+from PySide2.QtWidgets import QGraphicsView
 
 from dial.gui.event_filters import PanningEventFilter, ZoomEventFilter
-from dial.node_editor.gui import GraphicsConnection, GraphicsNode, GraphicsPort
+from dial.gui.node_editor import GraphicsConnection, GraphicsPort
 from dial.utils import log
 
 if TYPE_CHECKING:

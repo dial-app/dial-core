@@ -6,7 +6,7 @@ from typing import TYPE_CHECKING
 from PySide2.QtCore import QEvent, QObject, Qt
 
 if TYPE_CHECKING:
-    from dial.node_editor.gui import GraphicsNode
+    from dial.gui.node_editor import GraphicsNode
 
 
 class ResizableItemEventFilter(QObject):

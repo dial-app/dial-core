@@ -2,7 +2,7 @@
 
 from typing import TYPE_CHECKING
 
-from PySide2.QtWidgets import QMenu, QMenuBar, QVBoxLayout, QWidget
+from PySide2.QtWidgets import QVBoxLayout, QWidget
 
 from dial.node_editor import Scene
 

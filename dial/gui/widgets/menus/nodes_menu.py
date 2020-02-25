@@ -7,7 +7,7 @@ from PySide2.QtWidgets import QAction, QMenu
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QWidget
     from dial.node_editor import NodeFactory, Node
-    from dial.node_editor.gui import GraphicsScene, NodeEditorView
+    from dial.gui.node_editor import GraphicsScene, NodeEditorView
 
 
 class NodesMenu(QMenu):

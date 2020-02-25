@@ -6,7 +6,7 @@ from PySide2.QtCore import QSize
 from PySide2.QtWidgets import QApplication, QMainWindow, QTabBar, QTabWidget
 
 from dial import __version__
-from dial.node_editor.gui import NodeEditorWindow
+from dial.gui.node_editor import NodeEditorWindow
 from dial.utils import log
 
 if TYPE_CHECKING:

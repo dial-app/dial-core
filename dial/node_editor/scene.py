@@ -2,20 +2,14 @@
 
 from typing import TYPE_CHECKING, List
 
-from PySide2.QtCore import QObject, Signal
-
 from dial.utils.log import DEBUG, log_on_end
 
 if TYPE_CHECKING:
     from .node import Node
 
 
-class Scene(QObject):
-    node_added = Signal("Node")
-
-    def __init__(self, parent: "QObject" = None):
-        super().__init__(parent)
-
+class Scene:
+    def __init__(self):
         self.__nodes: List["Node"] = []
 
     @property
@@ -27,5 +21,3 @@ class Scene(QObject):
     def add_node(self, node: "Node"):
         """Adds a new node to the scene."""
         self.nodes.append(node)
-
-        self.node_added.emit(node)

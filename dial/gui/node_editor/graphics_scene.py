@@ -3,7 +3,7 @@
 import math
 from typing import TYPE_CHECKING, List, Tuple
 
-from PySide2.QtCore import QLine, QPoint, QRect
+from PySide2.QtCore import QLine, QRect
 from PySide2.QtGui import QColor, QPen
 from PySide2.QtWidgets import QGraphicsScene
 
@@ -41,9 +41,6 @@ class GraphicsScene(QGraphicsScene):
 
         self._pen_dark = QPen(self._color_dark)
         self._pen_dark.setWidth(2)
-
-        # Connections
-        self.scene.node_added.connect(self.add_node_to_graphics)
 
         # UI
         self.__setup_ui()
