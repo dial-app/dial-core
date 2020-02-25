@@ -3,7 +3,7 @@
 from PySide2.QtGui import QColor
 from tensorflow.keras import Model
 
-from dial.datasets import Dataset
+from dial.base.datasets import Dataset
 from dial.utils import Dial
 
 

@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 from PySide2.QtWidgets import QTabWidget
 
 if TYPE_CHECKING:
-    from dial.datasets import Dataset
+    from dial.base.datasets import Dataset
     from PySide2.QtWidgets import QWidget
     from .containers import DatasetTableMVFactory
 

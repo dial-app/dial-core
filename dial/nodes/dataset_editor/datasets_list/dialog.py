@@ -14,7 +14,7 @@ from PySide2.QtWidgets import (
 
 if TYPE_CHECKING:
     from PySide2.QtCore import QModelIndex
-    from dial.datasets import DatasetLoader
+    from dial.base.datasets import DatasetLoader
     from .model import DatasetsListModel
     from .view import DatasetsListView
     from PySide2.QtWidgets import QWidget

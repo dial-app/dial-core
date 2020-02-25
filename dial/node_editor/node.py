@@ -1,29 +1,20 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING, Dict, Optional
-
-from PySide2.QtCore import QObject, Signal
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from dial.utils.log import DEBUG, log_on_end
 
 if TYPE_CHECKING:
-    from PySide2.QtWidgets import QWidget
     from .input_port import InputPort
     from .output_port import OutputPort
     from .port import Port
 
 
-class Node(QObject):
-    title_changed = Signal(str)
-
-    def __init__(
-        self, title: str, inner_widget: "QWidget" = None, parent: "QObject" = None
-    ):
-        super().__init__(parent)
-
+class Node:
+    def __init__(self, title: str, inner_widget: Any = None):
         self.__title = title
 
-        self.__inner_widget: Optional["QWidget"] = inner_widget
+        self.__inner_widget: Optional[Any] = inner_widget
 
         self.__inputs: Dict[str, "InputPort"] = {}
         self.__outputs: Dict[str, "OutputPort"] = {}
@@ -41,10 +32,9 @@ class Node(QObject):
             title_changed
         """
         self.__title = title
-        self.title_changed.emit(title)
 
     @property
-    def inner_widget(self) -> Optional["QWidget"]:
+    def inner_widget(self) -> Optional[Any]:
         """Returns the inner widget set on the node (Or None if not used)."""
         return self.__inner_widget
 

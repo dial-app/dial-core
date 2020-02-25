@@ -41,7 +41,8 @@ class GraphicsNode(QGraphicsObject):
 
         # Components
         self.__node = node
-        self.__node.graphics_node = self  # Add an instance variable to self
+        # Add an instance variable to self
+        self.__node.graphics_node = self  # type: ignore
 
         self.__state = self.State.NoFlags
 
@@ -74,7 +75,7 @@ class GraphicsNode(QGraphicsObject):
         self.__outline_pen = QPen(self.outline_default_color)
 
         # Connections
-        self.node.title_changed.connect(self.__update_title)
+        # self.node.title_changed.connect(self.__update_title)
 
         self.__setup_ui()
         self.__create_graphic_ports()

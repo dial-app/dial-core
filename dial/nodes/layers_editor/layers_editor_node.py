@@ -7,16 +7,11 @@ from dial.utils import Dial
 
 if TYPE_CHECKING:
     from .layers_editor_widget import LayersEditorWidget
-    from PySide2.QtWidgets import QObject
 
 
 class LayersEditorNode(Node):
-    def __init__(
-        self, layers_editor_widget: "LayersEditorWidget", parent: "QObject" = None
-    ):
-        super().__init__(
-            title="Layers Editor Node", inner_widget=layers_editor_widget, parent=parent
-        )
+    def __init__(self, layers_editor_widget: "LayersEditorWidget"):
+        super().__init__(title="Layers Editor Node", inner_widget=layers_editor_widget)
 
         self.add_output_port(OutputPort("layers", port_type=Dial.KerasLayerListMIME))
         self.outputs["layers"].output_generator = self.get_model_layers

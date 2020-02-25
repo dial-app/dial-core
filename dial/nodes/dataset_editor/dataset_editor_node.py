@@ -2,22 +2,17 @@
 
 from typing import TYPE_CHECKING
 
-from dial.datasets import Dataset
+from dial.base.datasets import Dataset
 from dial.node_editor import Node, OutputPort
 
 if TYPE_CHECKING:
     from .dataset_editor_widget import DatasetEditorWidget
-    from PySide2.QtWidgets import QObject
 
 
 class DatasetEditorNode(Node):
-    def __init__(
-        self, dataset_editor_widget: "DatasetEditorWidget", parent: "QObject" = None
-    ):
+    def __init__(self, dataset_editor_widget: "DatasetEditorWidget"):
         super().__init__(
-            title="Dataset Editor Node",
-            inner_widget=dataset_editor_widget,
-            parent=parent,
+            title="Dataset Editor Node", inner_widget=dataset_editor_widget
         )
 
         # Ports

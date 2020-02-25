@@ -8,7 +8,7 @@ from PySide2.QtCore import QRect, QSize, Qt
 from PySide2.QtGui import QPixmap, QPixmapCache
 from PySide2.QtWidgets import QStyledItemDelegate
 
-from dial.datasets import datatype
+from dial.base.datasets import datatype
 from dial.utils import Dial
 
 if TYPE_CHECKING:

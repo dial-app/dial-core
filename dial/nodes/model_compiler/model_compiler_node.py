@@ -4,23 +4,18 @@ from typing import TYPE_CHECKING
 
 from tensorflow.keras import Model
 
-from dial.datasets import Dataset
+from dial.base.datasets import Dataset
 from dial.node_editor import InputPort, Node, OutputPort
 from dial.utils import Dial
 
 if TYPE_CHECKING:
-    from PySide2.QtCore import QObject
     from .model_compiler_widget import ModelCompilerWidget
 
 
 class ModelCompilerNode(Node):
-    def __init__(
-        self, model_compiler_widget: "ModelCompilerWidget", parent: "QObject" = None
-    ):
+    def __init__(self, model_compiler_widget: "ModelCompilerWidget"):
         super().__init__(
-            title="Model Compiler Node",
-            inner_widget=model_compiler_widget,
-            parent=parent,
+            title="Model Compiler Node", inner_widget=model_compiler_widget,
         )
 
         # Ports

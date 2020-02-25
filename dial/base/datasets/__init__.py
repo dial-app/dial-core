@@ -1,7 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 """
-Modules related to Datasets, datatypes and dataset loading.
+The datasets package has all the classes related to Datasets, datatypes and dataset
+loading.
 """
 
 from .container import PredefinedDatasetLoaders

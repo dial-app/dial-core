@@ -8,7 +8,7 @@ from PySide2.QtGui import QPixmapCache
 from dial.utils import Dial, log
 
 if TYPE_CHECKING:
-    from dial.datasets import Dataset
+    from dial.base.datasets import Dataset
     from PySide2.QtWidgets import QObject
 
 

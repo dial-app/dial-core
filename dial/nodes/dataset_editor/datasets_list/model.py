@@ -9,7 +9,7 @@ from dial.utils import log
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QObject
 
-    # from dial.datasets import DatasetLoader
+    # from dial.base.datasets import DatasetLoader
 
 
 LOGGER = log.get_logger(__name__)
