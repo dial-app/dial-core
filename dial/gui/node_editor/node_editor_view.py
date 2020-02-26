@@ -40,6 +40,8 @@ class NodeEditorView(QGraphicsView):
             | QPainter.SmoothPixmapTransform
         )
 
+        self.setDragMode(QGraphicsView.RubberBandDrag)
+
         # View actions
         self.setPanning(True)
         self.setZooming(True)
