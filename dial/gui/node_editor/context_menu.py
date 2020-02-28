@@ -10,6 +10,7 @@ from dial.node_editor import NodeFactorySingleton
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QWidget
     from dial.gui.node_editor import GraphicsScene, NodeEditorView
+    from dial.base.project import ProjectManager
 
 
 class DialContextMenu(QMenu):
@@ -17,11 +18,12 @@ class DialContextMenu(QMenu):
         self,
         graphics_scene: "GraphicsScene",
         node_editor_view: "NodeEditorView",
+        project_manager: "ProjectManager",
         parent: "QWidget" = None,
     ):
         super().__init__("Menu", parent)
 
-        self.addMenu(FileMenu(parent=self))
+        self.addMenu(FileMenu(project_manager=project_manager, parent=self))
         self.addMenu(
             NodesMenu(
                 node_factory=NodeFactorySingleton(),

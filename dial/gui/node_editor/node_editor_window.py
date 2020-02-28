@@ -13,11 +13,19 @@ from .node_editor_view import NodeEditorView
 if TYPE_CHECKING:
     from PySide2.QtWidgets import QTabWidget
     from PySide2.QtGui import QContextMenuEvent
+    from dial.base.project import ProjectManager
 
 
 class NodeEditorWindow(QWidget):
-    def __init__(self, tabs_widget: "QTabWidget", parent: "QWidget" = None):
+    def __init__(
+        self,
+        tabs_widget: "QTabWidget",
+        project_manager: "ProjectManager",
+        parent: "QWidget" = None,
+    ):
         super().__init__(parent)
+
+        self.__project_manager = project_manager
 
         self.__main_layout = QVBoxLayout()
 
@@ -44,6 +52,7 @@ class NodeEditorWindow(QWidget):
         menubar = DialContextMenu(
             parent=self,
             graphics_scene=self.__graphics_scene,
+            project_manager=self.__project_manager,
             node_editor_view=self.__node_editor_view,
         )
         menubar.popup(event.globalPos())
