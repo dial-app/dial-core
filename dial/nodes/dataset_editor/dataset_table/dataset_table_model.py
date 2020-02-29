@@ -142,6 +142,9 @@ class DatasetTableModel(QAbstractTableModel):
         return None
 
     def index(self, row: int, column: int, parent=QModelIndex()):
+        if row < 0:
+            return QModelIndex()
+
         if column == 0:
             return self.createIndex(row, column, self.__x[row])
 
@@ -149,6 +152,31 @@ class DatasetTableModel(QAbstractTableModel):
             return self.createIndex(row, column, self.__y[row])
 
         return QModelIndex()
+
+    def removeRows(self, row: int, count: int, index=QModelIndex()) -> bool:
+        """
+        Remove rows from the dataset. Rows being deleted must be consecutive.
+        """
+        if not index.isValid():
+            return False
+
+        LOGGER.debug("Remove rows BEGIN: row %s, %s items", row, count)
+        LOGGER.debug("Previous model size: %s", self.rowCount())
+        self.beginRemoveRows(QModelIndex(), row, row + count - 1)
+
+
+        del self.__x[row : row + count]
+        del self.__y[row : row + count]
+        self.__dataset.delete_rows(row, count)
+
+        print(self.__dataset.items(0, 6, op="display"))
+
+        self.endRemoveRows()
+        LOGGER.debug("Remove rows END")
+        LOGGER.debug("New model size: %s", self.rowCount())
+
+        return True
+
 
     def __display_role(self, row: int, column: int):
         """

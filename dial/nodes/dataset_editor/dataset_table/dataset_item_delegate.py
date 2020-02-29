@@ -53,13 +53,14 @@ class DatasetItemDelegate(QStyledItemDelegate):
         Generated pixmaps are saved on cache by the name "dataset_row_col"
         """
 
+        raw_data = index.internalPointer()
+
         # Load Qt pixap from array
         pix = QPixmap()
-        pix_name = f"{id(self)}_{index.row()}_{index.column()}"
+        pix_name = str(id(raw_data))
 
         if not QPixmapCache.find(pix_name, pix):
             # Get image raw array
-            raw_data = index.internalPointer()
 
             # Load pix from raw array
             pix = QPixmap.fromImage(qimage2ndarray.array2qimage(raw_data))

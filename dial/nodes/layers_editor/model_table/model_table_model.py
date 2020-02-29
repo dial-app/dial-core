@@ -339,9 +339,6 @@ class ModelTableModel(QAbstractTableModel):
             destination_child,
         )
 
-        print(source_row)
-        print(destination_child)
-
         self.endMoveRows()
 
         return True
