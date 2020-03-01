@@ -120,6 +120,7 @@ def check_required_modules(requirements: List[Tuple[str, str]]):
     module_imported_name = {
         "Pillow": "PIL",
         "dependency-injector": "dependency_injector",
+        "dial-core": "dial_core",
     }
 
     # Iterate through each module

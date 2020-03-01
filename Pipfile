@@ -4,7 +4,6 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-dial-core = {editable = true,path = "."}
 tensorflow = ">=2.0.0a0"
 dependency-injector = ">=3.14.12"
 
@@ -24,6 +23,7 @@ sphinx-rtd-theme = "*"
 sphinx-autodoc-typehints = "*"
 recommonmark = "*"
 docstr-coverage = "*"
+dial-core = {editable = true,path = "."}
 
 [requires]
 python_version = "3.7"
