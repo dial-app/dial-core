@@ -18,8 +18,3 @@ def test_check_python_version():
 def test_check_python_version_invalid():
     with pytest.raises(SystemError):
         initialization.check_python_version()
-
-
-def test_required_modules():
-    with pytest.raises(ImportError):
-        initialization.check_required_modules([("Inexistent", "0.0.0")])

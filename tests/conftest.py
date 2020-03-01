@@ -1,6 +1,5 @@
 import pytest
 
-from dial_core import __version__
 from dial_core.node_editor import InputPort, Node, OutputPort, Port
 
 collect_ignore = ["setup.py"]
@@ -79,7 +78,3 @@ def input_port_a():
 def output_port_a():
     """Simple input port"""
     return OutputPort(name="a", port_type=int)
-
-
-def pytest_report_header(config):
-    return f"Dial {__version__}"
