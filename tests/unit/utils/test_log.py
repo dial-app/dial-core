@@ -5,7 +5,7 @@
 
 # import pytest
 
-# from dial.utils import log
+# from dial_core.utils import log
 
 # @pytest.fixture
 # def namespace():

@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-from dial.utils import initialization
+from dial_core.utils import initialization
 
 
 @patch.object(sys, "version_info", [3, 6])

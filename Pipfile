@@ -4,14 +4,9 @@ url = "https://pypi.org/simple"
 verify_ssl = true
 
 [packages]
-dial = {editable = true,path = "."}
+dial-core = {editable = true,path = "."}
 tensorflow = ">=2.0.0a0"
-tensorboard = ">=2.0.1"
-pyside2 = ">=5.12.6"
-pillow = ">=6.2.1"
-qimage2ndarray = ">=1.8.0"
 dependency-injector = ">=3.14.12"
-sphinx-autodoc-typehints = "*"
 
 [dev-packages]
 black = "*"
@@ -20,7 +15,6 @@ flake8 = "*"
 mypy = "*"
 pytest = "*"
 pytest-cov = "*"
-pytest-qt = "*"
 pylint = "*"
 tox = "*"
 twine = "*"
@@ -42,5 +36,5 @@ lint = "pipenv run pre-commit run --all"
 tests = "pipenv run pytest --cov"
 build = "pipenv run python setup.py sdist bdist bdist_wheel"
 deploy = "pipenv run twine upload dist/*"
-cloc = "cloc --exclude-dir='.mypy_cache' dial"
-doc-coverage = "pipenv run docstr-coverage -fi dial"
+cloc = "cloc --exclude-dir='.mypy_cache' dial-core"
+doc-coverage = "pipenv run docstr-coverage -fi dial-core"

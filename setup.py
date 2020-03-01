@@ -5,7 +5,7 @@ dial package installer.
 """
 import setuptools
 
-from dial import (
+from dial_core import (
     __author__,
     __description__,
     __license__,
@@ -23,7 +23,7 @@ def read_file(file_path):
 
 
 setuptools.setup(
-    name="dial",
+    name="dial-core",
     packages=setuptools.find_packages(),
     author=__author__,
     version=__version__,

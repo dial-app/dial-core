@@ -3,7 +3,7 @@
 import tkinter
 from unittest.mock import patch
 
-from dial.utils import tkinter as dial_tkinter
+from dial_core.utils import tkinter as dial_tkinter
 
 
 @patch.object(tkinter.messagebox, "showerror")

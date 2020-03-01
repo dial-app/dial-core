@@ -1,2 +1,0 @@
-NodeContentWidget { background: transparent }
-NodeContentWidget QLabel { color: red }

@@ -1,7 +1,7 @@
 import pytest
 
-from dial import __version__
-from dial.node_editor import InputPort, Node, OutputPort, Port
+from dial_core import __version__
+from dial_core.node_editor import InputPort, Node, OutputPort, Port
 
 collect_ignore = ["setup.py"]
 
