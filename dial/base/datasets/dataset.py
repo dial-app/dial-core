@@ -65,6 +65,11 @@ class Dataset(keras.utils.Sequence):
         """
         return self.__shuffled
 
+    def delete_rows(self, start: int, count: int = 1):
+        self.__x = np.delete(self.__x, self.__indexes[start : start + count])
+        self.__y = np.delete(self.__y, self.__indexes[start : start + count])
+        self.__indexes = np.delete(self.__indexes, range(start, start + count - 1))
+
     @shuffled.setter
     def shuffled(self, toggle: bool):
         self.__shuffled = toggle
@@ -100,7 +105,7 @@ class Dataset(keras.utils.Sequence):
         """
         return int(np.ceil(len(self.__x) / float(self.batch_size)))
 
-    def __getitem__(self, idx: int) -> Tuple[List, List]:
+    def __getitem__(self, idx: int) -> Tuple["np.array", "np.array"]:
         """
         Return the batch of dataset items starting on `idx`.
         """
