@@ -11,6 +11,5 @@ __description__ = "A Deep Learning, node-based framework"
 
 __requirements__ = [
     ("tensorflow", ">=2.0.0a0"),
-    ("tensorboard", ">=2.0.1"),
     ("dependency-injector", ">=3.14.12"),
 ]

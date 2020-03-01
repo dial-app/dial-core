@@ -5,7 +5,6 @@ Functions to check that python versions, libraries... used by the program are co
 
 
 import argparse
-import signal
 import sys
 from importlib.util import find_spec
 from typing import List, Tuple
@@ -17,53 +16,27 @@ from dial_core.utils.log import DEBUG, log_on_end
 LOGGER = log.get_logger(__name__)
 
 
-def initialize_application(args: "argparse.Namespace"):
+def initialize(args: "argparse.Namespace"):
     """Performs all the necessary steps before running the application. This checks
-    python version, installed modules, graphics configurations, initialize logging
-    system...
+    python version, installed modules, initialize logging system...
 
     Raises:
         ImportError: If couldn't import a necessary module.
         SystemError: If the Python version isn't compatible.
     """
     try:
-        __non_gui_initialization(args)
-        __gui_initialization(args)
+        # Init logs system
+        log.init_logs(args)
+
+        # Check correct python and module versions
+        check_python_version()
+
+        # Check that all the required modules are installed
+        check_required_modules(__requirements__)
 
     except (ImportError, SystemError) as err:
         LOGGER.exception(err)
-
-        from dial_core.utils import tkinter
-        # TODO: Remove from here
-
-        tkinter.showerror(str(err))
         sys.exit(1)
-
-
-def __non_gui_initialization(args: "argparse.Namespace"):
-    """Performs all the necessary initialization before the GUI initialization."""
-    # Init logs system
-    log.init_logs(args)
-
-    # Check correct python and module versions
-    check_python_version()
-
-    # Check that all the required modules are installed
-    check_required_modules(__requirements__)
-
-    # State the signals handled by this application
-    signal.signal(signal.SIGINT, signal.SIG_DFL)
-
-
-def __gui_initialization(args: "argparse.Namespace"):
-    """Performs all the initialization of the GUI components.
-
-    Args:
-        args: App configuration namespace."""
-    # Initialize PySide2
-    from PySide2.QtWidgets import QApplication
-
-    QApplication()
 
 
 def parse_args(sys_args: List):
