@@ -14,6 +14,4 @@ __requirements__ = [
     ("dependency-injector", ">=3.14.12"),
 ]
 
-from . import datasets, node_editor, project, utils
-
 __all__ = ["datasets", "node_editor", "project", "utils"]
