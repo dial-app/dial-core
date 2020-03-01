@@ -6,7 +6,7 @@ __author__ = "David Afonso"
 __license__ = "GPL"
 __maintainer__ = __author__
 __url__ = "https://github.com/dial-app/dial-core"
-__version__ = "0.4a0"
+__version__ = "0.5a0"
 __description__ = "A Deep Learning, node-based framework"
 
 __requirements__ = [
