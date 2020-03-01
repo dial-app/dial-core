@@ -34,6 +34,7 @@ def initialize_application(args: "argparse.Namespace"):
         LOGGER.exception(err)
 
         from dial_core.utils import tkinter
+        # TODO: Remove from here
 
         tkinter.showerror(str(err))
         sys.exit(1)
@@ -63,9 +64,6 @@ def __gui_initialization(args: "argparse.Namespace"):
     from PySide2.QtWidgets import QApplication
 
     QApplication()
-
-    # TODO: Solve this import issue
-    import dial.nodes  # noqa
 
 
 def parse_args(sys_args: List):
