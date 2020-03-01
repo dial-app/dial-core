@@ -6,5 +6,4 @@ from enum import Enum
 class Dial(Enum):
     """The Dial class contains several identifiers used throughout the application."""
 
-    TypeRole = 20
     KerasLayerListMIME = "application/keras.layer.list"
