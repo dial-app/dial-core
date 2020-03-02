@@ -14,7 +14,7 @@ homepage = "https://github.com/dial-app/dial-core"
 keywords = ["deep-learning"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = ">=3.6,<3.8"
 tensorflow = "2.0.0b1"
 dependency-injector = "^3.15.6"
 
