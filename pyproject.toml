@@ -4,7 +4,7 @@ version = "0.6a1"
 description = "Deep Learning, node-based framework"
 authors = ["David Afonso <davafons@gmail.com>"]
 
-license = "GPLv3"
+license = "GPL-3G0-only"
 
 readme = "README.md"
 
@@ -28,6 +28,12 @@ pylint = "^2.4.4"
 mypy = "^0.761"
 tox = "^3.14.5"
 docstr-coverage = "^1.0.5"
+taskipy = "^1.1.3"
+
+[tool.taskipy.tasks]
+lint = "pre-commit run --all"
+tests = "pytest --cov"
+doc-coverage = "docstr-coverage -fi dial_core"
 
 [build-system]
 requires = ["poetry>=0.12"]

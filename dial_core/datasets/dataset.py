@@ -46,7 +46,7 @@ class Dataset(keras.utils.Sequence):
         # Class attributes
         self.__indexes = np.arange(self.__x.shape[0])
 
-        self.shuffled = shuffled
+        self.shuffled = shuffled  # type: ignore
 
         self.batch_size = batch_size
 
@@ -70,7 +70,7 @@ class Dataset(keras.utils.Sequence):
         self.__y = np.delete(self.__y, self.__indexes[start : start + count])
         self.__indexes = np.delete(self.__indexes, range(start, start + count - 1))
 
-    @shuffled.setter
+    @shuffled.setter  # type: ignore
     def shuffled(self, toggle: bool):
         self.__shuffled = toggle
 

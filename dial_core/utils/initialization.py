@@ -48,7 +48,7 @@ def get_arg_parser() -> "argparse.ArgumentParser":
     Returns:
         An argument parser for this application.
     """
-    parser = argparse.ArgumentParser(prog="dial", description=__description__)
+    parser = argparse.ArgumentParser(prog="dial")
 
     parser.add_argument(
         "-d", "--debug", help="Show debug messages", action="store_true"
