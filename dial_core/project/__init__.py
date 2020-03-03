@@ -5,8 +5,13 @@ The project package provides classes for storing and managing projects: Sets of 
 and configurations that can be stored and loaded.
 """
 
-from .containers import ProjectManagerSingleton
+from .containers import ProjectManagerFactory, ProjectManagerSingleton
 from .project import Project
 from .project_manager import ProjectManager
 
-__all__ = ["Project", "ProjectManager", "ProjectManagerSingleton"]
+__all__ = [
+    "Project",
+    "ProjectManager",
+    "ProjectManagerSingleton",
+    "ProjectManagerFactory",
+]

@@ -24,16 +24,16 @@ class ProjectManager:
     def active(self):
         return self.__active
 
+    def projects_count(self) -> int:
+        """Returns the number of created projects."""
+        return len(self.__projects)
+
     def set_active_project(self, index: int):
-        try:
-            self.__active = self.__projects[index]
+        self.__active = self.__projects[index]
 
-            LOGGER.info(
-                "Active project changed: %s(%s)", index, self.__active,
-            )
-
-        except IndexError:
-            pass
+        LOGGER.info(
+            "Active project changed: %s(%s)", index, self.__active,
+        )
 
     def new_project(self, new_project: "Project" = None):
         if not new_project:

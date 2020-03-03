@@ -2,8 +2,27 @@
 import pytest
 
 from dial_core.node_editor import InputPort, Node, OutputPort, Port
+from dial_core.project import Project, ProjectManager
 
 collect_ignore = ["setup.py"]
+
+
+@pytest.fixture
+def default_project():
+    """Returns a default (empty) project."""
+    return Project()
+
+
+@pytest.fixture
+def project_manager_default_project():
+    """Returns a project used by default by the ProjectManager instances."""
+    return Project(name="TestProject")
+
+
+@pytest.fixture
+def project_manager(project_manager_default_project):
+    """Returns a ProjectManager object."""
+    return ProjectManager(project_manager_default_project)
 
 
 @pytest.fixture

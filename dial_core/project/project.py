@@ -5,5 +5,13 @@ from dial_core.node_editor import Scene
 
 
 class Project:
-    def __init__(self, scene: "Scene" = Scene()):
+    def __init__(self, name: str = "Default Project", scene: "Scene" = Scene()):
+        self.name = name
+        self.file_path = ""
+
         self.__scene = scene
+
+    @property
+    def scene(self):
+        """Returns the nodes scene of the project."""
+        return self.__scene

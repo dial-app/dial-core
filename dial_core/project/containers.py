@@ -9,4 +9,5 @@ import dependency_injector.providers as providers
 from .project import Project
 from .project_manager import ProjectManager
 
+ProjectManagerFactory = providers.Factory(ProjectManager, default_project=Project())
 ProjectManagerSingleton = providers.Singleton(ProjectManager, default_project=Project())
