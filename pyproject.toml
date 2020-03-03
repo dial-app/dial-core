@@ -32,7 +32,7 @@ taskipy = "^1.1.3"
 
 [tool.taskipy.tasks]
 lint = "pre-commit run --all"
-tests = "pytest --cov=dial_core/"
+tests = "pytest --cov=dial_core/ --cov-report term-missing:skip-covered"
 doc-coverage = "docstr-coverage -fi dial_core"
 
 [build-system]

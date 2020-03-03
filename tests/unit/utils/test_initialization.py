@@ -19,6 +19,17 @@ def test_check_python_version_invalid():
         initialization.check_python_version()
 
 
+@patch.object(sys, "version_info", [3, 6])
+def test_initialize():
+    initialization.initialize(initialization.parse_args([]))
+
+
+@patch.object(sys, "version_info", [3, 4])
+def test_initialize_error():
+    with pytest.raises(SystemError):
+        initialization.initialize(initialization.parse_args([]))
+
+
 def test_parser_debug():
     parsed_args = initialization.parse_args([])
 

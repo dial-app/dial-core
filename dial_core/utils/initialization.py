@@ -22,16 +22,11 @@ def initialize(args: "argparse.Namespace"):
         ImportError: If couldn't import a necessary module.
         SystemError: If the Python version isn't compatible.
     """
-    try:
-        # Init logs system
-        log.init_logs(args)
+    # Init logs system
+    log.init_logs(args)
 
-        # Check correct python and module versions
-        check_python_version()
-
-    except (ImportError, SystemError) as err:
-        LOGGER.exception(err)
-        sys.exit(1)
+    # Check correct python and module versions
+    check_python_version()
 
 
 def parse_args(sys_args: List) -> "argparse.Namespace":
