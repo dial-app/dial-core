@@ -9,12 +9,18 @@ if TYPE_CHECKING:
 
 
 class Scene:
+    """The Scene class provides a data container for storing the Nodes that form a graph.
+
+    Attributes:
+        nodes: The list of nodes currently on the scene.
+    """
+
     def __init__(self):
         self.__nodes: List["Node"] = []
 
     @property
     def nodes(self) -> List["Node"]:
-        """Returns all the nodes on the scene."""
+        """Returns a list with all the nodes on the scene."""
         return self.__nodes
 
     @log_on_end(DEBUG, "{node} added to the scene.")

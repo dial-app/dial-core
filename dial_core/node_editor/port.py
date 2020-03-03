@@ -6,6 +6,27 @@ from dial_core.utils.log import DEBUG, ERROR, log_on_end, log_on_error
 
 
 class Port:
+    """The Port class provides a connection point between different nodes.
+
+    A Port object allows two types of connections:
+        * one-to-one: This Port can be only connected to another port.
+        * many-to-many: This Port can be connected to multiple ports, and multiple ports
+        can be connected to this one.
+
+    A Port object also has an associated Type. Two Port objects can only be connected if
+    they share the same Type.
+
+    Attributes:
+        name: The name (identifier) of the port. Can't be changed once the Port is
+            created.
+        port_type: The type of this port. A Port object can only be connected to other
+            Ports that share its same type.
+        connections: Set with all the Ports this port is currently connected to.
+        node: The Node object this Port belongs to, if any.
+        allows_multiple_connections: A boolean option, indicating the type of connection
+        this port allows (one-to-one or many-to-many)
+    """
+
     def __init__(
         self, name: str, port_type: Any, allows_multiple_connections: bool = True
     ):
