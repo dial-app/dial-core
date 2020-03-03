@@ -34,11 +34,14 @@ def initialize(args: "argparse.Namespace"):
         sys.exit(1)
 
 
-def parse_args(sys_args: List):
-    """Parses the system arguments (sys.arv), returning the app configuration.
+def parse_args(sys_args: List) -> "argparse.Namespace":
+    """Parses the system arguments (sys.arg), returning the app configuration.
 
     Args:
         sys_args: List of arguments to parse.
+
+    Returns:
+        A Namespace object (simillar to a dict) with the parsed configuration
     """
     return get_arg_parser().parse_args(sys_args)
 
