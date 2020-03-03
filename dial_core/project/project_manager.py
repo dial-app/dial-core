@@ -21,7 +21,8 @@ class ProjectManager:
         self.__active = self.__projects[0]
 
     @property
-    def active(self):
+    def active(self) -> "Project":
+        """Returns the currently active project."""
         return self.__active
 
     def projects_count(self) -> int:
@@ -29,6 +30,12 @@ class ProjectManager:
         return len(self.__projects)
 
     def set_active_project(self, index: int):
+        """Selects a project from the created ones and make it the active project.
+
+        Raises:
+
+
+        """
         self.__active = self.__projects[index]
 
         LOGGER.info(

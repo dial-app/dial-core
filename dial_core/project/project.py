@@ -5,7 +5,7 @@ from dial_core.node_editor import Scene
 
 
 class Project:
-    def __init__(self, name: str = "Default Project", scene: "Scene" = Scene()):
+    def __init__(self, name: str, scene: "Scene"):
         self.name = name
         self.file_path = ""
 

@@ -6,8 +6,19 @@ Dependency Injection containers.
 
 import dependency_injector.providers as providers
 
+from dial_core.node_editor import DefaultSceneFactory
+
 from .project import Project
 from .project_manager import ProjectManager
 
-ProjectManagerFactory = providers.Factory(ProjectManager, default_project=Project())
-ProjectManagerSingleton = providers.Singleton(ProjectManager, default_project=Project())
+DefaultProject = providers.Factory(
+    Project, name="Default Project", scene=DefaultSceneFactory
+)
+
+ProjectManagerFactory = providers.Factory(
+    ProjectManager, default_project=DefaultProject
+)
+
+ProjectManagerSingleton = providers.Singleton(
+    ProjectManager, default_project=DefaultProject
+)
