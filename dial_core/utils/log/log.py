@@ -53,6 +53,10 @@ def init_logs(args: "argparse.Namespace"):
     get_logger(__name__).debug("Logging system initialized.")
 
 
+def get_log_level():
+    return LOG_LEVEL
+
+
 def add_handler_to_root(handler: "logging.Handler"):
     """
     Add a new handler to the logger defined as ROOT

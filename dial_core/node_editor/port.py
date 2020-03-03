@@ -77,9 +77,7 @@ class Port:
         )
 
     @log_on_end(DEBUG, "{self} connected to {port}")
-    @log_on_error(
-        ERROR, "Error on connection: {e}", on_exceptions=(ValueError), reraise=True
-    )
+    @log_on_error(ERROR, "Error on connection: {e}", on_exceptions=(ValueError))
     def connect_to(self, port: "Port"):
         """Connects the current port to another port.
 

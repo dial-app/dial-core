@@ -4,9 +4,9 @@ from logging import CRITICAL, DEBUG, ERROR, INFO, WARNING
 
 from .log import (
     FORMATTER,
-    LOG_LEVEL,
     LOG_STREAM,
     add_handler_to_root,
+    get_log_level,
     get_logger,
     init_logs,
 )
@@ -19,7 +19,7 @@ __all__ = [
     "INFO",
     "WARNING",
     "FORMATTER",
-    "LOG_LEVEL",
+    "get_log_level",
     "LOG_STREAM",
     "add_handler_to_root",
     "get_logger",
