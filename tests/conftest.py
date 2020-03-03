@@ -1,28 +1,40 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 import pytest
 
-from dial_core.node_editor import InputPort, Node, OutputPort, Port
+from dial_core.node_editor import InputPort, Node, OutputPort, Port, Scene
 from dial_core.project import Project, ProjectManager
 
 collect_ignore = ["setup.py"]
 
 
 @pytest.fixture
-def default_project():
-    """Returns a default (empty) project."""
-    return Project()
+def scene():
+    """Returns an empty, default scene."""
+    return Scene()
 
 
 @pytest.fixture
-def project_manager_default_project():
+def project_a(scene):
+    """Returns a default (empty) project."""
+    return Project(name="ProjectA", scene=scene)
+
+
+@pytest.fixture
+def project_manager_default_scene():
+    """Returns an empty, default scene."""
+    return Scene()
+
+
+@pytest.fixture
+def project_manager_default_project(project_manager_default_scene):
     """Returns a project used by default by the ProjectManager instances."""
-    return Project(name="TestProject")
+    return Project(name="TestProject", scene=project_manager_default_scene)
 
 
 @pytest.fixture
 def project_manager(project_manager_default_project):
     """Returns a ProjectManager object."""
-    return ProjectManager(project_manager_default_project)
+    return ProjectManager(default_project=project_manager_default_project)
 
 
 @pytest.fixture

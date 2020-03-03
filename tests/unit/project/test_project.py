@@ -5,14 +5,14 @@ import pickle
 import pytest
 
 
-def test_project_attributes(default_project):
-    assert hasattr(default_project, "name")
-    assert hasattr(default_project, "file_path")
-    assert hasattr(default_project, "scene")
+def test_project_attributes(project_a):
+    assert hasattr(project_a, "name")
+    assert hasattr(project_a, "file_path")
+    assert hasattr(project_a, "scene")
 
 
-def test_is_pickable(default_project):
+def test_is_pickable(project_a):
     try:
-        pickle.dumps(default_project)
+        pickle.dumps(project_a)
     except pickle.PicklingError:
         pytest.fail("Project is not pickable.")
