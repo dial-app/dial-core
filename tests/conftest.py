@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 import pytest
 
-from dial_core.node_editor import InputPort, Node, OutputPort, Port, Scene
+from dial_core.node_editor import InputPort, Node, NodeFactory, OutputPort, Port, Scene
 from dial_core.project import Project, ProjectManager
 
 collect_ignore = ["setup.py"]
@@ -11,6 +11,12 @@ collect_ignore = ["setup.py"]
 def scene():
     """Returns an empty, default scene."""
     return Scene()
+
+
+@pytest.fixture
+def node_factory():
+    """Returns an empty NodeFactory object."""
+    return NodeFactory()
 
 
 @pytest.fixture

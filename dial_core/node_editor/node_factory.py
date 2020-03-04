@@ -1,12 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING, Type
+from typing import Dict, Type
 
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-if TYPE_CHECKING:
-    from .node import Node
+from .node import Node
 
 
 class NodeFactory(containers.DynamicContainer):
@@ -14,7 +13,8 @@ class NodeFactory(containers.DynamicContainer):
         super().__init__()
 
     @property
-    def nodes(self):
+    def nodes(self) -> Dict[str, "Node"]:
+        """Returns a dictionary with all the registered nodes."""
         return self.providers
 
     def register_node(self, identifier: str, node_type: Type["Node"], *args, **kwargs):
@@ -24,17 +24,14 @@ class NodeFactory(containers.DynamicContainer):
             identifier: Name of the node.
             node_type: Node type.
         """
-        if not node_type:
-            return
+        if not issubclass(node_type, Node):
+            raise TypeError("Registered nodes must be of childs of `Node` class!!")
 
         factory = providers.Factory(node_type, *args, **kwargs)
-        self.register_node_factory(identifier, factory)
+        self.__register_factory(identifier, factory)
 
-    def register_node_factory(self, identifier: str, node_factory: "providers.Factory"):
+    def __register_factory(self, identifier: str, node_factory: "providers.Factory"):
         """Registers a new node factory."""
-        if not node_factory:
-            return
-
         self.providers[identifier] = node_factory
 
     def get_node(self, identifier: str) -> "Node":
@@ -44,6 +41,3 @@ class NodeFactory(containers.DynamicContainer):
     def clear(self):
         """Removes all registered nodes."""
         self.providers.clear()
-
-
-NodeFactorySingleton = providers.Singleton(NodeFactory)
