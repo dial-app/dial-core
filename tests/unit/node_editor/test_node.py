@@ -4,7 +4,16 @@ import pytest
 
 
 def test_title(node_a):
-    assert node_a.title == "a"
+    assert hasattr(node_a, "title")
+
+
+def test_set_title(node_a):
+    node_a.title = "b"
+    assert node_a.title == "b"
+
+
+def test_inner_widget(node_a):
+    assert hasattr(node_a, "inner_widget")
 
 
 def test_add_input_port(node_a, a_single):
