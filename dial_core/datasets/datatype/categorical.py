@@ -20,11 +20,8 @@ class Categorical(DataType):
 
         self.categories = categories
 
-    def process(self, data) -> List[int]:
+    def process(self, data: int) -> List[int]:
         return keras.utils.to_categorical(data, len(self.categories))
 
     def display(self, data: int) -> str:
-        if self.categories is not None:
-            return self.categories[data]
-
-        return str(data)
+        return self.categories[data]
