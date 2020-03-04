@@ -13,6 +13,14 @@ LOGGER = log.get_logger(__name__)
 
 
 class ProjectManager:
+    """
+    The ProjectManager class provides an interface that acts as a container for Project
+    objects, and also has the necessary tools to create and open projects from files in
+    the system.
+
+    Attributes:
+        active: Currently active project.
+    """
     def __init__(self, default_project: "Project"):
         self.__default_project = default_project
 
@@ -22,7 +30,12 @@ class ProjectManager:
 
     @property
     def active(self) -> "Project":
-        """Returns the currently active project."""
+        """Returns the currently active project.
+
+        The active project can be accessed directly by using this property.
+
+        See `set_active_project` to learn how to change the active project.
+        """
         return self.__active
 
     def projects_count(self) -> int:
@@ -30,11 +43,10 @@ class ProjectManager:
         return len(self.__projects)
 
     def set_active_project(self, index: int):
-        """Selects a project from the created ones and make it the active project.
+        """Selects a project from the created ones and makes it the active project.
 
         Raises:
-
-
+            IndexError: If there isn't a project with index `index`.
         """
         self.__active = self.__projects[index]
 
@@ -43,6 +55,11 @@ class ProjectManager:
         )
 
     def new_project(self, new_project: "Project" = None):
+        """Adds a new project to the project manager.
+
+        If not project is specified by the `new_project` argument, a copy of a default
+        project (The one defined on the variable `self.__default_project` will be added)
+        """
         if not new_project:
             new_project = deepcopy(self.__default_project)
 
@@ -51,21 +68,44 @@ class ProjectManager:
         self.set_active_project(self.__projects.index(new_project))
 
     def open_project(self, file_path: str):
+        """Opens a new project from a `.dial` file.
+
+        Then, the project manager will automatically change its active project to the new
+        opened one.
+
+        Returns:
+            The opened project (Which is the same as `project_manager.active`)
+
+        Raises:
+            FileNotFoundError: If the `file_path` is invalid.
+        """
         LOGGER.info("Opening a new project... %s", file_path)
 
         with open(file_path, "rb") as project_file:
             LOGGER.info("Loading project...")
             with Timer() as timer:
-                project_in = pickle.load(project_file)
+                opened_project = pickle.load(project_file)
 
-                self.new_project(project_in)
+                self.new_project(opened_project)
 
             LOGGER.info("Project loaded in %s ms", timer.elapsed())
 
-            project_in.file_path = file_path
+            opened_project.file_path = file_path
             LOGGER.info("New project file path is %s", file_path)
 
+        return opened_project
+
     def save_project(self):
+        """Saves the project on its defined file path.
+
+        The project MUST have a file path. Otherwise, it will throw a ValueError
+        exception.
+
+        For saving a project specifying a new file path, see `save_project_as`.
+
+        Raises:
+            ValueError: If the project doesn't have a `file_path` defined.
+        """
         if not self.__active.file_path:
             raise ValueError("Project doesn't has a file_path set!")
 
@@ -78,6 +118,15 @@ class ProjectManager:
             LOGGER.info("Project saved in %s ms", timer.elapsed())
 
     def save_project_as(self, file_path: str):
+        """Save the project on a new file path.
+
+        Once a project has been saved with `save_project_as`, it can also be saved with
+        `save_project`, which will use the project's file path automatically.
+
+        Important:
+            The new `file_path` will be set as the project file path, replacing any
+            previous paths.
+        """
         self.active.file_path = file_path
         LOGGER.info("New file path for the project: %s", file_path)
 
