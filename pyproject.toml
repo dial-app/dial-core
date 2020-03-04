@@ -21,6 +21,7 @@ dependency-injector = "^3.15.6"
 [tool.poetry.dev-dependencies]
 pytest = "^5.2"
 pytest-cov = "^2.4"
+pre-commit = "^2.1.1"
 black = "^19.10b0"
 isort = "^4.3.21"
 flake8 = "^3.7.9"
