@@ -12,9 +12,6 @@ if TYPE_CHECKING:
 
 
 class Dataset(keras.utils.Sequence):
-    """
-    """
-
     def __init__(
         self,
         x_data: "np.ndarray" = None,
@@ -65,11 +62,6 @@ class Dataset(keras.utils.Sequence):
         """
         return self.__shuffled
 
-    def delete_rows(self, start: int, count: int = 1):
-        self.__x = np.delete(self.__x, self.__indexes[start : start + count])
-        self.__y = np.delete(self.__y, self.__indexes[start : start + count])
-        self.__indexes = np.delete(self.__indexes, range(start, start + count - 1))
-
     @shuffled.setter  # type: ignore
     def shuffled(self, toggle: bool):
         self.__shuffled = toggle
@@ -83,11 +75,16 @@ class Dataset(keras.utils.Sequence):
         self.__shuffled = True
         np.random.shuffle(self.__indexes)
 
+    def delete_rows(self, start: int, count: int = 1):
+        self.__x = np.delete(self.__x, self.__indexes[start : start + count])
+        self.__y = np.delete(self.__y, self.__indexes[start : start + count])
+        self.__indexes = np.delete(self.__indexes, range(start, start + count - 1))
+
     def head(self, n_items: int = 10, op: str = "process") -> Tuple[List, List]:
         """
         Returns the first `n` items on the dataset.
         """
-        return self.items(0, n_items + 1, op)
+        return self.items(0, n_items, op)
 
     def items(self, start: int, end: int, op: str = "process") -> Tuple[List, List]:
         """
@@ -132,7 +129,7 @@ class Dataset(keras.utils.Sequence):
             x_data = [self.x_type.display(element) for element in x_data]
             y_data = [self.y_type.display(element) for element in y_data]
         else:
-            x_data = [self.x_type.process(element) / 255 for element in x_data]
+            x_data = [self.x_type.process(element) for element in x_data]
             y_data = [self.y_type.process(element) for element in y_data]
 
         return (x_data, y_data)

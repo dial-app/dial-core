@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from abc import ABCMeta, abstractmethod
-from typing import List, Tuple
+from typing import Tuple
 
 from tensorflow.keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
@@ -45,7 +45,7 @@ class DatasetLoader(metaclass=ABCMeta):
         return train_dataset, test_dataset
 
     @abstractmethod
-    def _load_data(self):
+    def _load_data(self):  # pragma: no cover
         """
         Return the train/test pairs.
         """
@@ -64,10 +64,10 @@ class MnistLoader(DatasetLoader):
             "MNIST",
             "Handwritten digit numbers",
             datatype.ImageArray(),
-            datatype.Categorical(["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]),
+            datatype.Categorical([str(i) for i in range(0, 10)]),
         )
 
-    def _load_data(self):
+    def _load_data(self):  # pragma: no cover
         return mnist.load_data()
 
 
@@ -80,7 +80,7 @@ class FashionMnistLoader(DatasetLoader):
 
     def __init__(self):
         super().__init__(
-            "Fashion-MNIST",
+            "Fashion MNIST",
             "Categorized set of clothing images",
             datatype.ImageArray(),
             datatype.Categorical(
@@ -99,15 +99,8 @@ class FashionMnistLoader(DatasetLoader):
             ),
         )
 
-    def _load_data(self):
+    def _load_data(self):  # pragma: no cover
         return fashion_mnist.load_data()
-
-    @property
-    def categories(self) -> List[str]:
-        """
-        Return the list of classes identified by Fashion-MNIST
-        """
-        return self.y_type.categories
 
 
 class Cifar10Loader(DatasetLoader):
@@ -138,15 +131,8 @@ class Cifar10Loader(DatasetLoader):
             ),
         )
 
-    def _load_data(self):
+    def _load_data(self):  # pragma: no cover
         return cifar10.load_data()
-
-    @property
-    def categories(self) -> List[str]:
-        """
-        Return the list of classes identified by CIFAR10
-        """
-        return self.y_type.categories
 
 
 class BostonHousingLoader(DatasetLoader):
@@ -162,5 +148,5 @@ class BostonHousingLoader(DatasetLoader):
             datatype.Numeric(),
         )
 
-    def _load_data(self):
+    def _load_data(self):  # pragma: no cover
         return boston_housing.load_data()
