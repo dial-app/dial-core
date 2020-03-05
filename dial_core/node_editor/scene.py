@@ -27,3 +27,12 @@ class Scene:
     def add_node(self, node: "Node"):
         """Adds a new node to the scene."""
         self.nodes.append(node)
+
+    def __iter__(self):
+        return iter(self.__nodes)
+
+    def __eq__(self, other):
+        if isinstance(other, Scene):
+            return self.nodes == other.nodes
+
+        return False

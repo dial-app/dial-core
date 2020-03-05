@@ -11,3 +11,8 @@ def test_add_node(scene, node_a):
     scene.add_node(node_a)
 
     assert node_a in scene.nodes
+
+
+def test_eq(scene):
+    assert scene == scene
+    assert not scene == 123

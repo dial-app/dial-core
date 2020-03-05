@@ -140,6 +140,15 @@ class Node:
 
         return True
 
+    def __eq__(self, other):
+        if isinstance(other, Node):
+            return (
+                self.inputs == other.inputs
+                and self.outputs == other.outputs
+                and self.title == other.title
+                and self.inner_widget == other.inner_widget
+            )
+
     def __str__(self):
         """Retuns the string representation of the Port object."""
         return f'{type(self).__name__} "{self.title}" '
