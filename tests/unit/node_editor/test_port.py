@@ -3,6 +3,14 @@
 import pytest
 
 
+def test_port_attributes(port_int_a):
+    assert hasattr(port_int_a, "name")
+    assert hasattr(port_int_a, "port_type")
+    assert hasattr(port_int_a, "connections")
+    assert hasattr(port_int_a, "node")
+    assert hasattr(port_int_a, "allows_multiple_connections")
+
+
 def test_ports_compatible(port_int_a, port_int_b, port_str):
     assert port_int_a.is_compatible_with(port_int_b)
     assert port_int_b.is_compatible_with(port_int_a)
