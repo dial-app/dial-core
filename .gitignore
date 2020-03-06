@@ -114,3 +114,4 @@ tags
 
 # Custom
 *.dial
+*.pickle
