@@ -25,12 +25,10 @@ def test_save_and_load_project():
     project_manager.save_project_as("foo.dial")
 
     # Load project from memory
-    project_manager.open_project("foo.dial")
-
-    new_active_project = project_manager.active
+    opened_project = project_manager.open_project("foo.dial")
 
     # The last and new projects are different...
-    assert active_project is not new_active_project
+    assert active_project is not opened_project
 
     # ...but the scenes content should be the same
-    assert active_project.scene == new_active_project.scene
+    assert active_project == opened_project

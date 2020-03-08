@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from copy import deepcopy
+
 
 def test_scene_nodes(scene):
     assert hasattr(scene, "nodes")
@@ -14,5 +16,5 @@ def test_add_node(scene, node_a):
 
 
 def test_eq(scene):
-    assert scene == scene
-    assert not scene == 123
+    copy_scene = deepcopy(scene)
+    assert scene == copy_scene

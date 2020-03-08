@@ -1,9 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from unittest.mock import patch, mock_open, Mock
-import dial_core
+from unittest.mock import mock_open, patch
 
 import pytest
+
+import dial_core
 
 
 def test_default_project(project_manager, project_manager_default_project):
@@ -13,10 +14,16 @@ def test_default_project(project_manager, project_manager_default_project):
     assert project_manager.active.name == project_manager_default_project.name
 
 
-def test_add_new_project(project_manager, project_a):
-    project_manager.new_project(project_a)
+def test_add_project(project_manager, project_a):
+    project_manager.add_project(project_a)
 
-    assert project_manager.active.name == project_a.name
+    assert project_manager.active == project_a
+
+
+def test_new_project(project_manager, project_manager_default_project):
+    project_manager.new_project()
+
+    assert project_manager.active == project_manager_default_project
 
 
 def test_projects_count(project_manager):
@@ -30,7 +37,7 @@ def test_projects_count(project_manager):
 def test_set_active_project(
     project_manager, project_manager_default_project, project_a
 ):
-    project_manager.new_project(project_a)
+    project_manager.add_project(project_a)
 
     project_manager.set_active_project(0)
 
@@ -61,6 +68,7 @@ def test_open_project(mock_pickle_load, mock_file_open, project_manager):
     # Check that the new opened project is the active project
     assert project_manager.active == opened_project
 
+
 @patch("builtins.open", new_callable=mock_open)
 def test_open_inexistent_project(mock_file_open, project_manager):
     mock_file_open.side_effect = FileNotFoundError
@@ -78,8 +86,7 @@ def test_save_project(mock_pickle_dump, mock_file_open, project_manager):
 
     project_manager.save_project()
 
-    mock_pickle_dump.assert_called_once_with(project_manager.active,
-                                             opened_file_binary)
+    mock_pickle_dump.assert_called_once_with(project_manager.active, opened_file_binary)
 
 
 def test_save_project_without_file_path(project_manager):

@@ -32,7 +32,4 @@ class Scene:
         return iter(self.__nodes)
 
     def __eq__(self, other):
-        if isinstance(other, Scene):
-            return self.nodes == other.nodes
-
-        return False
+        return self.nodes == other.nodes

@@ -21,6 +21,7 @@ class ProjectManager:
     Attributes:
         active: Currently active project.
     """
+
     def __init__(self, default_project: "Project"):
         self.__default_project = default_project
 
@@ -42,8 +43,11 @@ class ProjectManager:
         """Returns the number of created projects."""
         return len(self.__projects)
 
-    def set_active_project(self, index: int):
+    def set_active_project(self, index: int) -> "Project":
         """Selects a project from the created ones and makes it the active project.
+
+        Returns:
+            The new active project.
 
         Raises:
             IndexError: If there isn't a project with index `index`.
@@ -54,24 +58,36 @@ class ProjectManager:
             "Active project changed: %s(%s)", index, self.__active,
         )
 
-    def new_project(self, new_project: "Project" = None):
-        """Adds a new project to the project manager.
+        return self.__active
 
-        If not project is specified by the `new_project` argument, a copy of a default
-        project (The one defined on the variable `self.__default_project` will be added)
+    def new_project(self) -> "Project":
+        """Adds a new default project to the project manager.
+
+        A copy of a default project (The one defined on the variable
+        `self.__default_project` will be added)
+
+        Returns:
+            The recently added active project
         """
-        if not new_project:
-            new_project = deepcopy(self.__default_project)
+        new_project = deepcopy(self.__default_project)
 
-        self.__projects.append(new_project)
+        return self.add_project(new_project)
 
-        self.set_active_project(self.__projects.index(new_project))
+    def add_project(self, project: "Project") -> "Project":
+        """Adds a project to the project manager and makes it the new active project.
 
-    def open_project(self, file_path: str):
+        Returns:
+            The recently added active project.
+        """
+        self.__projects.append(project)
+
+        return self.set_active_project(self.__projects.index(project))
+
+    def open_project(self, file_path: str) -> "Project":
         """Opens a new project from a `.dial` file.
 
-        Then, the project manager will automatically change its active project to the new
-        opened one.
+        Then, the project manager will automatically change its active project to the
+        new opened one.
 
         Returns:
             The opened project (Which is the same as `project_manager.active`)
@@ -86,7 +102,7 @@ class ProjectManager:
             with Timer() as timer:
                 opened_project = pickle.load(project_file)
 
-                self.new_project(opened_project)
+                self.add_project(opened_project)
 
             LOGGER.info("Project loaded in %s ms", timer.elapsed())
 

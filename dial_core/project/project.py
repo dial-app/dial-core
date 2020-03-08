@@ -1,7 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from copy import deepcopy
-
 from dial_core.node_editor import Scene
 
 
@@ -16,3 +14,10 @@ class Project:
     def scene(self):
         """Returns the nodes scene of the project."""
         return self.__scene
+
+    def __eq__(self, other):
+        return (
+            self.name == other.name
+            and self.file_path == other.file_path
+            and self.scene == other.scene
+        )
