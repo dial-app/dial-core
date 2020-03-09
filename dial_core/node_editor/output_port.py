@@ -32,3 +32,13 @@ class OutputPort(Port):
         """Starts processing each connected node."""
         for port in self.connections:
             port.node.process()
+
+    def __setstate__(self, new_state):
+        self.output_generator = new_state["output_generator"]
+
+    def __reduce__(self):
+        return (
+            OutputPort,
+            (self.name, self.port_type),
+            {"output_generator": self.output_generator},
+        )

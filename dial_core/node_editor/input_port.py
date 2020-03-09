@@ -30,3 +30,9 @@ class InputPort(Port):
     def receive(self):
         """Gets the output value of the connected OutputPort."""
         return self.port_connected_to.get_output_value()
+
+    def __reduce__(self):
+        return (
+            InputPort,
+            (self.name, self.port_type),
+        )

@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from copy import deepcopy
+
 import pytest
 
 
@@ -92,3 +94,9 @@ def test_node_connect_to_inexistent(node_a, node_b, a_single):
 
     with pytest.raises(KeyError):
         node_a.outputs["a_single"].connect_to(node_b.inputs["doesnt_exists"])
+
+
+def test_node_eq(node_a):
+    copy_node_a = deepcopy(node_a)
+
+    assert node_a == copy_node_a

@@ -135,6 +135,17 @@ class Port:
 
         self.__connected_to.clear()
 
+    def __setstate__(self, new_state):
+        self.__connected_to = new_state["connected_to"]
+        self.node = new_state["node"]
+
+    def __reduce__(self):
+        return (
+            Port,
+            (self.name, self.port_type, self.allows_multiple_connections),
+            {"connected_to": self.__connected_to, "node": self.node},
+        )
+
     def __str__(self):
         """Retuns the string representation of the Port object."""
         return f'{type(self).__name__} "{self.name}" [{self.port_type.__str__}]'
