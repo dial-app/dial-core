@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Dict, Optional
 
 from dial_core.utils.log import DEBUG, log_on_end
 
@@ -33,12 +33,16 @@ class OutputPort(Port):
         for port in self.connections:
             port.node.process()
 
-    def __setstate__(self, new_state):
+    def __getstate__(self) -> Dict[str, Any]:
+        state = super().__getstate__()
+        state["output_generator"] = self.output_generator
+
+        return state
+
+    def __setstate__(self, new_state: Dict[str, Any]):
+        super().__setstate__(new_state)
+
         self.output_generator = new_state["output_generator"]
 
     def __reduce__(self):
-        return (
-            OutputPort,
-            (self.name, self.port_type),
-            {"output_generator": self.output_generator},
-        )
+        return (OutputPort, (self.name, self.port_type), self.__getstate__())

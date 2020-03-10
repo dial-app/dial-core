@@ -135,6 +135,9 @@ class Port:
 
         self.__connected_to.clear()
 
+    def __getstate__(self):
+        return {"connected_to": self.__connected_to, "node": self.node}
+
     def __setstate__(self, new_state):
         self.__connected_to = new_state["connected_to"]
         self.node = new_state["node"]
@@ -143,8 +146,19 @@ class Port:
         return (
             Port,
             (self.name, self.port_type, self.allows_multiple_connections),
-            {"connected_to": self.__connected_to, "node": self.node},
+            self.__getstate__(),
         )
+
+    def __eq__(self, other):
+        return (
+            isinstance(other, self.__class__)
+            and self.name == other.name
+            and self.port_type == other.port_type
+            and self.allows_multiple_connections == other.allows_multiple_connections
+        )
+
+    def __hash__(self):
+        return hash((self.name, self.port_type, self.allows_multiple_connections))
 
     def __str__(self):
         """Retuns the string representation of the Port object."""

@@ -17,12 +17,15 @@ def test_input_port_attributes(input_port_a):
     assert hasattr(input_port_a, "port_type")
 
 
-# TODO: Mock open call to avoid creating a file
-def test_pickle_input_port(input_port_a):
-    with open("input_port_a.pickle", "wb") as binary_file:
-        pickle.dump(input_port_a, binary_file, protocol=pickle.HIGHEST_PROTOCOL)
+def test_pickable(input_port_a, output_port_a):
+    input_port_a.connect_to(output_port_a)
 
-    with open("input_port_a.pickle", "rb") as binary_file:
-        loaded_input_port_a = pickle.load(binary_file)
+    assert output_port_a in input_port_a.connections
 
-        test_input_port_attributes(loaded_input_port_a)
+    obj = pickle.dumps(input_port_a)
+    loaded_input_port_a = pickle.loads(obj)
+
+    assert loaded_input_port_a == input_port_a
+
+    assert loaded_input_port_a.connections == input_port_a.connections
+    assert output_port_a in loaded_input_port_a.connections

@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import pickle
 from copy import deepcopy
 
 import pytest
@@ -100,3 +101,18 @@ def test_node_eq(node_a):
     copy_node_a = deepcopy(node_a)
 
     assert node_a == copy_node_a
+
+
+def test_pickable(node_a, input_port_a, output_port_a):
+    node_a.add_input_port(input_port_a)
+    node_a.add_output_port(output_port_a)
+
+    assert input_port_a in node_a.inputs.values()
+    assert output_port_a in node_a.outputs.values()
+
+    obj = pickle.dumps(node_a)
+    loaded_node_a = pickle.loads(obj)
+
+    assert loaded_node_a == node_a
+    assert input_port_a in loaded_node_a.inputs.values()
+    assert output_port_a in loaded_node_a.outputs.values()

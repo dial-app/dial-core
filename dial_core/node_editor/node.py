@@ -149,16 +149,15 @@ class Node:
                 and self.inner_widget == other.inner_widget
             )
 
+    def __getstate__(self):
+        return {"inputs": self.__inputs, "outputs": self.__outputs}
+
     def __setstate__(self, new_state):
         self.__inputs = new_state["inputs"]
         self.__outputs = new_state["outputs"]
 
     def __reduce__(self):
-        return (
-            Node,
-            (self.__title, self.__inner_widget),
-            {"inputs": self.__inputs, "outputs": self.__outputs},
-        )
+        return (Node, (self.__title, self.__inner_widget), self.__getstate__())
 
     def __str__(self):
         """Retuns the string representation of the Port object."""

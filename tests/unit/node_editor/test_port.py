@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import pickle
+
 import pytest
 
 
@@ -145,3 +147,19 @@ def test_clear_port_connections(a_multi, b_multi, c_multi):
     assert len(a_multi.connections) == 0
     assert a_multi not in b_multi.connections
     assert a_multi not in c_multi.connections
+
+
+def test_pickable(a_single, b_single):
+    a_single.connect_to(b_single)
+    assert b_single in a_single.connections
+
+    obj = pickle.dumps(a_single)
+    loaded_a_single = pickle.loads(obj)
+
+    test_port_attributes(loaded_a_single)
+    assert loaded_a_single == a_single
+    assert loaded_a_single.connections == a_single.connections
+
+    loaded_b_single = list(loaded_a_single.connections)[0]
+    assert loaded_b_single == b_single
+    assert loaded_b_single.connections == b_single.connections

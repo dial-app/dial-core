@@ -2,8 +2,6 @@
 
 import pickle
 
-import pytest
-
 
 def test_project_attributes(project_a):
     assert hasattr(project_a, "name")
@@ -11,8 +9,9 @@ def test_project_attributes(project_a):
     assert hasattr(project_a, "scene")
 
 
-def test_is_pickable(project_a):
-    try:
-        pickle.dumps(project_a)
-    except pickle.PicklingError:
-        pytest.fail("Project is not pickable.")
+def test_pickable(project_a):
+    obj = pickle.dumps(project_a)
+
+    loaded_project_a = pickle.loads(obj)
+
+    assert loaded_project_a == project_a
