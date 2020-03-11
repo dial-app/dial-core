@@ -24,8 +24,8 @@ def test_eq(scene):
 def test_pickable(scene, node_a, node_b, input_port_a, output_port_a):
     input_port_a.connect_to(output_port_a)
 
-    node_a.add_output_port(output_port_a)
-    node_b.add_input_port(input_port_a)
+    node_b.add_port(input_port_a)
+    node_a.add_port(output_port_a)
 
     scene.add_node(node_a)
     scene.add_node(node_b)

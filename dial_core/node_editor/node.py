@@ -1,12 +1,13 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING, Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from dial_core.utils.log import DEBUG, log_on_end
 
+from .input_port import InputPort
+from .output_port import OutputPort
+
 if TYPE_CHECKING:
-    from .input_port import InputPort
-    from .output_port import OutputPort
     from .port import Port
 
 
@@ -53,21 +54,52 @@ class Node:
         for output_port in self.outputs.values():
             output_port.propagate()
 
-    def add_input_port(self, input_port: "InputPort"):
-        """Adds a new input port to the list of ports.
+    def add_input_port(self, name: str, port_type: Any) -> "InputPort":
+        """Creates a new input port and adds it to the list of ports.
 
         Args:
-            input_port: Port object added to the input ports list.
-        """
-        self.__add_port_to(self.inputs, input_port)
+            name: Name of the port.
+            port_type: Type of the port.
 
-    def add_output_port(self, output_port: "OutputPort"):
-        """Adds a new output port to the list of ports.
+        Retuns:
+            The added InputPort instance.
+        """
+        return self.__add_port_to(self.inputs, InputPort(name, port_type))
+
+    def add_output_port(self, name: str, port_type: Any) -> "OutputPort":
+        """Creates a new output port and adds it to the list of ports.
 
         Args:
-            output_port: Port object added to the output ports list.
+            name: Name of the port.
+            port_type: Type of the port.
+
+        Retuns:
+            The added InputPort instance.
         """
-        self.__add_port_to(self.outputs, output_port)
+        return self.__add_port_to(self.outputs, OutputPort(name, port_type))
+
+    def add_port(
+        self, port: Union["InputPort", "OutputPort"]
+    ) -> Union["InputPort", "OutputPort"]:
+        """Adds a port instance to this node.
+
+        Important:
+            The port to add must be a child of `InputPort` or `OutputPort`. Otherwise,
+            it won't be added and a `TypeError` exception will be raised.
+
+        Retuns:
+            The port instance added.
+
+        Raises:
+            TypeError: If the `port` argument passed is not a chid of `InputPort` or
+            `OutputPort`
+        """
+        if isinstance(port, InputPort):
+            return self.__add_port_to(self.inputs, port)
+        elif isinstance(port, OutputPort):
+            return self.__add_port_to(self.outputs, port)
+        else:
+            raise TypeError("Port {port} must be of type InputPort or OutputPort.")
 
     def remove_input_port(self, port_name: str):
         """Removes an input port from the list of input ports.
@@ -102,7 +134,7 @@ class Node:
             )
 
     @log_on_end(DEBUG, "{port} added to {self}")
-    def __add_port_to(self, ports_dict: Dict[str, "Port"], port: "Port"):
+    def __add_port_to(self, ports_dict: Dict[str, "Port"], port: "Port") -> "Port":
         """Adds a port to a dictionary of ports.
 
         When a port is added, a reference to this Node is added (`port.node = self`)
@@ -110,9 +142,14 @@ class Node:
         Args:
             ports_dict: Dictionary of all the ports.
             port: Port object to add.
+
+        Returns:
+            The added port instance.
         """
         ports_dict[port.name] = port
         port.node = self
+
+        return port
 
     @log_on_end(DEBUG, "{port_name} removed from {self}")
     def __remove_port_from(self, ports_dict: Dict[str, "Port"], port_name: str) -> bool:

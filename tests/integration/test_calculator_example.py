@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from dial_core.node_editor import InputPort, Node, OutputPort
+from dial_core.node_editor import Node
 
 
 class ValueNode(Node):
@@ -8,7 +8,7 @@ class ValueNode(Node):
         super().__init__("Value Node")
 
         # Port configuration
-        self.add_output_port(OutputPort("value", port_type=int))
+        self.add_output_port(name="value", port_type=int)
         self.outputs["value"].output_generator = self.return_value
 
         # Attributes
@@ -22,10 +22,10 @@ class AddNode(Node):
     def __init__(self):
         super().__init__("Addition Node")
 
-        self.add_input_port(InputPort("op1", port_type=int))
-        self.add_input_port(InputPort("op2", port_type=int))
+        self.add_input_port(name="op1", port_type=int)
+        self.add_input_port(name="op2", port_type=int)
 
-        self.add_output_port(OutputPort("result", port_type=int))
+        self.add_output_port(name="result", port_type=int)
         self.outputs["result"].output_generator = self.add_ops
 
     def add_ops(self):
@@ -42,9 +42,9 @@ class TypeConversionNode(Node):
         self.input_type = input_type
         self.output_type = output_type
 
-        self.add_input_port(InputPort("input", port_type=input_type))
+        self.add_input_port(name="input", port_type=input_type)
 
-        self.add_output_port(OutputPort("output", port_type=output_type))
+        self.add_output_port(name="output", port_type=output_type)
         self.outputs["output"].output_generator = self.convert_type
 
     def convert_type(self):
@@ -55,7 +55,7 @@ class PrintNode(Node):
     def __init__(self):
         super().__init__("Print Node")
 
-        self.add_input_port(InputPort("value", port_type=str))
+        self.add_input_port(name="value", port_type=str)
 
     def process(self):
         super().process()

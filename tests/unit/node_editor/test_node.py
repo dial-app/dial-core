@@ -19,82 +19,100 @@ def test_inner_widget(node_a):
     assert hasattr(node_a, "inner_widget")
 
 
-def test_add_input_port(node_a, a_single):
-    node_a.add_input_port(a_single)
+def test_add_input_port(node_a):
+    input_port = node_a.add_input_port(name="input_port", port_type=int)
 
-    assert node_a.inputs["a_single"] == a_single
-    assert a_single not in node_a.outputs.values()
+    assert node_a.inputs["input_port"] == input_port
+    assert input_port in node_a.inputs.values()
+    assert input_port not in node_a.outputs.values()
 
-    assert a_single.node is node_a
-
-
-def test_add_output_port(node_a, a_single):
-    node_a.add_output_port(a_single)
-
-    assert node_a.outputs["a_single"] == a_single
-    assert a_single not in node_a.inputs.values()
-
-    assert a_single.node is node_a
+    assert input_port.node is node_a
 
 
-def test_remove_input_port(node_a, a_single):
-    node_a.add_input_port(a_single)
+def test_add_output_port(node_a):
+    output_port = node_a.add_output_port(name="output_port", port_type=int)
 
-    node_a.remove_input_port("a_single")
-    assert a_single not in node_a.inputs
+    assert node_a.outputs["output_port"] == output_port
+    assert output_port in node_a.outputs.values()
+    assert output_port not in node_a.inputs.values()
 
-    assert a_single.node is None
+    assert output_port.node is node_a
 
 
-def test_remove_inexistent_input_port(node_a, a_single):
+def test_add_port(node_a, input_port_a, output_port_a):
+    node_a.add_port(input_port_a)
+    node_a.add_port(output_port_a)
+
+    assert node_a.inputs["a"] == input_port_a
+    assert node_a.outputs["a"] == output_port_a
+
+    assert input_port_a.node is node_a
+    assert output_port_a.node is node_a
+
+
+def test_add_not_port(node_a):
+    with pytest.raises(TypeError):
+        node_a.add_port("foo")
+
+
+def test_remove_input_port(node_a, input_port_a):
+    node_a.add_port(input_port_a)
+
+    node_a.remove_input_port("a")
+    assert input_port_a not in node_a.inputs
+
+    assert input_port_a.node is None
+
+
+def test_remove_inexistent_input_port(node_a):
     with pytest.raises(ValueError):
         node_a.remove_input_port("not_exists")
 
 
-def test_remove_output_port(node_a, a_single):
-    node_a.add_output_port(a_single)
+def test_remove_output_port(node_a, output_port_a):
+    node_a.add_port(output_port_a)
 
-    node_a.remove_output_port("a_single")
-    assert a_single not in node_a.outputs
+    node_a.remove_output_port("a")
+    assert output_port_a not in node_a.outputs
 
-    assert a_single.node is None
+    assert output_port_a.node is None
 
 
-def test_remove_inexistent_output_port(node_a, a_single):
+def test_remove_inexistent_output_port(node_a):
     with pytest.raises(ValueError):
         node_a.remove_output_port("not_exists")
 
 
-def test_remove_connected_port(node_a, a_single, b_single):
-    a_single.connect_to(b_single)
+def test_remove_connected_port(node_a, input_port_a, output_port_a):
+    input_port_a.connect_to(output_port_a)
 
-    node_a.add_input_port(a_single)
+    node_a.add_port(input_port_a)
 
-    assert a_single in b_single.connections
-    assert b_single in a_single.connections
+    assert input_port_a in output_port_a.connections
+    assert output_port_a in input_port_a.connections
 
-    node_a.remove_input_port("a_single")
+    node_a.remove_input_port("a")
 
-    assert a_single not in b_single.connections
-    assert b_single not in a_single.connections
+    assert input_port_a not in output_port_a.connections
+    assert output_port_a not in input_port_a.connections
 
 
-def test_node_connect_to_node(node_a, node_b, a_single, b_single):
-    node_a.add_output_port(a_single)
-    node_b.add_input_port(b_single)
+def test_node_connect_to_node(node_a, node_b, input_port_a, output_port_a):
+    node_a.add_port(output_port_a)
+    node_b.add_port(input_port_a)
 
-    node_a.outputs["a_single"].connect_to(node_b.inputs["b_single"])
+    node_a.outputs["a"].connect_to(node_b.inputs["a"])
 
     # Assert the two ports are connected
-    assert a_single in b_single.connections
-    assert b_single in a_single.connections
+    assert input_port_a in output_port_a.connections
+    assert output_port_a in input_port_a.connections
 
 
-def test_node_connect_to_inexistent(node_a, node_b, a_single):
-    node_a.add_output_port(a_single)
+def test_node_connect_to_inexistent(node_a, node_b, output_port_a):
+    node_a.add_port(output_port_a)
 
     with pytest.raises(KeyError):
-        node_a.outputs["a_single"].connect_to(node_b.inputs["doesnt_exists"])
+        node_a.outputs["a"].connect_to(node_b.inputs["doesnt_exists"])
 
 
 def test_node_eq(node_a):
@@ -104,8 +122,8 @@ def test_node_eq(node_a):
 
 
 def test_pickable(node_a, input_port_a, output_port_a):
-    node_a.add_input_port(input_port_a)
-    node_a.add_output_port(output_port_a)
+    node_a.add_port(input_port_a)
+    node_a.add_port(output_port_a)
 
     assert input_port_a in node_a.inputs.values()
     assert output_port_a in node_a.outputs.values()
