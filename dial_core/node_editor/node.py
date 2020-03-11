@@ -27,7 +27,7 @@ class Node:
 
     @title.setter
     def title(self, title: str):
-        """Sets a new title for the node. Emits the `title_changed` signal.
+        """Sets a new title for the node.
 
         Emits:
             title_changed
