@@ -48,14 +48,6 @@ class Dataset(keras.utils.Sequence):
         self.batch_size = batch_size
 
     @property
-    def input_shape(self) -> Tuple:
-        return self.x_type.process(self.__x[0]).shape
-
-    @property
-    def output_shape(self) -> Tuple:
-        return self.y_type.process(self.__y[0]).shape
-
-    @property
     def shuffled(self) -> bool:
         """
         Check if the dataset is shuffled (dataset items randomly sorted)
@@ -75,25 +67,27 @@ class Dataset(keras.utils.Sequence):
         self.__shuffled = True
         np.random.shuffle(self.__indexes)
 
-    def delete_rows(self, start: int, count: int = 1):
-        self.__x = np.delete(self.__x, self.__indexes[start : start + count])
-        self.__y = np.delete(self.__y, self.__indexes[start : start + count])
-        self.__indexes = np.delete(self.__indexes, range(start, start + count - 1))
+    def delete_rows(self, start: int, n: int = 1):
+        self.__x = np.delete(self.__x, self.__indexes[start : start + n])
+        self.__y = np.delete(self.__y, self.__indexes[start : start + n])
+        self.__indexes = np.delete(self.__indexes, range(start, start + n - 1))
 
-    def head(self, n_items: int = 10, op: str = "process") -> Tuple[List, List]:
+    def head(self, n: int = 10) -> Tuple[List, List]:
         """
         Returns the first `n` items on the dataset.
         """
-        return self.items(0, n_items, op)
+        return self.items(0, n)
 
-    def items(self, start: int, end: int, op: str = "process") -> Tuple[List, List]:
+    def items(self, start: int, end: int) -> Tuple["np.array", "np.array"]:
         """
         Return the `n` elements between start and end as a tuple of (x, y) items
         Range is EXCLUSIVE [start, end)
         """
+        start = max(start, 0)
+        end = min(end, len(self.__indexes))
         indexes = self.__indexes[start:end]
 
-        x_set, y_set = self.__preprocess_data(self.__x[indexes], self.__y[indexes], op)
+        x_set, y_set = self.__preprocess_data(self.__x[indexes], self.__y[indexes])
         return x_set, y_set
 
     def __len__(self) -> int:
@@ -104,32 +98,27 @@ class Dataset(keras.utils.Sequence):
 
     def __getitem__(self, idx: int) -> Tuple["np.array", "np.array"]:
         """
-        Return the batch of dataset items starting on `idx`.
+        Return the batch of items starting on `idx`.
         """
-        batch_indexes = self.__indexes[
-            idx * self.batch_size : (idx + 1) * self.batch_size
-        ]
+        batch_start = idx * self.batch_size
+        batch_end = (idx + 1) * self.batch_size
+        batch_indexes = self.__indexes[batch_start:batch_end]
 
         batch_x = self.__x[batch_indexes]
         batch_y = self.__y[batch_indexes]
 
         batch_x, batch_y = self.__preprocess_data(batch_x, batch_y)
 
-        return np.array(batch_x), np.array(batch_y)
+        return batch_x, batch_y
 
     def __preprocess_data(
-        self, x_data: List, y_data: List, op: str = "process"
-    ) -> Tuple[List, List]:
+        self, x_data: "np.array", y_data: "np.array"
+    ) -> Tuple["np.array", "np.array"]:
         """
         Preprocess the data. For example, if the image is a path to a file, load it and
         return the corresponding array.
         """
-
-        if op == "display":
-            x_data = [self.x_type.display(element) for element in x_data]
-            y_data = [self.y_type.display(element) for element in y_data]
-        else:
-            x_data = [self.x_type.process(element) for element in x_data]
-            y_data = [self.y_type.process(element) for element in y_data]
+        x_data = np.array([self.x_type.process(element) for element in x_data])
+        y_data = np.array([self.y_type.process(element) for element in y_data])
 
         return (x_data, y_data)
