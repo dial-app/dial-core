@@ -1,26 +1,21 @@
-dial\_core.datasets package
-===========================
-
-Subpackages
------------
+dial\_core.datasets
+===================
 
 .. toctree::
-
    dial_core.datasets.datatype
 
-Submodules
-----------
+dial\_core.datasets.dataset
+---------------------------
 
-.. toctree::
+.. automodule:: dial_core.datasets.dataset
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   dial_core.datasets.container
-   dial_core.datasets.dataset
-   dial_core.datasets.dataset_loader
+dial\_core.datasets.dataset\_loader
+-----------------------------------
 
-Module contents
----------------
-
-.. automodule:: dial_core.datasets
+.. automodule:: dial_core.datasets.dataset_loader
    :members:
    :undoc-members:
    :show-inheritance:

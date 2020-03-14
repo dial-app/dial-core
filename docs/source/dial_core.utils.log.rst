@@ -1,18 +1,18 @@
-dial\_core.utils.log package
-============================
+dial\_core.utils.log
+====================
 
-Submodules
-----------
+dial\_core.utils.log.log
+------------------------
 
-.. toctree::
+.. automodule:: dial_core.utils.log.log
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   dial_core.utils.log.log
-   dial_core.utils.log.log_decorator
+dial\_core.utils.log.log\_decorator
+-----------------------------------
 
-Module contents
----------------
-
-.. automodule:: dial_core.utils.log
+.. automodule:: dial_core.utils.log.log_decorator
    :members:
    :undoc-members:
    :show-inheritance:

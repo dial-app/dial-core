@@ -1,26 +1,29 @@
-dial\_core.utils package
-========================
-
-Subpackages
------------
+dial\_core.utils
+================
 
 .. toctree::
-
    dial_core.utils.log
 
-Submodules
-----------
+dial\_core.utils.enum
+---------------------
 
-.. toctree::
+.. automodule:: dial_core.utils.enum
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   dial_core.utils.enum
-   dial_core.utils.initialization
-   dial_core.utils.timer
+dial\_core.utils.initialization
+-------------------------------
 
-Module contents
----------------
+.. automodule:: dial_core.utils.initialization
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. automodule:: dial_core.utils
+dial\_core.utils.timer
+----------------------
+
+.. automodule:: dial_core.utils.timer
    :members:
    :undoc-members:
    :show-inheritance:

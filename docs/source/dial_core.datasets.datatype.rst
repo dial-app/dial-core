@@ -1,21 +1,42 @@
-dial\_core.datasets.datatype package
-====================================
+dial\_core.datasets.datatype
+============================
 
-Submodules
-----------
+dial\_core.datasets.datatype.categorical
+----------------------------------------
 
-.. toctree::
+.. automodule:: dial_core.datasets.datatype.categorical
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   dial_core.datasets.datatype.categorical
-   dial_core.datasets.datatype.datatype
-   dial_core.datasets.datatype.imagearray
-   dial_core.datasets.datatype.numeric
-   dial_core.datasets.datatype.numericarray
+dial\_core.datasets.datatype.datatype
+-------------------------------------
 
-Module contents
----------------
+.. automodule:: dial_core.datasets.datatype.datatype
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-.. automodule:: dial_core.datasets.datatype
+dial\_core.datasets.datatype.imagearray
+---------------------------------------
+
+.. automodule:: dial_core.datasets.datatype.imagearray
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dial\_core.datasets.datatype.numeric
+------------------------------------
+
+.. automodule:: dial_core.datasets.datatype.numeric
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+dial\_core.datasets.datatype.numericarray
+-----------------------------------------
+
+.. automodule:: dial_core.datasets.datatype.numericarray
    :members:
    :undoc-members:
    :show-inheritance:

@@ -1,19 +1,18 @@
-dial\_core.project package
-==========================
+dial\_core.project
+==================
 
-Submodules
-----------
+dial\_core.project.project
+--------------------------
 
-.. toctree::
+.. automodule:: dial_core.project.project
+   :members:
+   :undoc-members:
+   :show-inheritance:
 
-   dial_core.project.containers
-   dial_core.project.project
-   dial_core.project.project_manager
+dial\_core.project.project\_manager
+-----------------------------------
 
-Module contents
----------------
-
-.. automodule:: dial_core.project
+.. automodule:: dial_core.project.project_manager
    :members:
    :undoc-members:
    :show-inheritance:
