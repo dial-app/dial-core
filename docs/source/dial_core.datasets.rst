@@ -11,28 +11,11 @@ Subpackages
 Submodules
 ----------
 
-dial\_core.datasets.container module
-------------------------------------
+.. toctree::
 
-.. automodule:: dial_core.datasets.container
-   :members:
-
-dial\_core.datasets.dataset module
-----------------------------------
-
-.. automodule:: dial_core.datasets.dataset
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dial\_core.datasets.dataset\_loader module
-------------------------------------------
-
-.. automodule:: dial_core.datasets.dataset_loader
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   dial_core.datasets.container
+   dial_core.datasets.dataset
+   dial_core.datasets.dataset_loader
 
 Module contents
 ---------------

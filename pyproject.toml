@@ -30,11 +30,15 @@ mypy = "^0.761"
 tox = "^3.14.5"
 docstr-coverage = "^1.0.5"
 taskipy = "^1.1.3"
+sphinx = "^2.4.4"
+sphinx-rtd-theme = "^0.4.3"
+sphinx-autodoc-typehints = "^1.10.3"
 
 [tool.taskipy.tasks]
 lint = "pre-commit run --all"
 tests = "pytest --cov=dial_core/ --cov-report term-missing:skip-covered"
 doc-coverage = "docstr-coverage -fi dial_core"
+docs = "cd docs; make html"
 
 [build-system]
 requires = ["poetry>=0.12", "setuptools>=35.0.2", "wheel>=0.29.0"]

@@ -4,30 +4,11 @@ dial\_core.project package
 Submodules
 ----------
 
-dial\_core.project.containers module
-------------------------------------
+.. toctree::
 
-.. automodule:: dial_core.project.containers
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dial\_core.project.project module
----------------------------------
-
-.. automodule:: dial_core.project.project
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dial\_core.project.project\_manager module
-------------------------------------------
-
-.. automodule:: dial_core.project.project_manager
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   dial_core.project.containers
+   dial_core.project.project
+   dial_core.project.project_manager
 
 Module contents
 ---------------

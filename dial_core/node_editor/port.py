@@ -11,7 +11,7 @@ class Port:
     A Port object allows two types of connections:
         * one-to-one: This Port can be only connected to another port.
         * many-to-many: This Port can be connected to multiple ports, and multiple ports
-        can be connected to this one.
+            can be connected to this one.
 
     A Port object also has an associated Type. Two Port objects can only be connected if
     they share the same Type.

@@ -1,9 +1,0 @@
-# vim: ft=yaml fileencoding=utf-8 sts=4 sw=4 et:
-
-site_name: dial-core
-
-theme:
-    name: readthedocs
-    highlightjs: true
-    hljs_languages:
-        - python

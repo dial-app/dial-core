@@ -11,30 +11,11 @@ Subpackages
 Submodules
 ----------
 
-dial\_core.utils.enum module
-----------------------------
+.. toctree::
 
-.. automodule:: dial_core.utils.enum
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dial\_core.utils.initialization module
---------------------------------------
-
-.. automodule:: dial_core.utils.initialization
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-dial\_core.utils.timer module
------------------------------
-
-.. automodule:: dial_core.utils.timer
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
+   dial_core.utils.enum
+   dial_core.utils.initialization
+   dial_core.utils.timer
 
 Module contents
 ---------------
