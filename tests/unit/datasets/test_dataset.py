@@ -6,6 +6,8 @@ import pytest
 from dial_core.datasets import Dataset
 from dial_core.datasets.datatype import Numeric
 
+np.random.seed(0)
+
 
 @pytest.fixture
 def empty_dataset():
@@ -27,6 +29,16 @@ def test_empty_dataset(empty_dataset):
 
     assert len(x) == 0
     assert len(y) == 0
+
+
+def test_shuffled(simple_numeric_dataset):
+    simple_numeric_dataset.shuffled = True
+    assert simple_numeric_dataset.shuffled is True
+
+    x, y = simple_numeric_dataset.head(2)
+
+    assert x.tolist() == [3, 4]
+    assert y.tolist() == [30, 40]
 
 
 def test_head(simple_numeric_dataset):
@@ -69,6 +81,22 @@ def test_get_batch(simple_numeric_dataset):
 
     assert bx.tolist() == [3, 4]
     assert by.tolist() == [30, 40]
+
+
+def test_delete_rows(simple_numeric_dataset):
+    simple_numeric_dataset.delete_rows(0)
+
+    x, y = simple_numeric_dataset.head(3)
+
+    assert x.tolist() == [2, 3, 4]
+    assert y.tolist() == [20, 30, 40]
+
+    simple_numeric_dataset.delete_rows(1, 20)
+
+    x, y = simple_numeric_dataset.head(3)
+
+    assert x.tolist() == [2]
+    assert y.tolist() == [20]
 
 
 def test_get_irregular_batches(simple_numeric_dataset):
