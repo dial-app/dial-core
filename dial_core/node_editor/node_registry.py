@@ -8,7 +8,7 @@ import dependency_injector.providers as providers
 from .node import Node
 
 
-class NodeFactory(containers.DynamicContainer):
+class NodeRegistry(containers.DynamicContainer):
     def __init__(self):
         super().__init__()
 
@@ -25,7 +25,7 @@ class NodeFactory(containers.DynamicContainer):
             node_type: Node type.
         """
         if not issubclass(node_type, Node):
-            raise TypeError("Registered nodes must be of childs of `Node` class!!")
+            raise TypeError("Registered nodes must inherit from `Node` class!!")
 
         factory = providers.Factory(node_type, *args, **kwargs)
         self.__register_factory(identifier, factory)
@@ -41,3 +41,5 @@ class NodeFactory(containers.DynamicContainer):
     def clear(self):
         """Removes all registered nodes."""
         self.providers.clear()
+
+NodeRegistrySingleton = providers.Singleton(NodeRegistry)

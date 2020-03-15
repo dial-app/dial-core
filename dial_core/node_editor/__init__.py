@@ -1,12 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from .containers import DefaultSceneFactory, NodeFactorySingleton
 from .input_port import InputPort
 from .node import Node
-from .node_factory import NodeFactory
+from .node_registry import NodeRegistry, NodeRegistrySingleton
 from .output_port import OutputPort
 from .port import Port
-from .scene import Scene
+from .scene import Scene, SceneFactory
 
 __all__ = [
     "Node",
@@ -14,7 +13,7 @@ __all__ = [
     "InputPort",
     "OutputPort",
     "Scene",
-    "DefaultSceneFactory",
-    "NodeFactory",
-    "NodeFactorySingleton",
+    "SceneFactory",
+    "NodeRegistry",
+    "NodeRegistrySingleton",
 ]

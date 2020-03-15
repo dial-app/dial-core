@@ -6,13 +6,13 @@ Dependency Injection containers.
 
 import dependency_injector.providers as providers
 
-from dial_core.node_editor import DefaultSceneFactory
+from dial_core.node_editor import SceneFactory
 
 from .project import Project
 from .project_manager import ProjectManager
 
 DefaultProject = providers.Factory(
-    Project, name="Default Project", scene=DefaultSceneFactory
+    Project, name="Default Project", scene=SceneFactory
 )
 
 ProjectManagerFactory = providers.Factory(

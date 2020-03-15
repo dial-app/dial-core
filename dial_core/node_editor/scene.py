@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import dependency_injector.providers as providers
+
 from typing import TYPE_CHECKING, List
 
 from dial_core.utils.log import DEBUG, log_on_end
@@ -33,3 +35,5 @@ class Scene:
 
     def __eq__(self, other):
         return self.nodes == other.nodes
+
+SceneFactory = providers.Factory(Scene)

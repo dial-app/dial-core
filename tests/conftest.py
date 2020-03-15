@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 import pytest
 
-from dial_core.node_editor import InputPort, Node, NodeFactory, OutputPort, Port, Scene
+from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
 from dial_core.project import Project, ProjectManager
 
 collect_ignore = ["setup.py"]
@@ -14,9 +14,9 @@ def scene():
 
 
 @pytest.fixture
-def node_factory():
-    """Returns an empty NodeFactory object."""
-    return NodeFactory()
+def node_registry():
+    """Returns an empty NodeRegistry object."""
+    return NodeRegistry()
 
 
 @pytest.fixture
