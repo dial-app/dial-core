@@ -11,28 +11,6 @@ from dial_core.utils import log
 LOGGER = log.get_logger(__name__)
 
 
-# How are plugins going to be stored?
-# * Structure that can be stored per project and per installation.
-# * List of installed plugins (downloaded), list of active pluglins.
-# * Active plugins are activated depending on the active project.
-# * Don't unload plugin completely, just put in on hold.
-
-# * -> OR, always show all installed projects, saving on the project only the used ones.
-# * So, only have an unique list of all the installed plugins, and list which ones are
-# loaded or not.
-# * Loaded plugins are loaded on start.
-
-# Have a superior structure that can be used to query for version, name, path, and more
-# necessary attributes.
-
-# Also has a reference to the inner module
-
-
-# TODO FOR TOMORROW
-# * Load/Save plugins to a list
-# * Show loaded nodes on the gui
-
-
 class PluginManager:
     def __init__(self):
         self.__installed_plugins = {}
@@ -41,12 +19,16 @@ class PluginManager:
     def installed_plugins(self):
         return self.__installed_plugins
 
-    def install_plugin(self, plugin_path: str):
+    def install_plugin(self, plugin_path: str) -> "Plugin":
         if not os.path.exists(plugin_path):
-            raise FileNotFoundError("Can't import this plugin")
+            raise FileNotFoundError(
+                f"Can't import the plugin. Invalid path: {plugin_path}"
+            )
 
         plugin = Plugin(plugin_path)
         self.__installed_plugins[plugin.name] = plugin
+
+        return plugin
 
     def load_plugin(self, plugin_name: str) -> Optional["Plugin"]:
         plugin = self.__get_plugin_by_name(plugin_name)
