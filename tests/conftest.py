@@ -1,10 +1,49 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
+
+from unittest.mock import Mock, patch
+
 import pytest
+import toml
 
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
+from dial_core.plugin import Plugin, PluginManager
 from dial_core.project import Project, ProjectManager
 
 collect_ignore = ["setup.py"]
+
+
+@pytest.fixture
+def plugin():
+    TOML_FILE = """
+    [tool.poetry]
+    name = "test-plugin"
+    version = "0.1.2"
+    description = "A Test Plugin."
+    """
+
+    module_mock = Mock()
+
+    with patch(
+        "dial_core.plugin.plugin.toml", return_value=toml.loads(TOML_FILE)
+    ) as toml_mock, patch("importlib.import_module") as import_mock:
+        toml_mock.load.return_value = toml.loads(TOML_FILE)
+        import_mock.return_value = module_mock
+
+        plugin = Plugin("test-plugin")
+
+    return plugin
+
+
+@pytest.fixture
+def plugin_manager(plugin):
+    with patch("dial_core.plugin.plugin_manager.Plugin", return_value=plugin), patch(
+        "os.path.exists", return_value=True
+    ):
+
+        plugin_manager = PluginManager()
+        plugin_manager.install_plugin("test-plugin")
+
+    return plugin_manager
 
 
 @pytest.fixture

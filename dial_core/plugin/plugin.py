@@ -67,7 +67,8 @@ class Plugin:
         # Remove from sys
         # Unload package (?)
         # Read something about using `del`
-        print("Unload")
+        self.__loaded = False
+        self.__active = False
 
     def _load_pyproject(self, plugin_path: str):
         pyproject = toml.load(self.__path + "/pyproject.toml")

@@ -1,13 +1,12 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING, Optional
+import os
+from typing import Optional
 
 import dependency_injector.providers as providers
 
+from dial_core.plugin import Plugin
 from dial_core.utils import log
-
-if TYPE_CHECKING:
-    from .plugin import Plugin  # noqa: F401 # noqa: F401
 
 LOGGER = log.get_logger(__name__)
 
@@ -36,7 +35,18 @@ LOGGER = log.get_logger(__name__)
 
 class PluginManager:
     def __init__(self):
-        self.plugins = {}
+        self.__installed_plugins = {}
+
+    @property
+    def installed_plugins(self):
+        return self.__installed_plugins
+
+    def install_plugin(self, plugin_path: str):
+        if not os.path.exists(plugin_path):
+            raise FileNotFoundError("Can't import this plugin")
+
+        plugin = Plugin(plugin_path)
+        self.__installed_plugins[plugin.name] = plugin
 
     def load_plugin(self, plugin_name: str) -> Optional["Plugin"]:
         plugin = self.__get_plugin_by_name(plugin_name)
@@ -50,7 +60,7 @@ class PluginManager:
 
     def __get_plugin_by_name(self, plugin_name):
         try:
-            return self.plugins[plugin_name]
+            return self.__installed_plugins[plugin_name]
 
         except KeyError as err:
             LOGGER.warning("Can't load a plugin called %s", plugin_name)

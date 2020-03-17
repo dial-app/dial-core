@@ -1,32 +1,5 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from unittest.mock import Mock, patch
-
-import pytest
-import toml
-
-from dial_core.plugin import Plugin
-
-
-@pytest.fixture
-def plugin():
-    TOML_FILE = """
-    [tool.poetry]
-    name = "test-plugin"
-    version = "0.1.2"
-    description = "A Test Plugin."
-    """
-
-    module_mock = Mock()
-
-    with patch("dial_core.plugin.plugin.toml") as toml_mock, patch(
-        "importlib.import_module"
-    ) as import_mock:
-        toml_mock.load.return_value = toml.loads(TOML_FILE)
-        import_mock.return_value = module_mock
-
-        yield Plugin("test-plugin")
-
 
 def test_plugin_creation(plugin):
     assert plugin.name == "test-plugin"
@@ -42,3 +15,16 @@ def test_plugin_load(plugin):
 
     assert plugin.loaded is True
     assert plugin.active is True
+
+
+def test_plugin_unload(plugin):
+    plugin.unload()
+
+    assert plugin.loaded is False
+    assert plugin.active is False
+
+
+# def test_reload_plugin(plugin):
+#     plugin.load()
+#     plugin.unload()
+#     plugin.load()
