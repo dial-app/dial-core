@@ -14,10 +14,3 @@ class Project:
     def scene(self):
         """Returns the nodes scene of the project."""
         return self.__scene
-
-    def __eq__(self, other):
-        return (
-            self.name == other.name
-            and self.file_path == other.file_path
-            and self.scene == other.scene
-        )

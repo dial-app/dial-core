@@ -31,4 +31,4 @@ def test_save_and_load_project():
     assert active_project is not opened_project
 
     # ...but the scenes content should be the same
-    assert active_project == opened_project
+    assert active_project.scene == opened_project.scene

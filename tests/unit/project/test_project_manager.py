@@ -20,10 +20,10 @@ def test_add_project(project_manager, project_a):
     assert project_manager.active == project_a
 
 
-def test_new_project(project_manager, project_manager_default_project):
-    project_manager.new_project()
+# def test_new_project(project_manager, project_manager_default_project):
+#     project_manager.new_project()
 
-    assert project_manager.active == project_manager_default_project
+#     assert project_manager.active == project_manager_default_project
 
 
 def test_projects_count(project_manager):

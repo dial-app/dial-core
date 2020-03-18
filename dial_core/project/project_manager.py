@@ -25,9 +25,12 @@ class ProjectManager:
     def __init__(self, default_project: "Project"):
         self.__default_project = default_project
 
-        self.__projects = [deepcopy(self.__default_project)]
+        self.__projects = []
+        self.new_project()
 
-        self.__active = self.__projects[0]
+    @property
+    def projects(self):
+        return self.__projects
 
     @property
     def active(self) -> "Project":
@@ -43,23 +46,6 @@ class ProjectManager:
         """Returns the number of created projects."""
         return len(self.__projects)
 
-    def set_active_project(self, index: int) -> "Project":
-        """Selects a project from the created ones and makes it the active project.
-
-        Returns:
-            The new active project.
-
-        Raises:
-            IndexError: If there isn't a project with index `index`.
-        """
-        self.__active = self.__projects[index]
-
-        LOGGER.info(
-            "Active project changed: %s(%s)", index, self.__active,
-        )
-
-        return self.__active
-
     def new_project(self) -> "Project":
         """Adds a new default project to the project manager.
 
@@ -69,7 +55,8 @@ class ProjectManager:
         Returns:
             The recently added active project
         """
-        new_project = deepcopy(self.__default_project)
+        new_project = self._new_project_impl()
+        LOGGER.debug("New project created: %s", new_project)
 
         return self.add_project(new_project)
 
@@ -79,9 +66,35 @@ class ProjectManager:
         Returns:
             The recently added active project.
         """
-        self.__projects.append(project)
+        self._add_project_impl(project)
+        LOGGER.debug("Project added to the projects list: %s", self.__projects)
 
-        return self.set_active_project(self.__projects.index(project))
+        # Activate last project
+        return self.set_active_project(self.projects_count() - 1)
+
+    def set_active_project(self, index: int) -> "Project":
+        """Selects a project from the created ones and makes it the active project.
+
+        Returns:
+            The new active project.
+
+        Raises:
+            IndexError: If there isn't a project with index `index`.
+        """
+        self._set_active_project_impl(index)
+        LOGGER.info(
+            "Active project changed: %s(%s)", index, self.__active,
+        )
+
+        return self.__active
+
+    def close_project(self, project: "Project"):
+        index = self.projects.index(project)
+
+        self._remove_project_impl(project)
+        LOGGER.info("Closed project: %s", project)
+
+        self.set_active_project(max(min(index, self.projects_count() - 1), 0))
 
     def open_project(self, file_path: str) -> "Project":
         """Opens a new project from a `.dial` file.
@@ -125,7 +138,7 @@ class ProjectManager:
         if not self.__active.file_path:
             raise ValueError("Project doesn't has a file_path set!")
 
-        with open(self.active.file_path, "wb") as project_file:
+        with open(self.__active.file_path, "wb") as project_file:
             LOGGER.info("Saving project: %s", self.__active.file_path)
 
             with Timer() as timer:
@@ -143,7 +156,27 @@ class ProjectManager:
             The new `file_path` will be set as the project file path, replacing any
             previous paths.
         """
-        self.active.file_path = file_path
+        self.__active.file_path = file_path
         LOGGER.info("New file path for the project: %s", file_path)
 
         self.save_project()
+
+    def _new_project_impl(self) -> "Project":
+        return deepcopy(self.__default_project)
+
+    def _add_project_impl(self, project: "Project") -> "Project":
+        self.__projects.append(project)
+        return project
+
+    def _set_active_project_impl(self, index: int) -> "Project":
+        self.__active = self.__projects[index]
+        return self.__active
+
+    def _remove_project_impl(self, project: "Project") -> "Project":
+        index = self.__projects.index(project)
+        del self.__projects[index]
+
+        if self.projects_count() == 0:
+            self.new_project()
+
+        return project

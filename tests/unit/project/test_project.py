@@ -14,4 +14,5 @@ def test_pickable(project_a):
 
     loaded_project_a = pickle.loads(obj)
 
-    assert loaded_project_a == project_a
+    assert loaded_project_a.name == project_a.name
+    test_project_attributes(loaded_project_a)
