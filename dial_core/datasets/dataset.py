@@ -1,7 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import Enum
-
 from typing import TYPE_CHECKING, List, Tuple
 
 import numpy as np

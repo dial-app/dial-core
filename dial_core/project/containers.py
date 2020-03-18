@@ -11,9 +11,7 @@ from dial_core.node_editor import SceneFactory
 from .project import Project
 from .project_manager import ProjectManager
 
-DefaultProject = providers.Factory(
-    Project, name="Default Project", scene=SceneFactory
-)
+DefaultProject = providers.Factory(Project, name="Default Project", scene=SceneFactory)
 
 ProjectManagerFactory = providers.Factory(
     ProjectManager, default_project=DefaultProject

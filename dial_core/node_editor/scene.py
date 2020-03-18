@@ -1,8 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-import dependency_injector.providers as providers
-
 from typing import TYPE_CHECKING, List
+
+import dependency_injector.providers as providers
 
 from dial_core.utils.log import DEBUG, log_on_end
 
