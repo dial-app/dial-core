@@ -2,6 +2,7 @@
 
 import numpy as np
 import pytest
+import pickle
 
 from dial_core.datasets import Dataset
 from dial_core.datasets.datatype import Numeric
@@ -111,3 +112,8 @@ def test_get_irregular_batches(simple_numeric_dataset):
 
     assert bx.tolist() == [4]
     assert by.tolist() == [40]
+
+
+def test_pickable(simple_numeric_dataset):
+    obj = pickle.dumps(simple_numeric_dataset)
+    loaded_dataset = pickle.loads(obj)

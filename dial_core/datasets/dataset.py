@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from enum import Enum
+
 from typing import TYPE_CHECKING, List, Tuple
 
 import numpy as np
@@ -12,6 +14,10 @@ if TYPE_CHECKING:
 
 
 class Dataset(keras.utils.Sequence):
+    class Role(Enum):
+        Raw = 0
+        Display = 1
+
     def __init__(
         self,
         x_data: "np.ndarray" = None,
@@ -72,13 +78,15 @@ class Dataset(keras.utils.Sequence):
         self.__y = np.delete(self.__y, self.__indexes[start : start + n])
         self.__indexes = np.delete(self.__indexes, range(start, start + n - 1))
 
-    def head(self, n: int = 10) -> Tuple[List, List]:
+    def head(self, n: int = 10, role: "Role" = Role.Raw) -> Tuple[List, List]:
         """
         Returns the first `n` items on the dataset.
         """
-        return self.items(0, n)
+        return self.items(0, n, role)
 
-    def items(self, start: int, end: int) -> Tuple["np.array", "np.array"]:
+    def items(
+        self, start: int, end: int, role: "Role" = Role.Raw
+    ) -> Tuple["np.array", "np.array"]:
         """
         Return the `n` elements between start and end as a tuple of (x, y) items
         Range is EXCLUSIVE [start, end)
@@ -87,7 +95,9 @@ class Dataset(keras.utils.Sequence):
         end = min(end, len(self.__indexes))
         indexes = self.__indexes[start:end]
 
-        x_set, y_set = self.__preprocess_data(self.__x[indexes], self.__y[indexes])
+        x_set, y_set = self.__preprocess_data(
+            self.__x[indexes], self.__y[indexes], role
+        )
         return x_set, y_set
 
     def __len__(self) -> int:
@@ -112,13 +122,17 @@ class Dataset(keras.utils.Sequence):
         return batch_x, batch_y
 
     def __preprocess_data(
-        self, x_data: "np.array", y_data: "np.array"
+        self, x_data: "np.array", y_data: "np.array", role: "Role" = Role.Raw
     ) -> Tuple["np.array", "np.array"]:
         """
         Preprocess the data. For example, if the image is a path to a file, load it and
         return the corresponding array.
         """
-        x_data = np.array([self.x_type.process(element) for element in x_data])
-        y_data = np.array([self.y_type.process(element) for element in y_data])
+        if role == self.Role.Raw:
+            x_data = np.array([self.x_type.process(element) for element in x_data])
+            y_data = np.array([self.y_type.process(element) for element in y_data])
+        elif role == self.Role.Display:
+            x_data = np.array([self.x_type.display(element) for element in x_data])
+            y_data = np.array([self.y_type.display(element) for element in y_data])
 
         return (x_data, y_data)

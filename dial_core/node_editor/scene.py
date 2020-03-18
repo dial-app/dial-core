@@ -30,10 +30,17 @@ class Scene:
         """Adds a new node to the scene."""
         self.nodes.append(node)
 
+    def remove_node(self, node: "Node"):
+        try:
+            self.nodes.remove(node)
+        except ValueError:
+            pass
+
     def __iter__(self):
         return iter(self.__nodes)
 
     def __eq__(self, other):
         return self.nodes == other.nodes
+
 
 SceneFactory = providers.Factory(Scene)
