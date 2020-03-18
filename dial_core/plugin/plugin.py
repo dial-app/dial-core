@@ -36,14 +36,19 @@ class Plugin:
     def active(self, toggle: bool):
         self.__active = toggle
 
+        if self.__active:
+            self.load()
+        else:
+            self.unload()
+
     def load(self):
-        module_name = self.name.replace("-", "_")
-        self.__module = importlib.import_module(module_name)
+        module_importable_name = self.name.replace("-", "_")
+        self.__module = importlib.import_module(module_importable_name)
 
         try:
             self.__module.load_plugin()
         except AttributeError:
-            LOGGER.warning("No `load_plugin` method found for `module_name`.")
+            LOGGER.warning("No `load_plugin` method found for %s.", self.name)
 
         self.__active = True
 
@@ -54,6 +59,6 @@ class Plugin:
         try:
             self.__module.unload_plugin()
         except AttributeError:
-            LOGGER.warning("No `unload_plugin` method found for `module_name`.")
+            LOGGER.warning("No `unload_plugin` method found for %s.", self.name)
 
         self.__active = False
