@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import importlib
+import pkg_resources
 
 from dial_core.utils import log
 
@@ -47,6 +48,7 @@ class Plugin:
 
         try:
             self.__module.load_plugin()
+            self.__update_plugin_metadata()
         except AttributeError:
             LOGGER.warning("No `load_plugin` method found for %s.", self.name)
 
@@ -62,3 +64,18 @@ class Plugin:
             LOGGER.warning("No `unload_plugin` method found for %s.", self.name)
 
         self.__active = False
+
+    def __update_plugin_metadata(self):
+        def get_metadata_value(key: str, package):
+            for line in package.get_metadata_lines("METADATA"):
+                (k, v) = line.split(": ", 1)
+                if k == key:
+                    return v
+
+        package = pkg_resources.require(self.name)[0]
+        print(package)
+        self.__version = get_metadata_value("Version", package)
+        self.__summary = get_metadata_value("Summary", package)
+
+    def to_dict(self):
+        return {"version": self.version, "summary": self.summary, "active": self.active}

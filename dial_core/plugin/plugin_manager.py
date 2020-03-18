@@ -56,5 +56,10 @@ class PluginManager:
             plugin = Plugin(plugin_name, installed_plugins_dict[plugin_name])
             self.__installed_plugins[plugin_name] = plugin
 
+    def to_dict(self):
+        return {
+            key: value.to_dict() for (key, value) in self.__installed_plugins.items()
+        }
+
 
 PluginManagerSingleton = providers.Singleton(PluginManager)
