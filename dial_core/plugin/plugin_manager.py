@@ -12,8 +12,11 @@ LOGGER = log.get_logger(__name__)
 
 
 class PluginManager:
-    def __init__(self):
+    def __init__(self, installed_plugins_dict=None):
         self.__installed_plugins = {}
+
+        if installed_plugins_dict:
+            self.__populate_installed_plugins(installed_plugins_dict)
 
     @property
     def installed_plugins(self):
@@ -47,6 +50,11 @@ class PluginManager:
         except KeyError as err:
             LOGGER.warning("Can't load a plugin called %s", plugin_name)
             raise err
+
+    def __populate_installed_plugins(self, installed_plugins_dict):
+        for plugin_name in installed_plugins_dict:
+            plugin = Plugin(plugin_name, installed_plugins_dict[plugin_name])
+            self.__installed_plugins[plugin_name] = plugin
 
 
 PluginManagerSingleton = providers.Singleton(PluginManager)

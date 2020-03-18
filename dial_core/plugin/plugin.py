@@ -1,10 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import importlib
-import os
-import sys
-
-import toml
 
 from dial_core.utils import log
 
@@ -12,13 +8,13 @@ LOGGER = log.get_logger(__name__)
 
 
 class Plugin:
-    def __init__(self, plugin_path: str):
-        self.__path = plugin_path
-        self.__pyproject = self._load_pyproject(self.__path)
+    def __init__(self, name: str, plugins_specs: dict):
+        self.__name = name
+        self.__version = plugins_specs["version"]
+        self.__summary = plugins_specs["summary"]
+        self.__active = plugins_specs["active"]
 
         self.__module = None
-        self.__active = False
-        self.__loaded = False
 
     @property
     def name(self) -> str:
@@ -29,12 +25,8 @@ class Plugin:
         return self.__version
 
     @property
-    def description(self) -> str:
-        return self.__description
-
-    @property
-    def path(self) -> str:
-        return self.__path
+    def summary(self) -> str:
+        return self.__summary
 
     @property
     def active(self) -> bool:
@@ -44,22 +36,14 @@ class Plugin:
     def active(self, toggle: bool):
         self.__active = toggle
 
-    @property
-    def loaded(self) -> bool:
-        return self.__loaded
-
     def load(self):
-        sys.path.append(self.__path)
-
-        module_name = os.path.basename(os.path.normpath(self.__path)).replace("-", "_")
+        module_name = self.name.replace("-", "_")
         self.__module = importlib.import_module(module_name)
 
-        self.__loaded = True
-
         try:
-            self.__module.initialize_plugin()
+            self.__module.load_plugin()
         except AttributeError:
-            LOGGER.warning("No `initialize_plugin` method found for `module_name`.")
+            LOGGER.warning("No `load_plugin` method found for `module_name`.")
 
         self.__active = True
 
@@ -67,12 +51,9 @@ class Plugin:
         # Remove from sys
         # Unload package (?)
         # Read something about using `del`
-        self.__loaded = False
+        try:
+            self.__module.unload_plugin()
+        except AttributeError:
+            LOGGER.warning("No `unload_plugin` method found for `module_name`.")
+
         self.__active = False
-
-    def _load_pyproject(self, plugin_path: str):
-        pyproject = toml.load(self.__path + "/pyproject.toml")
-
-        self.__name = pyproject["tool"]["poetry"]["name"]
-        self.__version = pyproject["tool"]["poetry"]["version"]
-        self.__description = pyproject["tool"]["poetry"]["description"]

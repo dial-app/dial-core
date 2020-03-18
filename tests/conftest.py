@@ -3,7 +3,6 @@
 from unittest.mock import Mock, patch
 
 import pytest
-import toml
 
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
 from dial_core.plugin import Plugin, PluginManager
@@ -11,25 +10,21 @@ from dial_core.project import Project, ProjectManager
 
 collect_ignore = ["setup.py"]
 
+INSTALLED_PLUGINS = {
+    "test-plugin": {"version": "0.1.2", "summary": "A Test Plugin.", "active": True}
+}
+
 
 @pytest.fixture
 def plugin():
-    TOML_FILE = """
-    [tool.poetry]
-    name = "test-plugin"
-    version = "0.1.2"
-    description = "A Test Plugin."
-    """
+    plugin_specs = INSTALLED_PLUGINS["test-plugin"]
 
     module_mock = Mock()
 
-    with patch(
-        "dial_core.plugin.plugin.toml", return_value=toml.loads(TOML_FILE)
-    ) as toml_mock, patch("importlib.import_module") as import_mock:
-        toml_mock.load.return_value = toml.loads(TOML_FILE)
+    with patch("importlib.import_module") as import_mock:
         import_mock.return_value = module_mock
 
-        plugin = Plugin("test-plugin")
+        plugin = Plugin("test-plugin", plugin_specs)
 
     return plugin
 
@@ -39,9 +34,7 @@ def plugin_manager(plugin):
     with patch("dial_core.plugin.plugin_manager.Plugin", return_value=plugin), patch(
         "os.path.exists", return_value=True
     ):
-
-        plugin_manager = PluginManager()
-        plugin_manager.install_plugin("test-plugin")
+        plugin_manager = PluginManager(installed_plugins_dict=INSTALLED_PLUGINS)
 
     return plugin_manager
 

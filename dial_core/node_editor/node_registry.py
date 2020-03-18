@@ -42,6 +42,9 @@ class NodeRegistry(containers.DynamicContainer):
         factory = providers.Factory(value, *args, **kwargs)
         self.__register_factory(identifier, factory)
 
+    def unregister_node(self, identifier: str):
+        self.set_providers.pop(identifier, None)
+
     def __register_factory(self, identifier: str, node_factory: "providers.Factory"):
         """Registers a new node factory."""
         self.providers[identifier] = node_factory
