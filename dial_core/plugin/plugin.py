@@ -66,16 +66,20 @@ class Plugin:
         self.__active = False
 
     def __update_plugin_metadata(self):
-        def get_metadata_value(key: str, package):
-            for line in package.get_metadata_lines("METADATA"):
-                (k, v) = line.split(": ", 1)
-                if k == key:
-                    return v
+        try:
 
-        package = pkg_resources.require(self.name)[0]
-        print(package)
-        self.__version = get_metadata_value("Version", package)
-        self.__summary = get_metadata_value("Summary", package)
+            def get_metadata_value(key: str, package):
+                for line in package.get_metadata_lines("METADATA"):
+                    (k, v) = line.split(": ", 1)
+                    if k == key:
+                        return v
+
+            package = pkg_resources.require(self.name)[0]
+            print(package)
+            self.__version = get_metadata_value("Version", package)
+            self.__summary = get_metadata_value("Summary", package)
+        except FileNotFoundError as err:
+            LOGGER.exception(err)
 
     def to_dict(self):
         return {"version": self.version, "summary": self.summary, "active": self.active}
