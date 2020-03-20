@@ -19,6 +19,11 @@ def test_get_output_value_not_set(output_port_a):
         output_port_a.get_output_value()
 
 
+def test_connect_to_incompatible_node(output_port_a, output_port_b):
+    with pytest.raises(ValueError):
+        output_port_a.connect_to(output_port_b)
+
+
 def test_pickable(output_port_a, input_port_a):
     output_port_a.connect_to(input_port_a)
     assert input_port_a in output_port_a.connections

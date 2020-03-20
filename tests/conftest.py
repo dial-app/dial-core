@@ -3,7 +3,6 @@
 from unittest.mock import Mock, patch
 
 import pytest
-
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
 from dial_core.plugin import Plugin, PluginManager
 from dial_core.project import Project, ProjectManager
@@ -145,6 +144,18 @@ def input_port_a():
 
 
 @pytest.fixture
+def input_port_b():
+    """Simple input port"""
+    return InputPort(name="b", port_type=int)
+
+
+@pytest.fixture
 def output_port_a():
     """Simple input port"""
     return OutputPort(name="a", port_type=int)
+
+
+@pytest.fixture
+def output_port_b():
+    """Simple input port"""
+    return OutputPort(name="b", port_type=int)

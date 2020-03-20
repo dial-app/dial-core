@@ -11,6 +11,10 @@ class InputPort(Port):
     def __init__(self, name: str, port_type: Any):
         super().__init__(name, port_type, allows_multiple_connections=False)
 
+        from .output_port import OutputPort
+
+        self.compatible_port_classes.add(OutputPort)
+
     @property
     def port_connected_to(self) -> Optional["Port"]:
         """Returns the port connected to this one (can be None).

@@ -11,6 +11,9 @@ class OutputPort(Port):
     def __init__(self, name: str, port_type: Any):
         super().__init__(name, port_type, allows_multiple_connections=True)
 
+        from .input_port import InputPort
+        self.compatible_port_classes.add(InputPort)
+
         self.output_generator: Optional[Callable] = None
 
     @log_on_end(

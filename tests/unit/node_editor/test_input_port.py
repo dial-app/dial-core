@@ -2,6 +2,8 @@
 
 import pickle
 
+import pytest
+
 
 def test_port_connected_to(input_port_a, output_port_a):
 
@@ -15,6 +17,11 @@ def test_port_connected_to(input_port_a, output_port_a):
 def test_input_port_attributes(input_port_a):
     assert hasattr(input_port_a, "name")
     assert hasattr(input_port_a, "port_type")
+
+
+def test_connect_to_incompatible_node(input_port_a, input_port_b):
+    with pytest.raises(ValueError):
+        input_port_a.connect_to(input_port_b)
 
 
 def test_pickable(input_port_a, output_port_a):

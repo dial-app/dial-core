@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Any, Optional, Set
+from typing import Any, Optional, Set, Type
 
 from dial_core.utils.log import DEBUG, ERROR, log_on_end, log_on_error
 
@@ -33,6 +33,7 @@ class Port:
         self.__name = name
         self.__port_type = port_type
         self.__connected_to: Set["Port"] = set()  # Avoid repeat ports
+        self.compatible_port_classes: Set[Type["Port"]] = set([Port])
 
         self.node: Optional["Node"] = None  # type: ignore
 
@@ -72,8 +73,10 @@ class Port:
         Args:
             port: Port being compared with.
         """
-        return self.__port_type == port.port_type and (
-            not self.node or self.node != port.node
+        return (
+            self.__port_type == port.port_type
+            and (not self.node or self.node != port.node)
+            and type(port) in self.compatible_port_classes
         )
 
     @log_on_end(DEBUG, "{self} connected to {port}")
