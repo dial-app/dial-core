@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import importlib
+
 import pkg_resources
 
 from dial_core.utils import log

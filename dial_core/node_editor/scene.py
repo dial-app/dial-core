@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING, List
 
 import dependency_injector.providers as providers
+
 from dial_core.utils.log import DEBUG, log_on_end
 
 if TYPE_CHECKING:

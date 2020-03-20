@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-import os
+# import os
 from typing import Optional
 
 import dependency_injector.providers as providers
@@ -22,16 +22,16 @@ class PluginManager:
     def installed_plugins(self):
         return self.__installed_plugins
 
-    def install_plugin(self, plugin_path: str) -> "Plugin":
-        if not os.path.exists(plugin_path):
-            raise FileNotFoundError(
-                f"Can't import the plugin. Invalid path: {plugin_path}"
-            )
+    # def install_plugin(self, plugin_path: str) -> "Plugin":
+    #     if not os.path.exists(plugin_path):
+    #         raise FileNotFoundError(
+    #             f"Can't import the plugin. Invalid path: {plugin_path}"
+    #         )
 
-        plugin = Plugin(plugin_path)
-        self.__installed_plugins[plugin.name] = plugin
+    #     plugin = Plugin(plugin_path)
+    #     self.__installed_plugins[plugin.name] = plugin
 
-        return plugin
+    #     return plugin
 
     def load_plugin(self, plugin_name: str) -> Optional["Plugin"]:
         plugin = self.__get_plugin_by_name(plugin_name)

@@ -2,7 +2,7 @@
 
 import pickle
 from copy import deepcopy
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from dial_core.utils import Timer, log
 
@@ -25,7 +25,7 @@ class ProjectManager:
     def __init__(self, default_project: "Project"):
         self.__default_project = default_project
 
-        self.__projects = []
+        self.__projects: List["Project"] = []
         self.new_project()
 
     @property
