@@ -3,6 +3,7 @@
 from unittest.mock import Mock, patch
 
 import pytest
+
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
 from dial_core.plugin import Plugin, PluginManager
 from dial_core.project import Project, ProjectManager
@@ -15,17 +16,33 @@ INSTALLED_PLUGINS = {
 
 
 @pytest.fixture
-def plugin():
+def test_plugin_package():
+    test_plugin_mock = Mock()
+    test_plugin_mock.get_metadata_lines.return_value = [
+        "Version: 0.3.4",
+        "Summary: Test Plugin",
+    ]
+    test_plugin_mock.version.return_value = "0.3.4"
+    test_plugin_mock.summary.return_value = "Test Plugin"
+
+    return test_plugin_mock
+
+
+@pytest.fixture
+def plugin(test_plugin_package):
     plugin_specs = INSTALLED_PLUGINS["test-plugin"]
 
     module_mock = Mock()
+    module_mock.load_plugin.return_value = True
+    module_mock.unload_plugin.return_value = True
 
-    with patch("importlib.import_module") as import_mock:
+    with patch("importlib.import_module") as import_mock, patch(
+        "pkg_resources.require"
+    ) as require_mock:
         import_mock.return_value = module_mock
+        require_mock.return_value = [test_plugin_package]
 
-        plugin = Plugin("test-plugin", plugin_specs)
-
-    return plugin
+        yield Plugin("test-plugin", plugin_specs)
 
 
 @pytest.fixture

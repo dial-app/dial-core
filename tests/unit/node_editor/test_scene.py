@@ -13,7 +13,23 @@ def test_add_node(scene, node_a):
 
     scene.add_node(node_a)
 
-    assert node_a in scene.nodes
+    assert node_a in scene
+
+
+def test_remove_node(scene, node_a, node_b):
+    scene.add_node(node_a)
+    scene.add_node(node_b)
+
+    assert node_a in scene
+    assert node_b in scene
+
+    scene.remove_node(node_a)
+
+    assert node_a not in scene
+    assert node_b in scene
+
+    # Removing nodes that aren't registered on the scene doesn't raise any exception
+    scene.remove_node(node_a)
 
 
 def test_eq(scene):

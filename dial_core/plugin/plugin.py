@@ -43,6 +43,10 @@ class Plugin:
         else:
             self.unload()
 
+    @property
+    def module(self):
+        return self.__module
+
     def load(self):
         module_importable_name = self.name.replace("-", "_")
         self.__module = importlib.import_module(module_importable_name)
@@ -50,21 +54,19 @@ class Plugin:
         try:
             self.__module.load_plugin()
             self.__update_plugin_metadata()
-        except AttributeError:
+        except AttributeError:  # pragma: no cover
             LOGGER.warning("No `load_plugin` method found for %s.", self.name)
 
         self.__active = True
 
     def unload(self):
-        # Remove from sys
-        # Unload package (?)
-        # Read something about using `del`
         try:
             self.__module.unload_plugin()
-        except AttributeError:
+        except AttributeError:  # pragma: no cover
             LOGGER.warning("No `unload_plugin` method found for %s.", self.name)
 
         self.__active = False
+        self.__module = None
 
     def __update_plugin_metadata(self):
         try:
@@ -79,7 +81,7 @@ class Plugin:
             print(package)
             self.__version = get_metadata_value("Version", package)
             self.__summary = get_metadata_value("Summary", package)
-        except FileNotFoundError as err:
+        except FileNotFoundError as err:  # pragma: no cover
             LOGGER.exception(err)
 
     def to_dict(self):

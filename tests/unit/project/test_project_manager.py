@@ -19,11 +19,7 @@ def test_add_project(project_manager, project_a):
 
     assert project_manager.active == project_a
 
-
-# def test_new_project(project_manager, project_manager_default_project):
-#     project_manager.new_project()
-
-#     assert project_manager.active == project_manager_default_project
+    assert len(project_manager.projects) == 2
 
 
 def test_projects_count(project_manager):
@@ -49,6 +45,21 @@ def test_set_active_project(
 
     with pytest.raises(IndexError):
         project_manager.set_active_project(999999)
+
+
+def test_close_project(project_manager, project_a):
+    project_manager.add_project(project_a)
+
+    assert project_manager.projects_count() == 2
+
+    project_manager.close_project(project_a)
+
+    assert project_manager.projects_count() == 1
+
+    # Always has an active project
+    project_manager.close_project(project_manager.active)
+
+    assert project_manager.projects_count() == 1
 
 
 @patch("builtins.open", new_callable=mock_open)

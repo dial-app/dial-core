@@ -19,6 +19,31 @@ def test_register_node(node_registry):
     assert isinstance(node_registry.nodes["Talk Node"], providers.Factory)
 
 
+def test_register_factory(node_registry):
+    node_factory = providers.Factory(TalkNode)
+
+    node_registry.register_node("Talk Node", node_factory)
+
+    assert "Talk Node" in node_registry.nodes
+
+    node = node_registry.get_node("Talk Node")
+    assert isinstance(node, TalkNode)
+
+
+def test_unregister_node(node_registry):
+    node_registry.register_node("Talk Node", TalkNode)
+
+    assert "Talk Node" in node_registry.nodes
+
+    node_registry.unregister_node("Talk Node")
+
+    assert "Talk Node" not in node_registry.nodes
+
+
+def test_unregister_unrecognized_node(node_registry):
+    node_registry.unregister_node("This Node Does Not Exists")
+
+
 def test_register_invalid_node(node_registry):
     # With wrong types
     with pytest.raises(TypeError):

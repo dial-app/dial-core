@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from dial_core.datasets import Dataset
-from dial_core.datasets.datatype import Numeric
+from dial_core.datasets.datatype import Categorical, Numeric
 
 np.random.seed(0)
 
@@ -23,6 +23,16 @@ def simple_numeric_dataset():
         y_data=np.array([10, 20, 30, 40]),
         x_type=Numeric(),
         y_type=Numeric(),
+    )
+
+
+@pytest.fixture
+def simple_categorical_dataset():
+    return Dataset(
+        x_data=np.array([0, 1, 2]),
+        y_data=np.array([0, 1, 2]),
+        x_type=Numeric(),
+        y_type=Categorical(["foo", "bar", "hue"]),
     )
 
 
@@ -113,6 +123,18 @@ def test_get_irregular_batches(simple_numeric_dataset):
 
     assert bx.tolist() == [4]
     assert by.tolist() == [40]
+
+
+def test_process_roles(simple_categorical_dataset):
+    x, y = simple_categorical_dataset.head(3, Dataset.Role.Raw)
+
+    assert x.tolist() == [0, 1, 2]
+    assert y.tolist() == [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+
+    x, y = simple_categorical_dataset.head(3, Dataset.Role.Display)
+
+    assert x.tolist() == ["0", "1", "2"]
+    assert y.tolist() == ["foo", "bar", "hue"]
 
 
 def test_pickable(simple_numeric_dataset):
