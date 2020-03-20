@@ -66,6 +66,7 @@ class ProjectManager:
         Returns:
             The recently added active project.
         """
+
         self._add_project_impl(project)
         LOGGER.debug("Project added to the projects list: %s", self.__projects)
 
@@ -124,7 +125,7 @@ class ProjectManager:
 
         return opened_project
 
-    def save_project(self):
+    def save_project(self, project: "Project") -> "Project":
         """Saves the project on its defined file path.
 
         The project MUST have a file path. Otherwise, it will throw a ValueError
@@ -135,18 +136,20 @@ class ProjectManager:
         Raises:
             ValueError: If the project doesn't have a `file_path` defined.
         """
-        if not self.__active.file_path:
+        if not project.file_path:
             raise ValueError("Project doesn't has a file_path set!")
 
-        with open(self.__active.file_path, "wb") as project_file:
-            LOGGER.info("Saving project: %s", self.__active.file_path)
+        with open(project.file_path, "wb") as project_file:
+            LOGGER.info("Saving project: %s", project.file_path)
 
             with Timer() as timer:
-                pickle.dump(self.__active, project_file)
+                pickle.dump(project, project_file)
 
             LOGGER.info("Project saved in %s ms", timer.elapsed())
 
-    def save_project_as(self, file_path: str):
+        return project
+
+    def save_project_as(self, project: "Project", file_path: str) -> "Project":
         """Save the project on a new file path.
 
         Once a project has been saved with `save_project_as`, it can also be saved with
@@ -156,10 +159,10 @@ class ProjectManager:
             The new `file_path` will be set as the project file path, replacing any
             previous paths.
         """
-        self.__active.file_path = file_path
+        project.file_path = file_path
         LOGGER.info("New file path for the project: %s", file_path)
 
-        self.save_project()
+        return self.save_project(project)
 
     def _new_project_impl(self) -> "Project":
         return deepcopy(self.__default_project)

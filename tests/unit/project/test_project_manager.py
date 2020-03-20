@@ -84,20 +84,20 @@ def test_save_project(mock_pickle_dump, mock_file_open, project_manager):
 
     opened_file_binary = mock_file_open.return_value
 
-    project_manager.save_project()
+    project_manager.save_project(project_manager.active)
 
     mock_pickle_dump.assert_called_once_with(project_manager.active, opened_file_binary)
 
 
 def test_save_project_without_file_path(project_manager):
     with pytest.raises(ValueError):
-        project_manager.save_project()
+        project_manager.save_project(project_manager.active)
 
 
 @patch("builtins.open", new_callable=mock_open)
 def test_save_project_as(_, project_manager):
     assert not project_manager.active.file_path
 
-    project_manager.save_project_as("foo")
+    project_manager.save_project_as(project_manager.active, "foo")
 
     assert project_manager.active.file_path == "foo"

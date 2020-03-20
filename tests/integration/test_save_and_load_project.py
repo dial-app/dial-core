@@ -22,7 +22,7 @@ def test_save_and_load_project():
     assert test_node in active_project.scene
 
     # Save project to memory
-    project_manager.save_project_as("foo.dial")
+    project_manager.save_project_as(project_manager.active, "foo.dial")
 
     # Load project from memory
     opened_project = project_manager.open_project("foo.dial")
