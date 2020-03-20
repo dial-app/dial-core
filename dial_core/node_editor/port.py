@@ -162,12 +162,22 @@ class Port:
 
     def __str__(self):
         """Retuns the string representation of the Port object."""
-        return f'{type(self).__name__} "{self.name}" [{self.port_type.__str__}]'
+        type_str = (
+            self.port_type.__name__
+            if isinstance(self.port_type, type)
+            else self.port_type
+        )
+        return f'{self.__class__.__name__} "{self.name}" [{type_str}]'
 
     def __repr__(self):
         """Returns the object representation of the Port object (with mem address)."""
+        type_str = (
+            self.port_type.__name__
+            if isinstance(self.port_type, type)
+            else self.port_type
+        )
         return (
-            f'{type(self).__name__} "{self.name}"'
+            f'{self.__class__.__name__} "{self.name}"'
             f" ({str(id(self))[:4]}...{str(id(self))[-4:]})"
-            f" [{self.port_type.__str__}] from {self.node}"
+            f" [{type_str}] from {self.node}"
         )

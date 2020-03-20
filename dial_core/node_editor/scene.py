@@ -3,7 +3,6 @@
 from typing import TYPE_CHECKING, List
 
 import dependency_injector.providers as providers
-
 from dial_core.utils.log import DEBUG, log_on_end
 
 if TYPE_CHECKING:
@@ -35,6 +34,19 @@ class Scene:
             self.nodes.remove(node)
         except ValueError:
             pass
+
+    def __repr__(self):
+        output = ""
+
+        for node in self.__nodes:
+            output += f"Node {node!r} has:\n"
+
+            for port in list(node.inputs.values()) + list(node.outputs.values()):
+                output += f"\tPort: {port!r}\n"
+                for connection in port.connections:
+                    output += f"\t\t- Connected to: {connection!r}\n"
+
+        return output
 
     def __iter__(self):
         return iter(self.__nodes)

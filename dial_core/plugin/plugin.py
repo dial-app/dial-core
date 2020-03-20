@@ -69,7 +69,7 @@ class Plugin:
         try:
 
             def get_metadata_value(key: str, package):
-                for line in package.get_metadata_lines("METADATA"):
+                for line in package.get_metadata_lines("PKG-INFO"):
                     (k, v) = line.split(": ", 1)
                     if k == key:
                         return v
