@@ -24,7 +24,6 @@ class Dataset(keras.utils.Sequence):
         x_type: "DataType" = None,
         y_type: "DataType" = None,
         batch_size: int = 32,
-        shuffled: bool = False,
     ):
 
         if x_data is None:
@@ -45,37 +44,31 @@ class Dataset(keras.utils.Sequence):
         # Data types
         self.x_type, self.y_type = x_type, y_type
 
-        # Class attributes
-        self.__indexes = np.arange(self.__x.shape[0])
-
-        self.shuffled = shuffled  # type: ignore
-
         self.batch_size = batch_size
 
-    @property
-    def shuffled(self) -> bool:
-        """
-        Check if the dataset is shuffled (dataset items randomly sorted)
-        """
-        return self.__shuffled
+    # @property
+    # def shuffled(self) -> bool:
+    #     """
+    #     Check if the dataset is shuffled (dataset items randomly sorted)
+    #     """
+    #     return self.__shuffled
 
-    @shuffled.setter  # type: ignore
-    def shuffled(self, toggle: bool):
-        self.__shuffled = toggle
+    # @shuffled.setter  # type: ignore
+    # def shuffled(self, toggle: bool):
+    #     self.__shuffled = toggle
 
-        if self.__shuffled:
-            self.shuffle()
-        else:
-            self.__indexes = np.arange(self.__x.shape[0])
+    #     if self.__shuffled:
+    #         self.shuffle()
+    #     else:
+    #         self.__indexes = np.arange(self.__x.shape[0])
 
-    def shuffle(self):
-        self.__shuffled = True
-        np.random.shuffle(self.__indexes)
+    # def shuffle(self):
+    #     self.__shuffled = True
+    #     np.random.shuffle(self.__indexes)
 
     def delete_rows(self, start: int, n: int = 1):
-        self.__x = np.delete(self.__x, self.__indexes[start : start + n])
-        self.__y = np.delete(self.__y, self.__indexes[start : start + n])
-        self.__indexes = np.delete(self.__indexes, range(start, start + n - 1))
+        self.__x = np.delete(self.__x, range(start, start + n), axis=0)
+        self.__y = np.delete(self.__y, range(start, start + n), axis=0)
 
     def head(self, n: int = 10, role: "Role" = Role.Raw) -> Tuple[List, List]:
         """
@@ -84,24 +77,24 @@ class Dataset(keras.utils.Sequence):
         return self.items(0, n, role)
 
     def items(
-        self, start: int, end: int, role: "Role" = Role.Raw
+        self, start: int = None, end: int = None, role: "Role" = Role.Raw
     ) -> Tuple["np.array", "np.array"]:
         """
         Return the `n` elements between start and end as a tuple of (x, y) items
         Range is EXCLUSIVE [start, end)
         """
-        start = max(start, 0)
-        end = min(end, len(self.__indexes))
-        indexes = self.__indexes[start:end]
-
         x_set, y_set = self.__preprocess_data(
-            self.__x[indexes], self.__y[indexes], role
+            self.__x[start:end], self.__y[start:end], role
         )
         return x_set, y_set
 
+    def row_count(self) -> int:
+        """Returns the number of rows on the dataset."""
+        return len(self.__x)
+
     def __len__(self) -> int:
         """
-        Return the length of the dataset.
+        Return the length of the dataset (In batches)
         """
         return int(np.ceil(len(self.__x) / float(self.batch_size)))
 
@@ -111,10 +104,9 @@ class Dataset(keras.utils.Sequence):
         """
         batch_start = idx * self.batch_size
         batch_end = (idx + 1) * self.batch_size
-        batch_indexes = self.__indexes[batch_start:batch_end]
 
-        batch_x = self.__x[batch_indexes]
-        batch_y = self.__y[batch_indexes]
+        batch_x = self.__x[batch_start:batch_end]
+        batch_y = self.__y[batch_start:batch_end]
 
         batch_x, batch_y = self.__preprocess_data(batch_x, batch_y)
 

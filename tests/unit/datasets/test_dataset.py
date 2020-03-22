@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 from dial_core.datasets import Dataset
-from dial_core.datasets.datatype import Categorical, Numeric
+from dial_core.datasets.datatype import Categorical, Numeric, NumericArray
 
 np.random.seed(0)
 
@@ -36,21 +36,23 @@ def simple_categorical_dataset():
     )
 
 
+@pytest.fixture
+def simple_array_dataset():
+    return Dataset(
+        x_data=np.array(
+            [np.array([1, 1, 1]), np.array([2, 2, 2]), np.array([3, 3, 3])]
+        ),
+        y_data=np.array([1, 2, 3]),
+        x_type=NumericArray(),
+        y_type=Numeric(),
+    )
+
+
 def test_empty_dataset(empty_dataset):
     x, y = empty_dataset.head(10)
 
     assert len(x) == 0
     assert len(y) == 0
-
-
-def test_shuffled(simple_numeric_dataset):
-    simple_numeric_dataset.shuffled = True
-    assert simple_numeric_dataset.shuffled is True
-
-    x, y = simple_numeric_dataset.head(2)
-
-    assert x.tolist() == [3, 4]
-    assert y.tolist() == [30, 40]
 
 
 def test_head(simple_numeric_dataset):
@@ -81,6 +83,19 @@ def test_items_with_more_elements(simple_numeric_dataset):
     assert y.tolist() == [20, 30, 40]
 
 
+def test_item_backwards_start(simple_numeric_dataset):
+    x, y = simple_numeric_dataset.items(start=-2)
+    assert x.tolist() == [3, 4]
+    assert y.tolist() == [30, 40]
+
+
+def test_item_backwards_end(simple_numeric_dataset):
+    x, y = simple_numeric_dataset.items(end=-2)
+
+    assert x.tolist() == [1, 2]
+    assert y.tolist() == [10, 20]
+
+
 def test_get_batch(simple_numeric_dataset):
     simple_numeric_dataset.batch_size = 2
 
@@ -96,12 +111,15 @@ def test_get_batch(simple_numeric_dataset):
 
 
 def test_delete_rows(simple_numeric_dataset):
+    assert simple_numeric_dataset.row_count() == 4
+
     simple_numeric_dataset.delete_rows(0)
 
     x, y = simple_numeric_dataset.head(3)
 
     assert x.tolist() == [2, 3, 4]
     assert y.tolist() == [20, 30, 40]
+    assert simple_numeric_dataset.row_count() == 3
 
     simple_numeric_dataset.delete_rows(1, 20)
 
@@ -109,6 +127,18 @@ def test_delete_rows(simple_numeric_dataset):
 
     assert x.tolist() == [2]
     assert y.tolist() == [20]
+    assert simple_numeric_dataset.row_count() == 1
+
+
+def test_delete_rows_array(simple_array_dataset):
+    assert simple_array_dataset.row_count() == 3
+
+    simple_array_dataset.delete_rows(1)
+
+    x, y = simple_array_dataset.head(3)
+
+    assert x.tolist() == [[1, 1, 1], [3, 3, 3]]
+    assert y.tolist() == [1, 3]
 
 
 def test_get_irregular_batches(simple_numeric_dataset):

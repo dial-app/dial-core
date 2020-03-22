@@ -22,3 +22,6 @@ class ImageArray(DataType):
 
     def display(self, data: "np.ndarray"):
         return data
+
+    def convert_to_expected_format(self, data) -> "np.array":
+        return data

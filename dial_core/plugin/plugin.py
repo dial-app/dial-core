@@ -78,7 +78,6 @@ class Plugin:
                         return v
 
             package = pkg_resources.require(self.name)[0]
-            print(package)
             self.__version = get_metadata_value("Version", package)
             self.__summary = get_metadata_value("Summary", package)
         except FileNotFoundError as err:  # pragma: no cover

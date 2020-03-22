@@ -8,6 +8,9 @@ class DataType(metaclass=ABCMeta):
     Abstract class for any data type.
     """
 
+    def __init__(self):
+        self.is_editable = False
+
     @abstractmethod
     def process(self, data):
         """
@@ -28,3 +31,16 @@ class DataType(metaclass=ABCMeta):
 
     def __str__(self) -> str:
         return type(self).__name__
+
+    @abstractmethod
+    def convert_to_expected_format(self, data):
+        """
+        Transforms the passed data to a format expected by the dataset, that can be
+        stored.
+
+        See the derived DataType classes (Categorical, Numeric...) for more
+            explanations.
+
+        Raises:
+            ValueError: If the data can't be converted
+        """
