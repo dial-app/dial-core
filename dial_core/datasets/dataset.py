@@ -1,12 +1,12 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import Enum
-from typing import TYPE_CHECKING, List, Tuple
+from typing import TYPE_CHECKING, Any, List, Tuple
 
 import numpy as np
 from tensorflow import keras
 
-from .datatype import NumericArray
+from .datatype import Numeric
 
 if TYPE_CHECKING:
     from .datatype import DataType
@@ -33,10 +33,10 @@ class Dataset(keras.utils.Sequence):
             y_data = np.empty(0)
 
         if x_type is None:
-            x_type = NumericArray()
+            x_type = Numeric()
 
         if y_type is None:
-            y_type = NumericArray()
+            y_type = Numeric()
 
         # Data arrays
         self.__x, self.__y = x_data, y_data
@@ -65,6 +65,14 @@ class Dataset(keras.utils.Sequence):
     # def shuffle(self):
     #     self.__shuffled = True
     #     np.random.shuffle(self.__indexes)
+
+    def insert(self, position: int, x: List[Any], y: List[Any]):
+        # TODO: Exception if x and y don't have the same lenth?
+        if len(x) != len(y):
+            raise ValueError(f"Can't insert {len(x)} values on x and {len(y)} on y!")
+
+        self.__x = np.insert(self.__x, position, x, axis=0)
+        self.__y = np.insert(self.__y, position, y, axis=0)
 
     def delete_rows(self, start: int, n: int = 1):
         self.__x = np.delete(self.__x, range(start, start + n), axis=0)

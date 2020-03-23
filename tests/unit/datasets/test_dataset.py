@@ -141,6 +141,37 @@ def test_delete_rows_array(simple_array_dataset):
     assert y.tolist() == [1, 3]
 
 
+def test_insert_rows(simple_numeric_dataset):
+    assert simple_numeric_dataset.row_count() == 4
+
+    simple_numeric_dataset.insert(1, x=[9], y=[90])
+
+    x, y = simple_numeric_dataset.head(3)
+
+    assert x.tolist() == [1, 9, 2]
+    assert y.tolist() == [10, 90, 20]
+
+
+def test_insert_rows_different_length(simple_numeric_dataset):
+    assert simple_numeric_dataset.row_count() == 4
+
+    with pytest.raises(ValueError):
+        simple_numeric_dataset.insert(1, x=[9, 5, 6], y=[90])
+
+
+def test_insert_rows_arrays(simple_array_dataset):
+    assert simple_array_dataset.row_count() == 3
+
+    simple_array_dataset.insert(
+        0, x=[np.array([5, 5, 5]), np.array([6, 6, 6])], y=[5, 6],
+    )
+
+    x, y = simple_array_dataset.head(3)
+
+    assert x.tolist() == [[5, 5, 5], [6, 6, 6], [1, 1, 1]]
+    assert y.tolist() == [5, 6, 1]
+
+
 def test_get_irregular_batches(simple_numeric_dataset):
     simple_numeric_dataset.batch_size = 3
 
