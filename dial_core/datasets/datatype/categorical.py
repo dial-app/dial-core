@@ -15,7 +15,7 @@ class Categorical(DataType):
     different category.
     """
 
-    def __init__(self, categories: List[str]):
+    def __init__(self, categories: List[str] = []):
         super().__init__()
 
         self.is_editable = True
