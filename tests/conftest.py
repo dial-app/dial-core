@@ -3,7 +3,6 @@
 from unittest.mock import Mock, patch
 
 import pytest
-
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
 from dial_core.plugin import Plugin, PluginManager
 from dial_core.project import Project, ProjectManager

@@ -46,6 +46,13 @@ class ProjectManager:
         """Returns the number of created projects."""
         return len(self.__projects)
 
+    def index_of(self, project: "Project") -> int:
+        """Returns the index of the project, or -1 if not found."""
+        try:
+            return self.__projects.index(project)
+        except ValueError:
+            return -1
+
     def new_project(self) -> "Project":
         """Adds a new default project to the project manager.
 
