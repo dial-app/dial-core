@@ -49,11 +49,6 @@ class Node:
         """Returns a list of the output ports of the node."""
         return self.__outputs
 
-    def process(self):
-        """Sends the output of each port to the connected nodes."""
-        for output_port in self.outputs.values():
-            output_port.propagate()
-
     def add_input_port(self, name: str, port_type: Any) -> "InputPort":
         """Creates a new input port and adds it to the list of ports.
 

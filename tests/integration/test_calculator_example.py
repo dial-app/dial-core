@@ -9,12 +9,22 @@ class ValueNode(Node):
 
         # Port configuration
         self.add_output_port(name="value", port_type=int)
-        self.outputs["value"].output_generator = self.return_value
+        self.outputs["value"].set_generator_function(self.__generate_value)
 
         # Attributes
-        self.value = value
+        self.__value = value
 
-    def return_value(self):
+    @property
+    def value(self):
+        return self.__value
+
+    @value.setter
+    def value(self, new_value):
+        self.__value = new_value
+
+        self.outputs["value"].send()
+
+    def __generate_value(self):
         return self.value
 
 
@@ -26,13 +36,21 @@ class AddNode(Node):
         self.add_input_port(name="op2", port_type=int)
 
         self.add_output_port(name="result", port_type=int)
-        self.outputs["result"].output_generator = self.add_ops
+
+        self.inputs["op1"].propagate_to(self.outputs["result"])
+        self.inputs["op2"].propagate_to(self.outputs["result"])
+
+        self.outputs["result"].set_generator_function(self.add_ops)
 
     def add_ops(self):
-        op1 = self.inputs["op1"].receive()
-        op2 = self.inputs["op2"].receive()
+        value_op1 = self.inputs["op1"].receive()
+        value_op2 = self.inputs["op2"].receive()
+        result = value_op1 + value_op2
+        # print("value op1", value_op1)
+        # print("value op2", value_op2)
+        # print("Result", result)
 
-        return op1 + op2
+        return result
 
 
 class TypeConversionNode(Node):
@@ -43,11 +61,12 @@ class TypeConversionNode(Node):
         self.output_type = output_type
 
         self.add_input_port(name="input", port_type=input_type)
-
         self.add_output_port(name="output", port_type=output_type)
-        self.outputs["output"].output_generator = self.convert_type
 
-    def convert_type(self):
+        self.inputs["input"].propagate_to(self.outputs["output"])
+        self.outputs["output"].set_generator_function(self.__convert_type)
+
+    def __convert_type(self):
         return self.output_type(self.inputs["input"].receive())
 
 
@@ -56,15 +75,17 @@ class PrintNode(Node):
         super().__init__("Print Node")
 
         self.add_input_port(name="value", port_type=str)
+        self.inputs["value"].set_processor_function(self.__print_value)
 
-    def process(self):
-        super().process()
+    def print_input(self):
+        value = self.inputs["value"].receive()
+        self.__print_value(value)
 
-        string_to_print = self.inputs["value"].receive()
-        print(string_to_print)
+    def __print_value(self, value):
+        print(value)
 
 
-def test_calculator_example():
+def test_calculator_example(capsys):
     #                             Graph visualization
     #
     #   node_op1 ("value")                                     ("value") print_node_1
@@ -89,14 +110,27 @@ def test_calculator_example():
     node_op1.outputs["value"].connect_to(add_node.inputs["op1"])
     node_op2.outputs["value"].connect_to(add_node.inputs["op2"])
 
-    add_node.outputs["result"].connect_to(int_to_str_node.inputs["input"])
-
-    int_to_str_node.outputs["output"].connect_to(print_node_1.inputs["value"])
-    int_to_str_node.outputs["output"].connect_to(print_node_2.inputs["value"])
-
-    add_node.process()
-
     assert add_node.add_ops() == 7
 
-    assert print_node_1.inputs["value"].receive() == "7"
-    assert print_node_2.inputs["value"].receive() == "7"
+    add_node.outputs["result"].connect_to(int_to_str_node.inputs["input"])
+    int_to_str_node.outputs["output"].connect_to(print_node_1.inputs["value"])
+
+    captured = capsys.readouterr()
+    assert "7\n" == captured.out
+
+    node_op1.value = 7
+    captured = capsys.readouterr()
+    assert "10\n" == captured.out
+
+    int_to_str_node.outputs["output"].connect_to(print_node_2.inputs["value"])
+
+    captured = capsys.readouterr()
+    assert "10\n" == captured.out
+
+    # Now, if we change a value the propagation is stopped at the int_to_str node
+    int_to_str_node.outputs["output"].toggle_sends_output(False)
+
+    add_node.outputs["result"].send()
+
+    captured = capsys.readouterr()
+    assert "" == captured.out

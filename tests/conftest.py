@@ -3,6 +3,7 @@
 from unittest.mock import Mock, patch
 
 import pytest
+
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
 from dial_core.plugin import Plugin, PluginManager
 from dial_core.project import Project, ProjectManager
@@ -12,6 +13,14 @@ collect_ignore = ["setup.py"]
 INSTALLED_PLUGINS = {
     "test-plugin": {"version": "0.1.2", "summary": "A Test Plugin.", "active": True}
 }
+
+
+def print_value(value):
+    print(value)
+
+
+def return_value():
+    return 10
 
 
 @pytest.fixture
