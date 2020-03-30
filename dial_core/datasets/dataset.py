@@ -66,6 +66,10 @@ class Dataset(keras.utils.Sequence):
     #     self.__shuffled = True
     #     np.random.shuffle(self.__indexes)
 
+    @property
+    def input_shape(self):
+        return self.x_type.process(self.__x[0]).shape if len(self.__x) > 0 else (0,)
+
     def insert(self, position: int, x: List[Any], y: List[Any]):
         # TODO: Exception if x and y don't have the same lenth?
         if len(x) != len(y):
