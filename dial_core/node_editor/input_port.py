@@ -47,7 +47,7 @@ class InputPort(Port):
             return
 
         if not self._processor_function:
-            raise NotImplementedError("`processor_function` not implemented in {sefl}")
+            raise NotImplementedError("`processor_function` not implemented in {self}")
 
         self._processor_function(value)
 
