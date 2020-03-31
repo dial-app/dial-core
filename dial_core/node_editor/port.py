@@ -2,6 +2,7 @@
 
 from typing import Any, Optional, Set, Type
 
+from dial_core.utils.exceptions import InvalidPortTypeError, PortNotConnectedError
 from dial_core.utils.log import DEBUG, ERROR, log_on_end, log_on_error
 
 
@@ -97,10 +98,10 @@ class Port:
             ValueError: If the ports aren't compatible (can't be connected).
         """
         if port is self:  # Avoid connecting a port to itself
-            raise ValueError(f"Can't connect {port} to itself!")
+            raise PortNotConnectedError(f"Can't connect {port} to itself!")
 
         if not self.is_compatible_with(port):
-            raise ValueError(
+            raise InvalidPortTypeError(
                 f"This port ({self}) type is not compatible with the"
                 f" other port. ({port})"
             )

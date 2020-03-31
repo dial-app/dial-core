@@ -4,6 +4,8 @@ import pickle
 
 import pytest
 
+from dial_core.utils.exceptions import InvalidPortTypeError, PortNotConnectedError
+
 
 def test_port_attributes(port_int_a):
     assert hasattr(port_int_a, "name")
@@ -104,12 +106,12 @@ def test_triangular_connection(a_multi, b_single, c_single):
 
 
 def test_connect_port_to_self(a_single):
-    with pytest.raises(ValueError):
+    with pytest.raises(PortNotConnectedError):
         a_single.connect_to(a_single)
 
 
 def test_connect_port_to_incompatible(port_int_a, port_str):
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidPortTypeError):
         port_int_a.connect_to(port_str)
 
 

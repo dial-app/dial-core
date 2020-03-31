@@ -3,6 +3,7 @@
 import pickle
 
 import pytest
+from dial_core.utils.exceptions import InvalidPortTypeError
 
 
 def test_port_connected_to(input_port_a, output_port_a):
@@ -20,7 +21,7 @@ def test_input_port_attributes(input_port_a):
 
 
 def test_connect_to_incompatible_node(input_port_a, input_port_b):
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidPortTypeError):
         input_port_a.connect_to(input_port_b)
 
 

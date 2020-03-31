@@ -4,6 +4,8 @@ from typing import Any, Callable, Dict, Optional
 
 from .port import Port
 
+from dial_core.utils.exceptions import PortNotConnectedError, InvalidPortTypeError
+
 # from dial_core.utils.log import DEBUG, log_on_end
 
 
@@ -53,7 +55,7 @@ class InputPort(Port):
 
     def receive(self) -> Any:
         if not self.port_connected_to:
-            raise ValueError
+            raise PortNotConnectedError
 
         return self.port_connected_to.generate_output()
 

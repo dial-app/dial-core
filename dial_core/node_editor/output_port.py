@@ -2,9 +2,10 @@
 
 from typing import Any, Callable, Dict, Optional
 
-from .port import Port
-
 # from dial_core.utils.log import DEBUG, log_on_end
+from dial_core.utils.exceptions import PortNotConnectedError
+
+from .port import Port
 
 
 class OutputPort(Port):
@@ -26,7 +27,7 @@ class OutputPort(Port):
 
         try:
             input_port.process_input(self.generate_output())
-        except (NotImplementedError, ValueError):
+        except (NotImplementedError, PortNotConnectedError):
             pass
 
     def set_generator_function(self, generator_function: Callable):
@@ -42,15 +43,17 @@ class OutputPort(Port):
         if not self.__is_sending_output:
             return
 
+        # Sometimes, the generate_output() may need the value of connected InputPort.
+        # If the function tries to access the value (calling `receive()`) but the
+        # InputPort is not connected, the PortNotConnectedError exception is raised,
+        # and no values are propagated to next ports
         try:
             value = self.generate_output()
+        except PortNotConnectedError:
+            return
 
-            for input_port in self.connections:
-                # if port.receive_propagated_values:
-                input_port.process_input(value)
-
-        except ValueError:  # Error in generate_output, can't propagate
-            pass
+        for input_port in self.connections:
+            input_port.process_input(value)
 
     def __getstate__(self) -> Dict[str, Any]:
         state = super().__getstate__()

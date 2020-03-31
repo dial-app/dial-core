@@ -3,6 +3,7 @@
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
 from dial_core.utils.log import DEBUG, log_on_end
+from dial_core.utils.exceptions import InvalidPortTypeError
 
 from .input_port import InputPort
 from .output_port import OutputPort
@@ -94,7 +95,9 @@ class Node:
         elif isinstance(port, OutputPort):
             return self.__add_port_to(self.outputs, port)
         else:
-            raise TypeError("Port {port} must be of type InputPort or OutputPort.")
+            raise InvalidPortTypeError(
+                "Port {port} must be of type InputPort or OutputPort."
+            )
 
     def remove_input_port(self, port_name: str):
         """Removes an input port from the list of input ports.

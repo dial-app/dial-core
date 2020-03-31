@@ -4,6 +4,7 @@ import pickle
 from copy import deepcopy
 
 import pytest
+from dial_core.utils.exceptions import InvalidPortTypeError
 
 
 def test_title(node_a):
@@ -51,7 +52,7 @@ def test_add_port(node_a, input_port_a, output_port_a):
 
 
 def test_add_not_port(node_a):
-    with pytest.raises(TypeError):
+    with pytest.raises(InvalidPortTypeError):
         node_a.add_port("foo")
 
 

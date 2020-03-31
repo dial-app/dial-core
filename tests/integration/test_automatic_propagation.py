@@ -64,3 +64,39 @@ def test_automatic_propagation():
     value_node.value = 8
     assert value_node.value == 8
     assert receive_value_node.value == 20
+
+
+class AddTwoValues(Node):
+    def __init__(self):
+        super().__init__("Receive Value Node")
+
+        self.add_input_port(name="value1", port_type=int)
+        self.add_input_port(name="value2", port_type=int)
+        self.inputs["value1"].set_processor_function(self.__add_values)
+        self.inputs["value2"].set_processor_function(self.__add_values)
+
+        self.result = 0
+
+    def __add_values(self, _):
+        value1 = self.inputs["value1"].receive()
+        value2 = self.inputs["value2"].receive()
+
+        self.result = value1 + value2
+
+
+def test_incomplete_propagation():
+    value_node_1 = ValueNode(10)
+    value_node_2 = ValueNode(20)
+
+    add_node = AddTwoValues()
+
+    # When connecting, the node will try to add the two values, but is still missing a
+    # connection. Shouldn't throw any exception, but don't modify the node state either
+    add_node.inputs["value1"].connect_to(value_node_1.outputs["value"])
+
+    assert add_node.result == 0
+
+    # Once we connect the second one, the node will be able to perform the operation
+    add_node.inputs["value2"].connect_to(value_node_2.outputs["value"])
+
+    assert add_node.result == 30

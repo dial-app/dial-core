@@ -4,6 +4,8 @@ import pickle
 
 import pytest
 
+from dial_core.utils.exceptions import InvalidPortTypeError
+
 
 def test_get_output_value(output_port_a):
     def get_num_1():
@@ -15,7 +17,7 @@ def test_get_output_value(output_port_a):
 
 
 def test_connect_to_incompatible_node(output_port_a, output_port_b):
-    with pytest.raises(ValueError):
+    with pytest.raises(InvalidPortTypeError):
         output_port_a.connect_to(output_port_b)
 
 
