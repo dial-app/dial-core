@@ -2,10 +2,13 @@
 
 from typing import Any, Callable, Dict, Optional
 
+from dial_core.utils import log
 # from dial_core.utils.log import DEBUG, log_on_end
 from dial_core.utils.exceptions import PortNotConnectedError
 
 from .port import Port
+
+LOGGER = log.get_logger(__name__)
 
 
 class OutputPort(Port):
@@ -53,6 +56,7 @@ class OutputPort(Port):
             return
 
         for input_port in self.connections:
+            LOGGER.debug(f"Port {self} sending to {input_port}")
             input_port.process_input(value)
 
     def __getstate__(self) -> Dict[str, Any]:

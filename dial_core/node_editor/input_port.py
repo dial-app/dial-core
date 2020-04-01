@@ -2,9 +2,9 @@
 
 from typing import Any, Callable, Dict, Optional
 
-from .port import Port
+from dial_core.utils.exceptions import PortNotConnectedError
 
-from dial_core.utils.exceptions import PortNotConnectedError, InvalidPortTypeError
+from .port import Port
 
 # from dial_core.utils.log import DEBUG, log_on_end
 
@@ -51,7 +51,10 @@ class InputPort(Port):
         if not self._processor_function:
             raise NotImplementedError("`processor_function` not implemented in {self}")
 
-        self._processor_function(value)
+        try:
+            self._processor_function(value)
+        except PortNotConnectedError:
+            return
 
     def receive(self) -> Any:
         if not self.port_connected_to:
