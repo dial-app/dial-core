@@ -30,15 +30,17 @@ class OutputPort(Port):
 
         try:
             input_port.process_input(self.generate_output())
-        except (NotImplementedError, PortNotConnectedError):
-            pass
+        except (NotImplementedError, PortNotConnectedError) as err:
+            LOGGER.exception(err)
 
     def set_generator_function(self, generator_function: Callable):
         self._generator_function = generator_function
 
     def generate_output(self):
         if not self._generator_function:
-            raise NotImplementedError(f"`generator_function` not implemented in {self}")
+            raise NotImplementedError(
+                "`generator_function` not implemented in %s", self
+            )
 
         return self._generator_function()
 
@@ -46,18 +48,31 @@ class OutputPort(Port):
         if not self.__is_sending_output:
             return
 
-        # Sometimes, the generate_output() may need the value of connected InputPort.
+        # Sometimes, the generate_output() may need the value of a connected InputPort.
         # If the function tries to access the value (calling `receive()`) but the
         # InputPort is not connected, the PortNotConnectedError exception is raised,
-        # and no values are propagated to next ports
+        # and no values are propagated to next ports.
         try:
             value = self.generate_output()
-        except PortNotConnectedError:
+
+        except (PortNotConnectedError, NotImplementedError) as err:
+            LOGGER.exception(
+                "Port %s can't generate a value to send. Details:\n%s", self, str(err)
+            )
             return
 
         for input_port in self.connections:
-            LOGGER.debug(f"Port {self} sending to {input_port}")
-            input_port.process_input(value)
+            LOGGER.debug("Port %s sending to %s...", self, input_port)
+
+            try:
+                input_port.process_input(value)
+
+            except (PortNotConnectedError, NotImplementedError) as err:
+                LOGGER.exception(
+                    "Port %s couldn't process the sent value. Details: %s",
+                    input_port,
+                    str(err),
+                )
 
     def __getstate__(self) -> Dict[str, Any]:
         state = super().__getstate__()

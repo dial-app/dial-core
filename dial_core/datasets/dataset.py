@@ -46,32 +46,11 @@ class Dataset(keras.utils.Sequence):
 
         self.batch_size = batch_size
 
-    # @property
-    # def shuffled(self) -> bool:
-    #     """
-    #     Check if the dataset is shuffled (dataset items randomly sorted)
-    #     """
-    #     return self.__shuffled
-
-    # @shuffled.setter  # type: ignore
-    # def shuffled(self, toggle: bool):
-    #     self.__shuffled = toggle
-
-    #     if self.__shuffled:
-    #         self.shuffle()
-    #     else:
-    #         self.__indexes = np.arange(self.__x.shape[0])
-
-    # def shuffle(self):
-    #     self.__shuffled = True
-    #     np.random.shuffle(self.__indexes)
-
     @property
     def input_shape(self):
         return self.x_type.process(self.__x[0]).shape if len(self.__x) > 0 else (0,)
 
     def insert(self, position: int, x: List[Any], y: List[Any]):
-        # TODO: Exception if x and y don't have the same lenth?
         if len(x) != len(y):
             raise ValueError(f"Can't insert {len(x)} values on x and {len(y)} on y!")
 
@@ -120,7 +99,9 @@ class Dataset(keras.utils.Sequence):
         batch_x = self.__x[batch_start:batch_end]
         batch_y = self.__y[batch_start:batch_end]
 
-        batch_x, batch_y = self.__preprocess_data(batch_x, batch_y)
+        batch_x, batch_y = self.__preprocess_data(
+            self.__x[batch_start:batch_end], self.__y[batch_start:batch_end]
+        )
 
         return batch_x, batch_y
 

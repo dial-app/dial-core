@@ -18,7 +18,10 @@ class ImageArray(DataType):
     """
 
     def process(self, data: "np.ndarray") -> "np.ndarray":
-        return data.flatten()
+        data = data.flatten()
+        data = data / 255.0
+
+        return data
 
     def display(self, data: "np.ndarray"):
         return data

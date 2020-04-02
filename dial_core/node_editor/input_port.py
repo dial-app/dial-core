@@ -2,11 +2,12 @@
 
 from typing import Any, Callable, Dict, Optional
 
+from dial_core.utils import log
 from dial_core.utils.exceptions import PortNotConnectedError
 
 from .port import Port
 
-# from dial_core.utils.log import DEBUG, log_on_end
+LOGGER = log.get_logger(__name__)
 
 
 class InputPort(Port):
@@ -23,7 +24,6 @@ class InputPort(Port):
     @property
     def port_connected_to(self) -> Optional["Port"]:
         """Returns the port connected to this one (can be None).
-
         Because this is an Input Port, we can ensure it can be connected to only one (1)
         another port.
 
@@ -38,9 +38,6 @@ class InputPort(Port):
     def toggle_receives_input(self, toggle: bool):
         self.__is_receiving_input = toggle
 
-    def connect_to(self, output_port):
-        super().connect_to(output_port)
-
     def set_processor_function(self, processor_function: Callable):
         self._processor_function = processor_function
 
@@ -49,16 +46,21 @@ class InputPort(Port):
             return
 
         if not self._processor_function:
-            raise NotImplementedError("`processor_function` not implemented in {self}")
+            raise NotImplementedError(f"`processor_function` not implemented in {self}")
 
         try:
             self._processor_function(value)
-        except PortNotConnectedError:
-            return
+        except PortNotConnectedError as err:
+            LOGGER.debug(
+                "%s processor function failed (%s) Details:\n%s",
+                self,
+                self._processor_function.__name__,
+                str(err),
+            )
 
     def receive(self) -> Any:
         if not self.port_connected_to:
-            raise PortNotConnectedError
+            raise PortNotConnectedError(f"{self} is not connected to any other port.")
 
         return self.port_connected_to.generate_output()
 
