@@ -1,9 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from copy import deepcopy
 from typing import TYPE_CHECKING, Any, Dict, Optional, Union
 
-from dial_core.utils.log import DEBUG, log_on_end
 from dial_core.utils.exceptions import InvalidPortTypeError
+from dial_core.utils.log import DEBUG, log_on_end
 
 from .input_port import InputPort
 from .output_port import OutputPort
@@ -174,6 +175,29 @@ class Node:
         del ports_dict[port_name]
 
         return True
+
+    def clone(self) -> "Node":
+        """Returns a clone of this Node. Input and Output ports are also cloned, but
+        their connections are deleted."""
+        cloned_node = self.__class__(self.__title, deepcopy(self.__inner_widget))
+
+        for port in list(self.inputs.values()) + list(self.outputs.values()):
+            cloned_node.add_port(port.clone())
+
+        return cloned_node
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+
+        for k, v in self.__dict__.items():
+            setattr(result, k, deepcopy(v, memo))
+
+        return result
+
+    def __hash__(self):
+        return hash(id(self))
 
     def __eq__(self, other):
         if isinstance(other, Node):

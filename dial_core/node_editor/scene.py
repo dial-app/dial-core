@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from copy import deepcopy
 from typing import TYPE_CHECKING, List
 
 import dependency_injector.providers as providers
@@ -35,6 +36,31 @@ class Scene:
             self.nodes.remove(node)
         except ValueError:
             pass
+
+    def duplicate_nodes(self, nodes: List["Node"]) -> List["Node"]:
+        new_node_of = {}
+
+        def get_new_node_of(old_node):
+            if old_node not in new_node_of:
+                new_node_of[old_node] = deepcopy(old_node)
+
+            return new_node_of[old_node]
+
+        for old_node in nodes:
+            new_node = get_new_node_of(old_node)
+
+            for (port_name, current_port) in old_node.inputs.items():
+                for connected_port in current_port.connections:
+
+                    new_connected_node = get_new_node_of(connected_port.node)
+
+                    new_node.inputs[port_name].connect_to(
+                        new_connected_node.outputs[connected_port.name]
+                    )
+
+            # No need to do the outputs because we are iterating all the nodes
+
+        return list(new_node_of.values())
 
     def __repr__(self):
         output = ""

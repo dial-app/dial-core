@@ -5,6 +5,7 @@ import pickle
 import pytest
 
 from dial_core.utils.exceptions import InvalidPortTypeError, PortNotConnectedError
+from copy import deepcopy
 
 
 def test_port_attributes(port_int_a):
@@ -149,6 +150,20 @@ def test_clear_port_connections(a_multi, b_multi, c_multi):
     assert len(a_multi.connections) == 0
     assert a_multi not in b_multi.connections
     assert a_multi not in c_multi.connections
+
+
+def test_clone(a_single, b_single):
+    a_single.connect_to(b_single)
+
+    cloned_a_single = deepcopy(a_single)
+
+    assert cloned_a_single.name == a_single.name
+    assert cloned_a_single.port_type == a_single.port_type
+    assert cloned_a_single.compatible_port_classes == a_single.compatible_port_classes
+    assert (
+        cloned_a_single.compatible_port_classes is not a_single.compatible_port_classes
+    )
+    assert len(cloned_a_single.connections) == 0
 
 
 def test_pickable(a_single, b_single):

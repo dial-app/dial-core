@@ -32,6 +32,24 @@ def test_remove_node(scene, node_a, node_b):
     scene.remove_node(node_a)
 
 
+def test_duplicate_nodes(scene, node_a, node_b):
+    node_a.add_output_port(name="value", port_type=int)
+    node_b.add_input_port(name="value", port_type=int)
+    # node_a.outputs["value"].connect_to(node_b.inputs["value"])
+    node_b.inputs["value"].connect_to(node_a.outputs["value"])
+
+    new_nodes = scene.duplicate_nodes([node_a, node_b])
+
+    new_node_a = new_nodes[0]
+    new_node_b = new_nodes[1]
+
+    assert new_node_a is not node_a
+    assert new_node_b is not node_b
+
+    assert new_node_b.inputs["value"] in new_node_a.outputs["value"].connections
+    assert new_node_a.outputs["value"] in new_node_b.inputs["value"].connections
+
+
 def test_eq(scene):
     copy_scene = deepcopy(scene)
     assert scene == copy_scene

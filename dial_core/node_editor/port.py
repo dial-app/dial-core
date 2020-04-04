@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from copy import deepcopy
 from typing import Any, Optional, Set, Type
 
 from dial_core.utils.exceptions import InvalidPortTypeError, PortNotConnectedError
@@ -33,7 +34,7 @@ class Port:
     ):
         self.__name = name
         self.__port_type = port_type
-        self.__connected_to: Set["Port"] = set()  # Avoid repeat ports
+        self._connected_to: Set["Port"] = set()  # Avoid repeat ports
         self.compatible_port_classes: Set[Type["Port"]] = set([Port])
 
         self.node: Optional["Node"] = None  # type: ignore
@@ -63,7 +64,7 @@ class Port:
         Returns:
            A set with all the Ports connected to this port.
         """
-        return self.__connected_to
+        return self._connected_to
 
     def is_compatible_with(self, port: "Port") -> bool:
         """Checks if this port is compatible with another port.
@@ -111,7 +112,7 @@ class Port:
             self.clear_all_connections()
 
         # Two way connection (Both ports will have a reference to each other)
-        self.__connected_to.add(port)
+        self._connected_to.add(port)
         if self not in port.connections:
             port.connect_to(self)
 
@@ -122,28 +123,42 @@ class Port:
         Args:
             port: `Port` object being disconnect from.
         """
-        if port not in self.__connected_to:  # Can't remove port if not found
+        if port not in self._connected_to:  # Can't remove port if not found
             return
 
         # Two way disconnection
-        self.__connected_to.discard(port)
+        self._connected_to.discard(port)
         port.disconnect_from(self)
 
     @log_on_end(DEBUG, "All connections cleared on {self}")
     def clear_all_connections(self):
         """Removes all connections to this port."""
 
-        # Use a list to avoid removing an item from self.__connected_to while iterating
-        for port in list(self.__connected_to):
+        # Use a list to avoid removing an item from self._connected_to while iterating
+        for port in list(self._connected_to):
             port.disconnect_from(self)
 
-        self.__connected_to.clear()
+        self._connected_to.clear()
+
+    def __deepcopy__(self, memo):
+        cls = self.__class__
+        result = cls.__new__(cls)
+        memo[id(self)] = result
+
+        for k, v in self.__dict__.items():
+            if k == "_connected_to":
+                setattr(result, k, v.__class__())
+                continue
+
+            setattr(result, k, deepcopy(v, memo))
+
+        return result
 
     def __getstate__(self):
-        return {"connected_to": self.__connected_to, "node": self.node}
+        return {"connected_to": self._connected_to, "node": self.node}
 
     def __setstate__(self, new_state):
-        self.__connected_to = new_state["connected_to"]
+        self._connected_to = new_state["connected_to"]
         self.node = new_state["node"]
 
     def __reduce__(self):

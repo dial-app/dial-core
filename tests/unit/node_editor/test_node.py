@@ -4,7 +4,14 @@ import pickle
 from copy import deepcopy
 
 import pytest
+
+from dial_core.node_editor import Node
 from dial_core.utils.exceptions import InvalidPortTypeError
+
+
+class InnerWidget:
+    def __init__(self):
+        self.value = 100
 
 
 def test_title(node_a):
@@ -114,6 +121,26 @@ def test_node_connect_to_inexistent(node_a, node_b, output_port_a):
 
     with pytest.raises(KeyError):
         node_a.outputs["a"].connect_to(node_b.inputs["doesnt_exists"])
+
+
+def test_deepcopy():
+    node_a = Node(title="a", inner_widget=InnerWidget())
+    node_a.add_input_port("inputport", port_type=str)
+    node_a.add_output_port("value", port_type=int)
+
+    node_b = Node(title="b")
+    node_b.add_input_port("value", port_type=int)
+
+    node_a.outputs["value"].connect_to(node_b.inputs["value"])
+
+    node_a_clone = deepcopy(node_a)
+
+    assert node_a_clone.inner_widget is not node_a.inner_widget
+    assert len(node_a_clone.inputs) == 1
+    assert len(node_a_clone.outputs) == 1
+
+    # Only connections are not copied
+    assert len(node_a_clone.outputs["value"].connections) == 0
 
 
 def test_node_eq(node_a):
