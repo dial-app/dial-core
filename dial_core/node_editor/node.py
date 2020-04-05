@@ -15,17 +15,17 @@ if TYPE_CHECKING:
 
 class Node:
     def __init__(self, title: str, inner_widget: Any = None):
-        self.__title = title
+        self._title = title
 
-        self.__inner_widget: Optional[Any] = inner_widget
+        self._inner_widget: Optional[Any] = inner_widget
 
-        self.__inputs: Dict[str, "InputPort"] = {}
-        self.__outputs: Dict[str, "OutputPort"] = {}
+        self._inputs: Dict[str, "InputPort"] = {}
+        self._outputs: Dict[str, "OutputPort"] = {}
 
     @property
     def title(self) -> str:
         """Returns the title of the node."""
-        return self.__title
+        return self._title
 
     @title.setter
     def title(self, title: str):
@@ -34,22 +34,22 @@ class Node:
         Emits:
             title_changed
         """
-        self.__title = title
+        self._title = title
 
     @property
     def inner_widget(self) -> Optional[Any]:
         """Returns the inner widget set on the node (Or None if not used)."""
-        return self.__inner_widget
+        return self._inner_widget
 
     @property
     def inputs(self) -> Dict[str, "InputPort"]:
         """Returns a list of the input ports of the node."""
-        return self.__inputs
+        return self._inputs
 
     @property
     def outputs(self) -> Dict[str, "OutputPort"]:
         """Returns a list of the output ports of the node."""
-        return self.__outputs
+        return self._outputs
 
     def add_input_port(self, name: str, port_type: Any) -> "InputPort":
         """Creates a new input port and adds it to the list of ports.
@@ -176,23 +176,18 @@ class Node:
 
         return True
 
-    def clone(self) -> "Node":
-        """Returns a clone of this Node. Input and Output ports are also cloned, but
-        their connections are deleted."""
-        cloned_node = self.__class__(self.__title, deepcopy(self.__inner_widget))
-
-        for port in list(self.inputs.values()) + list(self.outputs.values()):
-            cloned_node.add_port(port.clone())
-
-        return cloned_node
-
     def __deepcopy__(self, memo):
         cls = self.__class__
         result = cls.__new__(cls)
         memo[id(self)] = result
 
-        for k, v in self.__dict__.items():
-            setattr(result, k, deepcopy(v, memo))
+        setattr(result, "_title", deepcopy(self._title, memo))
+        setattr(result, "_inputs", deepcopy(self._inputs, memo))
+        setattr(result, "_outputs", deepcopy(self._outputs, memo))
+        setattr(result, "_inner_widget", deepcopy(self._inner_widget, memo))
+
+        for port in list(self.inputs.values()) + list(self.outputs.values()):
+            port.node = self
 
         return result
 
@@ -209,14 +204,14 @@ class Node:
             )
 
     def __getstate__(self):
-        return {"inputs": self.__inputs, "outputs": self.__outputs}
+        return {"inputs": self._inputs, "outputs": self._outputs}
 
     def __setstate__(self, new_state):
-        self.__inputs = new_state["inputs"]
-        self.__outputs = new_state["outputs"]
+        self._inputs = new_state["inputs"]
+        self._outputs = new_state["outputs"]
 
     def __reduce__(self):
-        return (Node, (self.__title, self.__inner_widget), self.__getstate__())
+        return (Node, (self._title, self._inner_widget), self.__getstate__())
 
     def __str__(self):
         """Retuns the string representation of the Port object."""

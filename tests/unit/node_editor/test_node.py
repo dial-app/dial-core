@@ -14,6 +14,13 @@ class InnerWidget:
         self.value = 100
 
 
+class CustomNode(Node):
+    def __init__(self):
+        super().__init__("CustomNode")
+
+        self.add_output_port(name="output", port_type=int)
+
+
 def test_title(node_a):
     assert hasattr(node_a, "title")
 
@@ -141,6 +148,18 @@ def test_deepcopy():
 
     # Only connections are not copied
     assert len(node_a_clone.outputs["value"].connections) == 0
+
+
+def test_deepcopy_child_class():
+    custom_node = CustomNode()
+
+    # This tests that the deepcopy works with child classes without having to
+    # reimplement
+    custom_node_copy = deepcopy(custom_node)
+
+    assert custom_node is not custom_node_copy
+    assert custom_node == custom_node_copy
+    assert "output" in custom_node.outputs
 
 
 def test_node_eq(node_a):

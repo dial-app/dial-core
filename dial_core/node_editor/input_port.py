@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from copy import deepcopy
 from typing import Any, Callable, Dict, Optional
 
 from dial_core.utils import log
@@ -18,7 +19,7 @@ class InputPort(Port):
 
         self.compatible_port_classes.add(OutputPort)
 
-        self.__is_receiving_input = True
+        self._is_receiving_input = True
         self._processor_function: Optional[Callable] = None
 
     @property
@@ -36,13 +37,13 @@ class InputPort(Port):
         return None
 
     def toggle_receives_input(self, toggle: bool):
-        self.__is_receiving_input = toggle
+        self._is_receiving_input = toggle
 
     def set_processor_function(self, processor_function: Callable):
         self._processor_function = processor_function
 
     def process_input(self, value: Any):
-        if not self.__is_receiving_input:
+        if not self._is_receiving_input:
             return
 
         if not self._processor_function:
@@ -69,6 +70,14 @@ class InputPort(Port):
             output_port.send()
 
         self._processor_function = processor_function_propagate_to
+
+    def __deepcopy__(self, memo):
+        base = super().__deepcopy__(memo)
+
+        setattr(base, "_is_receiving_input", deepcopy(self._is_receiving_input, memo))
+        setattr(base, "_processor_function", deepcopy(self._processor_function, memo))
+
+        return base
 
     def __getstate__(self) -> Dict[str, Any]:
         state = super().__getstate__()

@@ -48,17 +48,33 @@ class Scene:
 
         for old_node in nodes:
             new_node = get_new_node_of(old_node)
+            self.add_node(new_node)
 
-            for (port_name, current_port) in old_node.inputs.items():
-                for connected_port in current_port.connections:
+            for (port_name_old, port_old) in old_node.inputs.items():
+                for connected_port in port_old.connections:
 
-                    new_connected_node = get_new_node_of(connected_port.node)
+                    # Skip connecting if the node hasn't been visited
+                    if connected_port.node not in new_node_of:
+                        continue
 
-                    new_node.inputs[port_name].connect_to(
+                    new_connected_node = new_node_of[connected_port.node]
+
+                    new_node.inputs[port_name_old].connect_to(
                         new_connected_node.outputs[connected_port.name]
                     )
 
-            # No need to do the outputs because we are iterating all the nodes
+            for (port_name_old, port_old) in old_node.outputs.items():
+                for connected_port in port_old.connections:
+
+                    # Skip connecting if the node hasn't been visited
+                    if connected_port.node not in new_node_of:
+                        continue
+
+                    new_connected_node = new_node_of[connected_port.node]
+
+                    new_node.outputs[port_name_old].connect_to(
+                        new_connected_node.inputs[connected_port.name]
+                    )
 
         return list(new_node_of.values())
 

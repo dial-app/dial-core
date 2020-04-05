@@ -32,8 +32,8 @@ class Port:
     def __init__(
         self, name: str, port_type: Any, allows_multiple_connections: bool = True
     ):
-        self.__name = name
-        self.__port_type = port_type
+        self._name = name
+        self._port_type = port_type
         self._connected_to: Set["Port"] = set()  # Avoid repeat ports
         self.compatible_port_classes: Set[Type["Port"]] = set([Port])
 
@@ -44,7 +44,7 @@ class Port:
     @property
     def name(self) -> str:
         """Returns the name (identifier) of the port."""
-        return self.__name
+        return self._name
 
     @property
     def port_type(self) -> Any:
@@ -52,7 +52,7 @@ class Port:
 
         Used to check which ports can be connected between them.
         """
-        return self.__port_type
+        return self._port_type
 
     @property
     def connections(self) -> Set["Port"]:
@@ -76,7 +76,7 @@ class Port:
             port: Port being compared with.
         """
         return (
-            self.__port_type == port.port_type
+            self._port_type == port.port_type
             and (not self.node or self.node != port.node)
             and type(port) in self.compatible_port_classes
         )
@@ -145,12 +145,20 @@ class Port:
         result = cls.__new__(cls)
         memo[id(self)] = result
 
-        for k, v in self.__dict__.items():
-            if k == "_connected_to":
-                setattr(result, k, v.__class__())
-                continue
-
-            setattr(result, k, deepcopy(v, memo))
+        setattr(result, "_name", deepcopy(self._name, memo))
+        setattr(result, "_port_type", deepcopy(self._port_type, memo))
+        setattr(result, "_connected_to", set())
+        setattr(
+            result,
+            "compatible_port_classes",
+            deepcopy(self.compatible_port_classes, memo),
+        )
+        setattr(result, "node", None)
+        setattr(
+            result,
+            "allows_multiple_connections",
+            deepcopy(self.allows_multiple_connections, memo),
+        )
 
         return result
 

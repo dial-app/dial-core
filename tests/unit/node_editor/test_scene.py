@@ -43,11 +43,33 @@ def test_duplicate_nodes(scene, node_a, node_b):
     new_node_a = new_nodes[0]
     new_node_b = new_nodes[1]
 
+    print(new_node_a.outputs["value"].connections)
+
     assert new_node_a is not node_a
     assert new_node_b is not node_b
 
+    assert len(new_node_a.outputs["value"].connections) == 1
+    assert len(new_node_b.inputs["value"].connections) == 1
+
     assert new_node_b.inputs["value"] in new_node_a.outputs["value"].connections
     assert new_node_a.outputs["value"] in new_node_b.inputs["value"].connections
+
+    new_new_nodes = scene.duplicate_nodes(new_nodes)
+    print("New new nodes", new_new_nodes)
+
+    new_new_node_a = new_new_nodes[0]
+    new_new_node_b = new_new_nodes[1]
+
+    print(new_new_node_a.outputs["value"].connections)
+
+    assert new_new_node_a is not node_a
+    assert new_new_node_b is not node_b
+
+    assert len(new_new_node_a.outputs["value"].connections) == 1
+    assert len(new_new_node_b.inputs["value"].connections) == 1
+
+    assert new_new_node_b.inputs["value"] in new_new_node_a.outputs["value"].connections
+    assert new_new_node_a.outputs["value"] in new_new_node_b.inputs["value"].connections
 
 
 def test_eq(scene):

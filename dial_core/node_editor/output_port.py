@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from copy import deepcopy
 from typing import Any, Callable, Dict, Optional
 
 from dial_core.utils import log
@@ -19,11 +20,11 @@ class OutputPort(Port):
 
         self.compatible_port_classes.add(InputPort)
 
-        self.__is_sending_output = True
+        self._is_sending_output = True
         self._generator_function: Optional[Callable] = None
 
     def toggle_sends_output(self, toggle: bool):
-        self.__is_sending_output = toggle
+        self._is_sending_output = toggle
 
     def connect_to(self, input_port):
         super().connect_to(input_port)
@@ -45,7 +46,7 @@ class OutputPort(Port):
         return self._generator_function()
 
     def send(self) -> Any:
-        if not self.__is_sending_output:
+        if not self._is_sending_output:
             return
 
         # Sometimes, the generate_output() may need the value of a connected InputPort.
@@ -73,6 +74,14 @@ class OutputPort(Port):
                     input_port,
                     str(err),
                 )
+
+    def __deepcopy__(self, memo):
+        base = super().__deepcopy__(memo)
+
+        setattr(base, "_is_sending_output", deepcopy(self._is_sending_output, memo))
+        setattr(base, "_generator_function", deepcopy(self._generator_function, memo))
+
+        return base
 
     def __getstate__(self) -> Dict[str, Any]:
         state = super().__getstate__()
