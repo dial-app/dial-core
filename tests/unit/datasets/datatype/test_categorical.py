@@ -31,5 +31,19 @@ def test_display_exception(categorical_obj):
         assert categorical_obj.display(100)
 
 
+def test_convert_to_expected_format(categorical_obj):
+    assert categorical_obj.convert_to_expected_format(0) == 0
+    assert categorical_obj.convert_to_expected_format("jeans") == 1
+    assert categorical_obj.convert_to_expected_format("2") == 2
+
+    with pytest.raises(ValueError):
+        # Invalid category
+        assert categorical_obj.convert_to_expected_format("not-exists")
+
+    with pytest.raises(ValueError):
+        # Out of range
+        assert categorical_obj.convert_to_expected_format(40)
+
+
 def test_str(categorical_obj):
     assert str(categorical_obj) == "Categorical"
