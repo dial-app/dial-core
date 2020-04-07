@@ -2,7 +2,6 @@
 
 import numpy as np
 import pytest
-
 from dial_core.datasets.datatype import ImageArray
 
 

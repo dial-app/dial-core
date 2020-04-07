@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import numpy as np
 import pytest
-
 from dial_core.datasets.datatype import Categorical
 
 
@@ -36,6 +36,9 @@ def test_convert_to_expected_format(categorical_obj):
     assert categorical_obj.convert_to_expected_format("jeans") == 1
     assert categorical_obj.convert_to_expected_format("2") == 2
 
+    assert categorical_obj.convert_to_expected_format([0, 0, 1, 0]) == 2
+    assert categorical_obj.convert_to_expected_format(np.array([0, 1, 0]))
+
     with pytest.raises(ValueError):
         # Invalid category
         assert categorical_obj.convert_to_expected_format("not-exists")
@@ -43,6 +46,9 @@ def test_convert_to_expected_format(categorical_obj):
     with pytest.raises(ValueError):
         # Out of range
         assert categorical_obj.convert_to_expected_format(40)
+
+    with pytest.raises(ValueError):
+        assert categorical_obj.convert_to_expected_format([0, 0, 0, 0, 1, 0])
 
 
 def test_str(categorical_obj):

@@ -1,7 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import collections
 from typing import List, Union
 
+import numpy as np
 from tensorflow import keras
 
 from .datatype import DataType
@@ -46,12 +48,23 @@ class Categorical(DataType):
         Raises:
             ValueError: If the data can't be converted.
         """
-        try:
-            data_as_int = int(data)
-            if data_as_int >= 0 and data_as_int < len(self.categories):
-                return data_as_int
-        except ValueError:
-            pass
 
-        index = self.categories.index(data)  # type: ignore
-        return index
+        if isinstance(data, str):
+            try:
+                data_as_int = int(data)
+            except ValueError:
+                data_as_int = self.categories.index(data)
+
+        elif isinstance(data, int):
+            data_as_int = int(data)
+
+        elif isinstance(data, (list, tuple, np.ndarray)):
+            data_as_int = np.argmax(data)
+
+        else:
+            raise ValueError
+
+        if data_as_int >= 0 and data_as_int < len(self.categories):
+            return data_as_int
+
+        raise ValueError
