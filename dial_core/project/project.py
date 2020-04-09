@@ -14,7 +14,3 @@ class Project:
     def scene(self):
         """Returns the nodes scene of the project."""
         return self.__scene
-
-
-    def _generate_cells_from_scene(self, scene: "Scene"):
-        pass
