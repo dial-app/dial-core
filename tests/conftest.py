@@ -3,8 +3,8 @@
 from unittest.mock import Mock, patch
 
 import pytest
-
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
+from dial_core.notebook import NotebookProjectGenerator
 from dial_core.plugin import Plugin, PluginManager
 from dial_core.project import Project, ProjectManager
 
@@ -79,6 +79,14 @@ def node_registry():
 def project_a(scene):
     """Returns a default (empty) project."""
     return Project(name="ProjectA", scene=scene)
+
+
+def notebook(project_a):
+    nb = NotebookProjectGenerator(project_a)
+    nb.save_notebook_as("huehue.ipynb")
+
+
+notebook(project_a)
 
 
 @pytest.fixture
