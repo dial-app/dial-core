@@ -8,13 +8,11 @@ class NodeTransformer:
     def __init__(self, node):
         self._node = node
 
-        self.input_variables = {}
-        for input_port in self._node.inputs.keys():
-            self.input_variables[input_port] = f"{input_port}"
+        for input_port in self._node.inputs.values():
+            input_port._variable_name = f"{input_port.name}"
 
-        self.output_variables = {}
-        for output_port in self._node.outputs.keys():
-            self.output_variables[output_port] = f"{output_port}"
+        for output_port in self._node.outputs.values():
+            output_port._variable_name = f"{output_port.name}"
 
     def _title_cells(self):
         return [nbf.v4.new_markdown_cell(source=f"## {self._node.title}")]
@@ -23,9 +21,24 @@ class NodeTransformer:
         """Returns Title and Description cells, for example."""
         return self._title_cells()
 
+    def _input_variables(self):
+        if len(self._node.inputs) == 0:
+            return []
+
+        input_variables_code = "# Input variables\n"
+
+        for input_port in self._node.inputs.values():
+            if input_port.port_connected_to is not None:
+                connected_variable_name = input_port.port_connected_to._variable_name
+                input_variables_code += (
+                    f"{input_port._variable_name} = {connected_variable_name}"
+                )
+
+        return [nbf.v4.new_code_cell(source=input_variables_code)]
+
     def _body_cells(self):
         """Returns Code and Explanations cells, for example."""
         return []
 
     def cells(self):
-        return self._header_cells() + self._body_cells()
+        return self._header_cells() + self._input_variables() + self._body_cells()

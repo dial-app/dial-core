@@ -13,16 +13,15 @@ class NodeTransformersRegistry:
     def __init__(self):
         super().__init__()
 
-        self._registered_transformers: Dict["Node", "NodeTransformer"] = {}
+        self._registered_transformers: Dict[Type["Node"], Type["NodeTransformer"]] = {}
 
     @property
-    def transformers(self) -> Dict["Node", "NodeTransformer"]:
+    def transformers(self) -> Dict[Type["Node"], Type["NodeTransformer"]]:
         """Returns a dictionary with all the registered transformers."""
         return self._registered_transformers
 
     def create_transformer_from(self, node, *args, **kwargs):
-        print(node)
-        return self._registered_transformers[type(node)](node, *args, **kwargs)
+        return self._registered_transformers[node.__class__](node, *args, **kwargs)
 
     def register_transformer(
         self,
@@ -41,8 +40,6 @@ class NodeTransformersRegistry:
 
         if isinstance(transformer, providers.Factory):
             transformer_type = transformer.cls
-
-        print(node_type)
 
         factory = providers.Factory(transformer_type, *args, **kwargs)
 

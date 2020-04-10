@@ -1,6 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from dial_core.node_editor import Scene
+import dependency_injector.providers as providers
+
+from dial_core.node_editor import Scene, SceneFactory
 
 
 class Project:
@@ -14,3 +16,8 @@ class Project:
     def scene(self):
         """Returns the nodes scene of the project."""
         return self.__scene
+
+
+DefaultProjectFactory = providers.Factory(
+    Project, name="Default Project", scene=SceneFactory
+)

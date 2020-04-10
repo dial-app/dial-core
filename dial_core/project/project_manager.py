@@ -4,7 +4,10 @@ import pickle
 from copy import deepcopy
 from typing import TYPE_CHECKING, List
 
+import dependency_injector.providers as providers
+
 from dial_core.utils import Timer, log
+from .project import DefaultProjectFactory
 
 if TYPE_CHECKING:
     from .project import Project
@@ -190,3 +193,12 @@ class ProjectManager:
             self.new_project()
 
         return project
+
+
+ProjectManagerFactory = providers.Factory(
+    ProjectManager, default_project=DefaultProjectFactory
+)
+
+ProjectManagerSingleton = providers.Singleton(
+    ProjectManager, default_project=DefaultProjectFactory
+)
