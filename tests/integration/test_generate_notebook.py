@@ -11,8 +11,8 @@ from dial_core.project import DefaultProjectFactory
 
 
 class ValueNode(Node):
-    def __init__(self, value=0):
-        super().__init__("Value Node")
+    def __init__(self, name="Value Node", value=0):
+        super().__init__(name)
 
         # Port configuration
         self.add_output_port(name="value", port_type=int)
@@ -38,15 +38,15 @@ class ValueNode(Node):
 class ValueNodeTransformer(NodeTransformer):
     def _body_cells(self):
         value_cell = nbf.v4.new_code_cell(
-            f'{self._node.outputs["value"]._variable_name} = {self._node.value}'
+            f'{self._node.outputs["value"].word_id()} = {self._node.value}'
         )
 
         return [value_cell]
 
 
 class PrintNode(Node):
-    def __init__(self):
-        super().__init__("Print Node")
+    def __init__(self, name="Print Node"):
+        super().__init__(name)
 
         self.add_input_port(name="value", port_type=int)
         self.inputs["value"].set_processor_function(self.__print_value)
@@ -62,7 +62,7 @@ class PrintNode(Node):
 class PrintNodeTransformer(NodeTransformer):
     def _body_cells(self):
         print_cell = nbf.v4.new_code_cell(
-            f"print({self._node.inputs['value']._variable_name})"
+            f"print({self._node.inputs['value'].word_id()})"
         )
 
         return [print_cell]
@@ -75,12 +75,18 @@ def test_generate_notebook():
 
     project = DefaultProjectFactory()
 
-    value_node = ValueNode(value=8)
-    print_node = PrintNode()
-    value_node.outputs["value"].connect_to(print_node.inputs["value"])
+    value_node_1 = ValueNode(name="Operator 1", value=1)
+    print_node_1 = PrintNode(name="Printer 1")
+    value_node_1.outputs["value"].connect_to(print_node_1.inputs["value"])
 
-    project.scene.add_node(value_node)
-    project.scene.add_node(print_node)
+    value_node_2 = ValueNode(name="Operator 2", value=2)
+    print_node_2 = PrintNode(name="Printer 2")
+    value_node_2.outputs["value"].connect_to(print_node_2.inputs["value"])
+
+    project.scene.add_node(value_node_1)
+    project.scene.add_node(value_node_2)
+    project.scene.add_node(print_node_1)
+    project.scene.add_node(print_node_2)
 
     notebook_project_generator = NotebookProjectGeneratorFactory(
         project=project, node_transformers_registry=transformers_registry

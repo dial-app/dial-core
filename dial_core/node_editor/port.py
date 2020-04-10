@@ -140,6 +140,13 @@ class Port:
 
         self._connected_to.clear()
 
+    def word_id(self) -> str:
+        return (
+            (f"{self.node.title if self.node else 'none'}_{self.name}")
+            .lower()
+            .replace(" ", "_")
+        )
+
     def __deepcopy__(self, memo):
         cls = self.__class__
         result = cls.__new__(cls)
