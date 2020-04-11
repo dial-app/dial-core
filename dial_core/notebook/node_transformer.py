@@ -8,6 +8,10 @@ class NodeTransformer:
     def __init__(self, node):
         self._node = node
 
+    @property
+    def node(self):
+        return self._node
+
     def cells(self):
         return self._header_cells() + self._input_variables() + self._body_cells()
 

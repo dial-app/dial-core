@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from copy import deepcopy
-from typing import TYPE_CHECKING, Any, Dict, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from dial_core.utils.exceptions import InvalidPortTypeError
 from dial_core.utils.log import DEBUG, log_on_end
@@ -50,6 +50,14 @@ class Node:
     def outputs(self) -> Dict[str, "OutputPort"]:
         """Returns a list of the output ports of the node."""
         return self._outputs
+
+    def connected_input_nodes(self) -> List["Node"]:
+        """Returns a list with the nodes connected to the input ports."""
+        return self.__nodes_connected_to(self.inputs.values())
+
+    def connected_output_nodes(self) -> List["Node"]:
+        """Returns a list with the nodes connected to the output ports."""
+        return self.__nodes_connected_to(self.outputs.values())
 
     def add_input_port(self, name: str, port_type: Any) -> "InputPort":
         """Creates a new input port and adds it to the list of ports.
@@ -131,6 +139,31 @@ class Node:
             raise ValueError(
                 f"Couldn't remove {port_name} from {self}! Missing port name from input"
             )
+
+    def __nodes_connected_to(self, ports: Union[List["Port"], "Port"]) -> List["Node"]:
+        """Returns a list of all the nodes connected to any port in the passed list.
+
+        This function is useful to get the connections directly between nodes, like in a
+        graph, instead of passing through each port.
+
+        Args:
+            ports: List of ports, or individual port.
+
+        Returns:
+            List of all the connected nodes to this port.
+        """
+        try:
+            iter(ports)
+        except TypeError:  # Not iterable
+            ports = [ports]
+
+        connected_nodes = []
+
+        for port in ports:
+            for connected_port in port.connections:
+                connected_nodes.append(connected_port.node)
+
+        return connected_nodes
 
     @log_on_end(DEBUG, "{port} added to {self}")
     def __add_port_to(self, ports_dict: Dict[str, "Port"], port: "Port") -> "Port":

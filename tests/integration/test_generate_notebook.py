@@ -83,10 +83,10 @@ def test_generate_notebook():
     print_node_2 = PrintNode(name="Printer 2")
     value_node_2.outputs["value"].connect_to(print_node_2.inputs["value"])
 
-    project.scene.add_node(value_node_1)
-    project.scene.add_node(value_node_2)
     project.scene.add_node(print_node_1)
     project.scene.add_node(print_node_2)
+    project.scene.add_node(value_node_1)
+    project.scene.add_node(value_node_2)
 
     notebook_project_generator = NotebookProjectGeneratorFactory(
         project=project, node_transformers_registry=transformers_registry

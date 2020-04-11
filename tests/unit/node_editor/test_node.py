@@ -130,6 +130,16 @@ def test_node_connect_to_inexistent(node_a, node_b, output_port_a):
         node_a.outputs["a"].connect_to(node_b.inputs["doesnt_exists"])
 
 
+def test_connected_input_output_nodes(node_a, node_b, input_port_a, output_port_a):
+    node_a.add_port(output_port_a)
+    node_b.add_port(input_port_a)
+
+    node_a.outputs["a"].connect_to(node_b.inputs["a"])
+
+    assert node_b in node_a.connected_output_nodes()
+    assert node_a in node_b.connected_input_nodes()
+
+
 def test_deepcopy():
     node_a = Node(title="a", inner_widget=InnerWidget())
     node_a.add_input_port("inputport", port_type=str)
