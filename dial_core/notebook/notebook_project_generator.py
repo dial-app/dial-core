@@ -5,7 +5,6 @@ from typing import Dict
 
 import dependency_injector.providers as providers
 import nbformat as nbf
-
 from dial_core.node_editor import Node, Scene, SceneObserver
 from dial_core.project import Project
 from dial_core.utils import log
@@ -23,6 +22,8 @@ class NotebookProjectGenerator(SceneObserver):
     def __init__(
         self, project: "Project", node_transformers_registry: "NodeTransformersRegistry"
     ):
+        super().__init__()
+
         self._notebook = nbf.v4.new_notebook()
 
         self._project = project

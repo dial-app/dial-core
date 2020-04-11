@@ -1,6 +1,5 @@
 import nbformat as nbf
 import pytest
-
 from dial_core.node_editor import Node
 from dial_core.notebook import (
     NodeTransformer,
@@ -83,14 +82,14 @@ def test_generate_notebook():
     print_node_2 = PrintNode(name="Printer 2")
     value_node_2.outputs["value"].connect_to(print_node_2.inputs["value"])
 
+    notebook_project_generator = NotebookProjectGeneratorFactory(
+        project=project, node_transformers_registry=transformers_registry
+    )
+
     project.scene.add_node(print_node_1)
     project.scene.add_node(print_node_2)
     project.scene.add_node(value_node_1)
     project.scene.add_node(value_node_2)
-
-    notebook_project_generator = NotebookProjectGeneratorFactory(
-        project=project, node_transformers_registry=transformers_registry
-    )
 
     project.scene.remove_node(print_node_1)
     project.scene.remove_node(value_node_1)
@@ -98,5 +97,3 @@ def test_generate_notebook():
     print(notebook_project_generator.notebook.cells)
 
     notebook_project_generator.save_notebook_as("testnb.ipynb")
-
-    pytest.fail("Catch")

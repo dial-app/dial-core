@@ -1,7 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import nbformat as nbf
-
 from dial_core.node_editor import Node
 from dial_core.notebook import NodeTransformer
 
@@ -34,7 +33,7 @@ class ValueNode(Node):
 class ValueNodeTransformer(NodeTransformer):
     def _body_cells(self):
         value_cell = nbf.v4.new_code_cell(
-            f'{self.output_variables["value"]} = {self._node.value}'
+            f'{self.node.outputs["value"].word_id()} = {self._node.value}'
         )
 
         return [value_cell]
@@ -48,10 +47,10 @@ def test_value_node_transformer():
     cells = value_node_transformer.cells()
 
     assert cells[0].cell_type == "markdown"
-    assert cells[0].source == "## Value Node"
+    assert cells[0].source == "## Value Node (ValueNode)"
 
     assert cells[1].cell_type == "code"
-    assert (
-        cells[1].source
-        == f'{value_node_transformer.output_variables["value"]} = {value_node.value}'
+    assert cells[1].source == (
+        f'{value_node_transformer.node.outputs["value"].word_id()}'
+        f" = {value_node.value}"
     )

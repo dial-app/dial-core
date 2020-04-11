@@ -1,15 +1,19 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Dict, Type, Union
+from typing import TYPE_CHECKING, Dict, Type, Union
 
 import dependency_injector.providers as providers
 
-from dial_core.node_editor import Node  # noqa: F401
-
 from .node_transformer import NodeTransformer  # noqa: F401
+
+if TYPE_CHECKING:
+    from .dial_core.node_editor import Node  # noqa: F401
 
 
 class NodeTransformersRegistry:
+    """The NodeTransformersRegistry class provides a container for NodeTransformer
+    associated to Node objects."""
+
     def __init__(self):
         super().__init__()
 
@@ -20,7 +24,15 @@ class NodeTransformersRegistry:
         """Returns a dictionary with all the registered transformers."""
         return self._registered_transformers
 
-    def create_transformer_from(self, node, *args, **kwargs):
+    def create_transformer_from(
+        self, node: "Node", *args, **kwargs
+    ) -> "NodeTransformer":
+        """Returns a NodeTransformer object created for the passed node instance.
+
+        Raises:
+            KeyError: If the type of `node` isn't registered and can't find a
+            transformer.
+        """
         return self._registered_transformers[node.__class__](node, *args, **kwargs)
 
     def register_transformer(
@@ -30,11 +42,11 @@ class NodeTransformersRegistry:
         *args,
         **kwargs
     ):
-        """Registers a new type of transformer.
+        """Registers a new transformer for the `Node` objects.
 
         Args:
             node: Node class.
-            transformer: Transformer for the class.
+            transformer: NodeTransformer class or factory of NodeTransformer.
         """
         transformer_type = transformer
 
@@ -46,6 +58,7 @@ class NodeTransformersRegistry:
         self._registered_transformers[node_type] = factory
 
     def unregister_transformer(self, node_type: Type["Node"]):
+        """Removes a registered transformer from the dictionary."""
         self._registered_transformers.pop(node_type, None)
 
     def clear(self):

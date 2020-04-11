@@ -141,6 +141,8 @@ class Port:
         self._connected_to.clear()
 
     def word_id(self) -> str:
+        """Returns a string identifier for this port. Can be used as a variable for
+        notebooks."""
         return (
             (f"{self.node.title if self.node else 'none'}_{self.name}")
             .lower()
