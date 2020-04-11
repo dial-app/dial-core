@@ -140,6 +140,11 @@ class Node:
                 f"Couldn't remove {port_name} from {self}! Missing port name from input"
             )
 
+    def clear_all_connections(self):
+        """Removes all the connections from all this node's ports."""
+        for port in list(self.inputs.values()) + list(self.outputs.values()):
+            port.clear_all_connections()
+
     def __nodes_connected_to(self, ports: Union[List["Port"], "Port"]) -> List["Node"]:
         """Returns a list of all the nodes connected to any port in the passed list.
 

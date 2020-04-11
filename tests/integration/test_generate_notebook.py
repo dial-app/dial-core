@@ -92,6 +92,9 @@ def test_generate_notebook():
         project=project, node_transformers_registry=transformers_registry
     )
 
+    project.scene.remove_node(print_node_1)
+    project.scene.remove_node(value_node_1)
+
     print(notebook_project_generator.notebook.cells)
 
     notebook_project_generator.save_notebook_as("testnb.ipynb")

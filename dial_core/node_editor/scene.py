@@ -5,13 +5,25 @@ from typing import TYPE_CHECKING, List
 
 import dependency_injector.providers as providers
 
+from dial_core.utils import Observable, Observer
 from dial_core.utils.log import DEBUG, log_on_end
 
 if TYPE_CHECKING:
     from .node import Node
 
 
-class Scene:
+class SceneObserver(Observer):
+    def __init__(self):
+        super().__init__()
+
+    def _scene_node_added():
+        raise NotImplementedError()
+
+    def _scene_node_removed():
+        raise NotImplementedError()
+
+
+class Scene(Observable):
     """The Scene class provides a data container for storing the Nodes that form a graph.
 
     Attributes:
@@ -19,6 +31,8 @@ class Scene:
     """
 
     def __init__(self):
+        super().__init__()
+
         self.__nodes: List["Node"] = []
 
     @property
@@ -31,13 +45,28 @@ class Scene:
         """Adds a new node to the scene."""
         self.nodes.append(node)
 
+        for observer in self._observers:
+            observer._scene_node_added(node)
+
     def remove_node(self, node: "Node"):
+        """Removes a node from the scene."""
         try:
             self.nodes.remove(node)
+            node.clear_all_connections()
+
+            for observer in self._observers:
+                observer._scene_node_removed(node)
         except ValueError:
             pass
 
     def duplicate_nodes(self, nodes: List["Node"]) -> List["Node"]:
+        """Duplicates the passed nodes and adds them to the scene.
+
+        Ports and Connections between Nodes will be duplicated too.
+
+        Returns:
+            The list of the new duplicated nodes.
+        """
         new_node_of = {}
 
         def get_new_node_of(old_node):

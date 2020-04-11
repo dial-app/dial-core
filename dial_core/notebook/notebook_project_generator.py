@@ -5,10 +5,12 @@ from typing import Dict
 
 import dependency_injector.providers as providers
 import nbformat as nbf
-from dial_core.node_editor import Scene
+
+from dial_core.node_editor import Node, Scene, SceneObserver
 from dial_core.project import Project
 from dial_core.utils import log
 
+from .node_transformer import NodeTransformer
 from .node_transformers_registry import (
     NodeTransformersRegistry,
     NodeTransformersRegistrySingleton,
@@ -17,18 +19,20 @@ from .node_transformers_registry import (
 LOGGER = log.get_logger(__name__)
 
 
-class NotebookProjectGenerator:
+class NotebookProjectGenerator(SceneObserver):
     def __init__(
         self, project: "Project", node_transformers_registry: "NodeTransformersRegistry"
     ):
-        self._project = project
         self._notebook = nbf.v4.new_notebook()
+
+        self._project = project
 
         self._node_transformers = OrderedDict()
         self._nodes_transformers_registry = node_transformers_registry
 
-        self._generate_transformers_for_scene(self._project.scene)
-        self._generate_notebook()
+        self._project.scene.add_observer(self)
+
+        self._add_transformers_from_scene(self._project.scene)
 
     @property
     def notebook(self):
@@ -40,46 +44,108 @@ class NotebookProjectGenerator:
         with open(file_path, "w") as notebook_file:
             nbf.write(self._notebook, notebook_file)
 
-    def _generate_transformers_for_scene(self, scene: "Scene"):
-        for node in scene:
-            try:
-                self._node_transformers[
-                    node
-                ] = self._nodes_transformers_registry.create_transformer_from(node)
-            except KeyError:
-                LOGGER.warn(f"{node} doesn't have any registered NodeTransformer.")
+    def _scene_node_added(self, node):
+        """Signal called when a node is added to the scene.
 
-    def _topological_sort(self, node_transformers: Dict["Node", "NodeTransformer"]):
-        def recursive_sort(transformer, visited: set, sorted_transformers):
+        Add the correponding transformer to the dict of transformers.
+        """
+        if node not in self._node_transformers:
+            self.__add_node_as_transformer(node)
+            self._sort_topologically()
+            self._generate_notebook()
+
+    def _scene_node_removed(self, node):
+        """Signal called when a node is removed from the scene."""
+        self._node_transformers.pop(node)
+        print(self._node_transformers)
+
+        self._sort_topologically()
+        self._generate_notebook()
+
+    def _add_transformers_from_scene(self, scene: "Scene"):
+        """Create a new transformer for each node in the scene.
+
+        If the node can't be converted to a transformer, a log message is displayed but
+        no error is raised.
+        """
+        for node in scene:
+            self.__add_node_as_transformer(node)
+
+        self._sort_topologically()
+        self._generate_notebook()
+
+    def _sort_topologically(self):
+        """Sorts the dictionary `self._node_transformers` in topologically order.
+
+        This order ensures that variables representing the ports are defined before
+        used. See "graph topological sort" for more information.
+
+        This algorithm runs in O(n) time.
+        """
+
+        def recursive_topo_sort(
+            transformer: "NodeTransformer",
+            visited: set,
+            sorted_transformers: Dict["Node", "NodeTransformer"],
+        ):
+            # Using a visited set is esential for not repeating nodes.
             visited.add(transformer)
 
             for neighbour in transformer.node.connected_output_nodes():
                 neighbour_transformer = self._node_transformers[neighbour]
 
                 if neighbour_transformer not in visited:
-                    recursive_sort(neighbour_transformer, visited, sorted_transformers)
+                    recursive_topo_sort(
+                        neighbour_transformer, visited, sorted_transformers
+                    )
 
-            sorted_transformers.append(transformer)
+            # After we've visited and inserted all childs, insert this transformer
+            sorted_transformers[transformer.node] = transformer
 
-        sorted_transformers = []
+        sorted_transformers = OrderedDict()
         visited = set()
 
-        for transformer in reversed(node_transformers.values()):
+        # 1. Running the algorithm through all transformers in a loop ensures that all
+        # subgraphs are sorted.
+        # 2. Running in reverse order normally gives a more "natural" ordering for nodes
+        # that have the ranking.
+        # For example, for a graph like:
+        #       0 -> [1]
+        #       1 -> []
+        #       2 -> [3]
+        #       3 -> []
+        # The topological order is:
+        # 2 3 0 1
+        # But running on reverse will give:
+        # 0 1 2 3
+        # Both are valid topological orders, but we prefer using the second one as
+        # elements preserve the insertion order.
+        for transformer in reversed(self._node_transformers.values()):
             if transformer not in visited:
-                recursive_sort(transformer, visited, sorted_transformers)
+                recursive_topo_sort(transformer, visited, sorted_transformers)
 
-        sorted_transformers.reverse()
-
-        return sorted_transformers
+        self._node_transformers = sorted_transformers
 
     def _generate_notebook(self):
+        """Updates the notebook object, populating it with the cells generated by the
+        transformers."""
         cells = []
-        for node_transformer in self._topological_sort(self._node_transformers):
+        for node_transformer in reversed(self._node_transformers.values()):
             cells += node_transformer.cells()
 
         self._notebook["cells"] = cells
 
         return self._notebook
+
+    def __add_node_as_transformer(self, node: "Node"):
+        """Tries to add the associated transformer for the node."""
+        try:
+            self._node_transformers[
+                node
+            ] = self._nodes_transformers_registry.create_transformer_from(node)
+
+        except KeyError:
+            LOGGER.warn(f"{node} doesn't have any registered NodeTransformer.")
 
 
 NotebookProjectGeneratorFactory = providers.Factory(
