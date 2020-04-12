@@ -4,7 +4,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
-from dial_core.notebook import NodeTransformersRegistry, NotebookProjectGeneratorFactory
+from dial_core.notebook import NodeCellsRegistryFactory, NotebookProjectGeneratorFactory
 from dial_core.plugin import Plugin, PluginManager
 from dial_core.project import Project, ProjectManager
 
@@ -193,4 +193,4 @@ def notebook_project_generator(project_a):
 
 @pytest.fixture
 def node_transformers_registry():
-    return NodeTransformersRegistry()
+    return NodeCellsRegistryFactory()

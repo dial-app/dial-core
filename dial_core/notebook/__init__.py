@@ -1,9 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from .node_transformer import NodeTransformer
-from .node_transformers_registry import (
-    NodeTransformersRegistry,
-    NodeTransformersRegistrySingleton,
+from .node_cells import NodeCells
+from .node_cells_registry import (
+    NodeCellsRegistry,
+    NodeCellsRegistryFactory,
+    NodeCellsRegistrySingleton,
 )
 from .notebook_project_generator import (
     NotebookProjectGenerator,
@@ -11,9 +12,10 @@ from .notebook_project_generator import (
 )
 
 __all__ = [
-    "NodeTransformer",
-    "NodeTransformersRegistry",
-    "NodeTransformersRegistrySingleton",
+    "NodeCells",
+    "NodeCellsRegistry",
+    "NodeCellsRegistryFactory",
+    "NodeCellsRegistrySingleton",
     "NotebookProjectGenerator",
     "NotebookProjectGeneratorFactory",
 ]

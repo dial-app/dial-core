@@ -1,9 +1,8 @@
 import nbformat as nbf
-import pytest
 from dial_core.node_editor import Node
 from dial_core.notebook import (
-    NodeTransformer,
-    NodeTransformersRegistry,
+    NodeCells,
+    NodeCellsRegistry,
     NotebookProjectGeneratorFactory,
 )
 from dial_core.project import DefaultProjectFactory
@@ -34,7 +33,7 @@ class ValueNode(Node):
         return self.value
 
 
-class ValueNodeTransformer(NodeTransformer):
+class ValueNodeCells(NodeCells):
     def _body_cells(self):
         value_cell = nbf.v4.new_code_cell(
             f'{self._node.outputs["value"].word_id()} = {self._node.value}'
@@ -58,7 +57,7 @@ class PrintNode(Node):
         print(value)
 
 
-class PrintNodeTransformer(NodeTransformer):
+class PrintNodeCells(NodeCells):
     def _body_cells(self):
         print_cell = nbf.v4.new_code_cell(
             f"print({self._node.inputs['value'].word_id()})"
@@ -68,9 +67,9 @@ class PrintNodeTransformer(NodeTransformer):
 
 
 def test_generate_notebook():
-    transformers_registry = NodeTransformersRegistry()
-    transformers_registry.register_transformer(ValueNode, ValueNodeTransformer)
-    transformers_registry.register_transformer(PrintNode, PrintNodeTransformer)
+    transformers_registry = NodeCellsRegistry()
+    transformers_registry.register_transformer(ValueNode, ValueNodeCells)
+    transformers_registry.register_transformer(PrintNode, PrintNodeCells)
 
     project = DefaultProjectFactory()
 
@@ -83,7 +82,7 @@ def test_generate_notebook():
     value_node_2.outputs["value"].connect_to(print_node_2.inputs["value"])
 
     notebook_project_generator = NotebookProjectGeneratorFactory(
-        node_transformers_registry=transformers_registry
+        node_cells_registry=transformers_registry
     )
 
     project.scene.add_node(print_node_1)

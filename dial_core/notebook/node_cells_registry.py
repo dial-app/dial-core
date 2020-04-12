@@ -4,30 +4,28 @@ from typing import TYPE_CHECKING, Dict, Type, Union
 
 import dependency_injector.providers as providers
 
-from .node_transformer import NodeTransformer  # noqa: F401
+from .node_cells import NodeCells
 
 if TYPE_CHECKING:
-    from .dial_core.node_editor import Node  # noqa: F401
+    from .dial_core.node_editor import Node
 
 
-class NodeTransformersRegistry:
-    """The NodeTransformersRegistry class provides a container for NodeTransformer
+class NodeCellsRegistry:
+    """The NodeCellsRegistry class provides a container for NodeCells
     associated to Node objects."""
 
     def __init__(self):
         super().__init__()
 
-        self._registered_transformers: Dict[Type["Node"], Type["NodeTransformer"]] = {}
+        self._registered_transformers: Dict[Type["Node"], Type["NodeCells"]] = {}
 
     @property
-    def transformers(self) -> Dict[Type["Node"], Type["NodeTransformer"]]:
+    def transformers(self) -> Dict[Type["Node"], Type["NodeCells"]]:
         """Returns a dictionary with all the registered transformers."""
         return self._registered_transformers
 
-    def create_transformer_from(
-        self, node: "Node", *args, **kwargs
-    ) -> "NodeTransformer":
-        """Returns a NodeTransformer object created for the passed node instance.
+    def create_transformer_from(self, node: "Node", *args, **kwargs) -> "NodeCells":
+        """Returns a NodeCells object created for the passed node instance.
 
         Raises:
             KeyError: If the type of `node` isn't registered and can't find a
@@ -38,7 +36,7 @@ class NodeTransformersRegistry:
     def register_transformer(
         self,
         node_type: Type["Node"],
-        transformer: Union[Type["NodeTransformer"], providers.Factory],
+        transformer: Union[Type["NodeCells"], providers.Factory],
         *args,
         **kwargs
     ):
@@ -46,7 +44,7 @@ class NodeTransformersRegistry:
 
         Args:
             node: Node class.
-            transformer: NodeTransformer class or factory of NodeTransformer.
+            transformer: NodeCells class or factory of NodeCells.
         """
         transformer_type = transformer
 
@@ -66,4 +64,5 @@ class NodeTransformersRegistry:
         self._registered_transformers.clear()
 
 
-NodeTransformersRegistrySingleton = providers.Singleton(NodeTransformersRegistry)
+NodeCellsRegistryFactory = providers.Factory(NodeCellsRegistry)
+NodeCellsRegistrySingleton = providers.Singleton(NodeCellsRegistry)

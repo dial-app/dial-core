@@ -3,7 +3,7 @@
 import pytest
 
 from dial_core.node_editor import Node
-from dial_core.notebook import NodeTransformer
+from dial_core.notebook import NodeCells
 
 
 class ValueNode(Node):
@@ -31,13 +31,13 @@ class ValueNode(Node):
         return self.value
 
 
-class ValueNodeTransformer(NodeTransformer):
+class ValueNodeCells(NodeCells):
     def transform(self):
         pass
 
 
 def test_register_transformer(node_transformers_registry):
-    node_transformers_registry.register_transformer(ValueNode, ValueNodeTransformer)
+    node_transformers_registry.register_transformer(ValueNode, ValueNodeCells)
 
     assert ValueNode in node_transformers_registry.transformers
 
@@ -53,7 +53,7 @@ def test_create_unregistered_transformer(node_transformers_registry):
 
 
 def test_unregister_transformer(node_transformers_registry):
-    node_transformers_registry.register_transformer(ValueNode, ValueNodeTransformer)
+    node_transformers_registry.register_transformer(ValueNode, ValueNodeCells)
 
     node_transformers_registry.unregister_transformer(ValueNode)
 
@@ -61,7 +61,7 @@ def test_unregister_transformer(node_transformers_registry):
 
 
 def test_clear_transformers(node_transformers_registry):
-    node_transformers_registry.register_transformer(ValueNode, ValueNodeTransformer)
+    node_transformers_registry.register_transformer(ValueNode, ValueNodeCells)
 
     node_transformers_registry.clear()
 

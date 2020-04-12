@@ -2,7 +2,7 @@
 
 import nbformat as nbf
 from dial_core.node_editor import Node
-from dial_core.notebook import NodeTransformer
+from dial_core.notebook import NodeCells
 
 
 class ValueNode(Node):
@@ -30,7 +30,7 @@ class ValueNode(Node):
         return self.value
 
 
-class ValueNodeTransformer(NodeTransformer):
+class ValueNodeCells(NodeCells):
     def _body_cells(self):
         value_cell = nbf.v4.new_code_cell(
             f'{self.node.outputs["value"].word_id()} = {self._node.value}'
@@ -39,10 +39,10 @@ class ValueNodeTransformer(NodeTransformer):
         return [value_cell]
 
 
-def test_value_node_transformer():
+def test_value_node_cells():
     value_node = ValueNode(value=8)
 
-    value_node_transformer = ValueNodeTransformer(node=value_node)
+    value_node_transformer = ValueNodeCells(value_node)
 
     cells = value_node_transformer.cells()
 

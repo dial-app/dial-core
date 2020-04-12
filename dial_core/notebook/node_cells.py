@@ -8,9 +8,9 @@ if TYPE_CHECKING:
     from dial_core.node_editor import Node
 
 
-class NodeTransformer:
-    """The NodeTransformer class is a base class for implementing the transformation of
-    a Node object into a list of cells that can be inserted on a Jupyter Notebook.
+class NodeCells:
+    """The NodeCells class is the base implementation for a transformation between Node
+    instances and cells that can be inserted on a Jupyter notebook.
 
     Attributes:
         node: The associated Node instance.
@@ -21,17 +21,17 @@ class NodeTransformer:
 
     @property
     def node(self) -> "Node":
-        """Returns the Node instance for this transformer."""
+        """Returns the Node instance related to this transformer."""
         return self._node
 
     def cells(self) -> List[Dict[str, str]]:
-        """Returns the cells equivalent to the node implementation."""
+        """Returns the cells that form this node."""
         return self._header_cells() + self._input_variables_cells() + self._body_cells()
 
     def _title_cells(self) -> List[Dict[str, str]]:
         """Returns the cells corresponding to the title.
 
-        It returns a header with the name and type of the node by default.
+        By default, returns a header with the name and node type.
         """
         return [
             nbf.v4.new_markdown_cell(
@@ -40,7 +40,7 @@ class NodeTransformer:
         ]
 
     def _header_cells(self) -> List[Dict[str, str]]:
-        """Returns Title and Description cells."""
+        """Returns the title cells."""
         return self._title_cells()
 
     def _input_variables_cells(self):
