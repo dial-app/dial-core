@@ -5,7 +5,7 @@ from .node import Node
 from .node_registry import NodeRegistry, NodeRegistrySingleton
 from .output_port import OutputPort
 from .port import Port
-from .scene import Scene, SceneFactory, SceneObserver
+from .scene import Scene, SceneFactory
 
 __all__ = [
     "Node",
@@ -13,7 +13,6 @@ __all__ = [
     "InputPort",
     "OutputPort",
     "Scene",
-    "SceneObserver",
     "SceneFactory",
     "NodeRegistry",
     "NodeRegistrySingleton",

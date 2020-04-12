@@ -12,7 +12,6 @@ package.
 
 from . import enum, initialization
 from .enum import Dial
-from .observer import Observable, Observer
 from .timer import Timer
 
-__all__ = ["Timer", "Dial", "initialization", "enum", "Observer", "Observable"]
+__all__ = ["Timer", "Dial", "initialization", "enum"]

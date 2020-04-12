@@ -4,22 +4,13 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, List
 
 import dependency_injector.providers as providers
-from dial_core.utils import Observable, Observer
 from dial_core.utils.log import DEBUG, log_on_end
 
 if TYPE_CHECKING:
     from .node import Node
 
 
-class SceneObserver(Observer):
-    def _scene_node_added(self, node: "Node"):
-        raise NotImplementedError()
-
-    def _scene_node_removed(self, node: "Node"):
-        raise NotImplementedError()
-
-
-class Scene(Observable):
+class Scene:
     """The Scene class provides a data container for storing the Nodes that form a graph.
 
     Attributes:
@@ -41,17 +32,13 @@ class Scene(Observable):
         """Adds a new node to the scene."""
         self.nodes.append(node)
 
-        self.notify_observers(SceneObserver._scene_node_added, node)
-
     def remove_node(self, node: "Node"):
         """Removes a node from the scene."""
         try:
             self.nodes.remove(node)
             node.clear_all_connections()
 
-            for observer in self._observers:
-                observer._scene_node_removed(node)
-        except ValueError:
+        except ValueError: # No node found to remove
             pass
 
     def duplicate_nodes(self, nodes: List["Node"]) -> List["Node"]:

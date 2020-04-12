@@ -1,12 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from collections import OrderedDict
-from typing import Dict
+from typing import Dict, Optional
 
 import dependency_injector.providers as providers
 import nbformat as nbf
-from dial_core.node_editor import Node, Scene, SceneObserver
-from dial_core.project import Project
+from dial_core.node_editor import Node, Scene
 from dial_core.utils import log
 
 from .node_transformer import NodeTransformer
@@ -18,50 +17,41 @@ from .node_transformers_registry import (
 LOGGER = log.get_logger(__name__)
 
 
-class NotebookProjectGenerator(SceneObserver):
-    def __init__(
-        self, project: "Project", node_transformers_registry: "NodeTransformersRegistry"
-    ):
-        super().__init__()
-
+class NotebookProjectGenerator:
+    def __init__(self, node_transformers_registry: "NodeTransformersRegistry"):
         self._notebook = nbf.v4.new_notebook()
 
-        self._project = project
+        self._project: Optional["Project"] = None
 
         self._node_transformers = OrderedDict()
         self._nodes_transformers_registry = node_transformers_registry
-
-        self._project.scene.add_observer(self)
-
-        self._add_transformers_from_scene(self._project.scene)
 
     @property
     def notebook(self):
         """Returns the Notebook object that represents the notebook."""
         return self._notebook
 
+    @property
+    def project(self):
+        return self._project
+
+    def set_project(self, project):
+        self.clear()
+
+        self._project = project
+        if self._project:
+            self._add_transformers_from_scene(self._project.scene)
+
     def save_notebook_as(self, file_path: str):
         """Saves the notebook as a .ipynb file."""
         with open(file_path, "w") as notebook_file:
             nbf.write(self._notebook, notebook_file)
 
-    def _scene_node_added(self, node):
-        """Signal called when a node is added to the scene.
+    def clear(self):
+        self._notebook = nbf.v4.new_notebook()
 
-        Add the correponding transformer to the dict of transformers.
-        """
-        if node not in self._node_transformers:
-            self.__add_node_as_transformer(node)
-            self._sort_topologically()
-            self._generate_notebook()
-
-    def _scene_node_removed(self, node):
-        """Signal called when a node is removed from the scene."""
-        self._node_transformers.pop(node)
-        print(self._node_transformers)
-
-        self._sort_topologically()
-        self._generate_notebook()
+        self._project = None
+        self._node_transformers.clear()
 
     def _add_transformers_from_scene(self, scene: "Scene"):
         """Create a new transformer for each node in the scene.
