@@ -51,11 +51,14 @@ class NodeCells:
         input_variables_code = "# Input variables\n"
 
         for input_port in self._node.inputs.values():
-            if input_port.port_connected_to is not None:
-                connected_variable_name = input_port.port_connected_to.word_id()
-                input_variables_code += (
-                    f"{input_port.word_id()} = {connected_variable_name}"
-                )
+            connected_variable_name = (
+                input_port.port_connected_to.word_id()
+                if input_port.port_connected_to
+                else "None"
+            )
+            input_variables_code += (
+                f"{input_port.word_id()} = {connected_variable_name}\n"
+            )
 
         return [nbf.v4.new_code_cell(source=input_variables_code)]
 

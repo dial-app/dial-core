@@ -57,6 +57,14 @@ class NotebookProjectGenerator:
         if self._project:
             self._add_transformers_from_scene(self._project.scene)
 
+    def update_project_changes(self):
+        """Updates the notebook to reflect changes on the project (like new or removed
+        nodes)."""
+        project = self._project
+
+        self.clear()
+        self.set_project(project)
+
     def save_notebook_as(self, file_path: str):
         """Saves the notebook as an .ipynb file."""
         with open(file_path, "w") as notebook_file:
@@ -76,7 +84,7 @@ class NotebookProjectGenerator:
         no error is raised.
         """
         for node in scene:
-            self.__add_node_as_transformer(node)
+            self._add_node_as_transformer(node)
 
         self._sort_topologically()
         self._generate_notebook()

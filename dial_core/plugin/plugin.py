@@ -54,16 +54,18 @@ class Plugin:
         try:
             self.__module.load_plugin()
             self.__update_plugin_metadata()
-        except AttributeError:  # pragma: no cover
-            LOGGER.warning("No `load_plugin` method found for %s.", self.name)
+        except AttributeError as err:  # pragma: no cover
+            LOGGER.warning("Error with `load_plugin` for %s.", self.name)
+            LOGGER.exception(err)
 
         self.__active = True
 
     def unload(self):
         try:
             self.__module.unload_plugin()
-        except AttributeError:  # pragma: no cover
-            LOGGER.warning("No `unload_plugin` method found for %s.", self.name)
+        except AttributeError as err:  # pragma: no cover
+            LOGGER.warning("Error with `unload_plugin` for %s.", self.name)
+            LOGGER.exception(err)
 
         self.__active = False
         self.__module = None
