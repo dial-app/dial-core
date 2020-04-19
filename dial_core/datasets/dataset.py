@@ -39,7 +39,7 @@ class Dataset(keras.utils.Sequence):
             y_type = Numeric()
 
         # Data arrays
-        self.__x, self.__y = x_data, y_data
+        self._x, self._y = x_data, y_data
 
         # Data types
         self.x_type, self.y_type = x_type, y_type
@@ -48,18 +48,18 @@ class Dataset(keras.utils.Sequence):
 
     @property
     def input_shape(self):
-        return self.x_type.process(self.__x[0]).shape if len(self.__x) > 0 else (0,)
+        return self.x_type.process(self._x[0]).shape if len(self._x) > 0 else (0,)
 
     def insert(self, position: int, x: List[Any], y: List[Any]):
         if len(x) != len(y):
             raise ValueError(f"Can't insert {len(x)} values on x and {len(y)} on y!")
 
-        self.__x = np.insert(self.__x, position, x, axis=0)
-        self.__y = np.insert(self.__y, position, y, axis=0)
+        self._x = np.insert(self._x, position, x, axis=0)
+        self._y = np.insert(self._y, position, y, axis=0)
 
     def delete_rows(self, start: int, n: int = 1):
-        self.__x = np.delete(self.__x, range(start, start + n), axis=0)
-        self.__y = np.delete(self.__y, range(start, start + n), axis=0)
+        self._x = np.delete(self._x, range(start, start + n), axis=0)
+        self._y = np.delete(self._y, range(start, start + n), axis=0)
 
     def head(self, n: int = 10, role: "Role" = Role.Raw) -> Tuple[List, List]:
         """
@@ -75,19 +75,19 @@ class Dataset(keras.utils.Sequence):
         Range is EXCLUSIVE [start, end)
         """
         x_set, y_set = self.__preprocess_data(
-            self.__x[start:end], self.__y[start:end], role
+            self._x[start:end], self._y[start:end], role
         )
         return x_set, y_set
 
     def row_count(self) -> int:
         """Returns the number of rows on the dataset."""
-        return len(self.__x)
+        return len(self._x)
 
     def __len__(self) -> int:
         """
         Return the length of the dataset (In batches)
         """
-        return int(np.ceil(len(self.__x) / float(self.batch_size)))
+        return int(np.ceil(len(self._x) / float(self.batch_size)))
 
     def __getitem__(self, idx: int) -> Tuple["np.array", "np.array"]:
         """
@@ -96,11 +96,11 @@ class Dataset(keras.utils.Sequence):
         batch_start = idx * self.batch_size
         batch_end = (idx + 1) * self.batch_size
 
-        batch_x = self.__x[batch_start:batch_end]
-        batch_y = self.__y[batch_start:batch_end]
+        batch_x = self._x[batch_start:batch_end]
+        batch_y = self._y[batch_start:batch_end]
 
         batch_x, batch_y = self.__preprocess_data(
-            self.__x[batch_start:batch_end], self.__y[batch_start:batch_end]
+            self._x[batch_start:batch_end], self._y[batch_start:batch_end]
         )
 
         return batch_x, batch_y
