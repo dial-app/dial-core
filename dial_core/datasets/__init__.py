@@ -8,13 +8,11 @@ loading.
 from .container import PredefinedDatasetLoaders
 from .dataset import Dataset
 from .dataset_loader import DatasetLoader
-from .datasets_container import DatasetsContainer
-from .dataset_exporter import DatasetExporter
+from .datasets_group import DatasetsGroup
 
 __all__ = [
     "Dataset",
     "PredefinedDatasetLoaders",
     "DatasetLoader",
-    "DatasetsContainer",
-    "DatasetExporter",
+    "DatasetsGroup",
 ]

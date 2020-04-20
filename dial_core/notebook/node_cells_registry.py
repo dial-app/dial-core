@@ -15,8 +15,6 @@ class NodeCellsRegistry:
     associated to Node objects."""
 
     def __init__(self):
-        super().__init__()
-
         self._registered_transformers: Dict[Type["Node"], Type["NodeCells"]] = {}
 
     @property

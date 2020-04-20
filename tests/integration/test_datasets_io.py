@@ -1,11 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import numpy as np
 import pytest
 
-import numpy as np
-
-from dial_core.datasets import Dataset, DatasetsContainer, DatasetExporter
+from dial_core.datasets import Dataset, DatasetsGroup
 from dial_core.datasets.datatype import Numeric, NumericArray
+from dial_core.datasets.io import DatasetFormatsContainer, DatasetIO
 
 
 @pytest.fixture
@@ -33,10 +33,17 @@ def test_dataset():
 
 
 def test_datasets_io(train_dataset, test_dataset):
-    dc = DatasetsContainer(name="TestContainer", train=train_dataset, test=test_dataset)
+    dg = DatasetsGroup(name="TestContainer", train=train_dataset, test=test_dataset)
 
-    dc_exporter = DatasetExporter()
-    dc_exporter.export(".", dc)
+    DatasetIO.save(DatasetFormatsContainer.NpzFormat(), ".", dg)
+    load_dg = DatasetIO.load("./TestContainer", DatasetFormatsContainer)
 
-    dc_imported = dc_exporter.import_dataset("./TestContainer")
-    print(dc_imported.train.items())
+    for dataset, loaded_dataset in zip(
+        [dg.train, dg.test], [load_dg.train, load_dg.test],
+    ):
+        x, y = dataset.items()
+        xl, ly = loaded_dataset.items()
+
+        assert x.tolist() == xl.tolist()
+
+    assert load_dg.validation is None
