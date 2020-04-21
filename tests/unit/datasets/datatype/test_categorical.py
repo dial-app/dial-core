@@ -9,7 +9,7 @@ from dial_core.datasets.datatype import Categorical
 def categorical_obj():
     """
     Returns an instance of Categorical with categories ["t-shirt", "jeans", "glasses"]
-    ""
+    """
 
     return Categorical(["t-shirt", "jeans", "glasses"])
 
