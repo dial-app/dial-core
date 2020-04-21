@@ -111,4 +111,4 @@ def test_save_project_as(_, project_manager):
 
     project_manager.save_project_as(project_manager.active, "foo_dir")
 
-    assert project_manager.active.file_path == "foo_dir/TestProject.dial"
+    assert project_manager.active.file_path == "foo_dir/TestProject/TestProject.dial"

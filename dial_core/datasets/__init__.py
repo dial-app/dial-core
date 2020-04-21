@@ -8,11 +8,11 @@ loading.
 from .container import PredefinedDatasetLoaders
 from .dataset import Dataset
 from .dataset_loader import DatasetLoader
-from .datasets_group import DatasetsGroup
+from .ttv_sets import TTVSets
 
 __all__ = [
     "Dataset",
     "PredefinedDatasetLoaders",
     "DatasetLoader",
-    "DatasetsGroup",
+    "TTVSets",
 ]

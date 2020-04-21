@@ -4,7 +4,7 @@ import json
 import os
 from typing import TYPE_CHECKING
 
-from dial_core.datasets import DatasetsGroup
+from dial_core.datasets import TTVSets
 
 if TYPE_CHECKING:
     from .dataset_io_format import DatasetIOFormat
@@ -21,10 +21,7 @@ class DatasetIO:
 
     @classmethod
     def save(
-        cls,
-        io_format: "DatasetIOFormat",
-        save_path: str,
-        datasets_group: "DatasetsGroup",
+        cls, io_format: "DatasetIOFormat", save_path: str, ttv_sets: "TTVSets",
     ):
         """Saves a DatasetGroup on the file system.
 
@@ -34,22 +31,22 @@ class DatasetIO:
         any), datatypes used...
         """
         # Save all datasets inside this directory
-        root_dir = save_path + os.path.sep + datasets_group.name + os.path.sep
+        root_dir = save_path + os.path.sep + ttv_sets.name + os.path.sep
         if not os.path.isdir(root_dir):
             os.mkdir(root_dir)
 
-        desc = datasets_group.to_dict()
+        desc = ttv_sets.to_dict()
         desc["format"] = str(io_format)  # Must store the format for loading later
 
-        if datasets_group.train:
-            io_format.save(root_dir, "train", desc["train"], datasets_group.train)
+        if ttv_sets.train:
+            io_format.save(root_dir, "train", desc["train"], ttv_sets.train)
 
-        if datasets_group.test:
-            io_format.save(root_dir, "test", desc["test"], datasets_group.test)
+        if ttv_sets.test:
+            io_format.save(root_dir, "test", desc["test"], ttv_sets.test)
 
-        if datasets_group.validation:
+        if ttv_sets.validation:
             io_format.save(
-                root_dir, "validation", desc["validation"], datasets_group.valvalidation
+                root_dir, "validation", desc["validation"], ttv_sets.valvalidation
             )
 
         # Writes the datasets structure on a json file
@@ -57,7 +54,7 @@ class DatasetIO:
             json.dump(desc, desc_file, indent=4)
 
     @classmethod
-    def load(cls, load_path: str, dataset_io_formats) -> "DatasetsGroup":
+    def load(cls, load_path: str, dataset_io_formats) -> "TTVSets":
         """Loads a DatasetsGroup from the file system.
 
         This method will first find the `description.json` file inside the dataset
@@ -73,7 +70,7 @@ class DatasetIO:
             test = io_format.load(load_path, desc["test"])
             validation = io_format.load(load_path, desc["validation"])
 
-            return DatasetsGroup(
+            return TTVSets(
                 name=desc["dataset"]["name"],
                 train=train,
                 test=test,

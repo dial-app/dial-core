@@ -25,7 +25,9 @@ def test_save_and_load_project():
     project_manager.save_project_as(project_manager.active, "foo")
 
     # Load project from memory
-    opened_project = project_manager.open_project("foo/Default Project.dial")
+    opened_project = project_manager.open_project(
+        "foo/Default Project/Default Project.dial"
+    )
 
     # The last and new projects are different...
     assert active_project is not opened_project

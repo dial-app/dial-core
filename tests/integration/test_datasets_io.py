@@ -3,7 +3,7 @@
 import numpy as np
 import pytest
 
-from dial_core.datasets import Dataset, DatasetsGroup
+from dial_core.datasets import Dataset, TTVSets
 from dial_core.datasets.datatype import Numeric, NumericArray
 from dial_core.datasets.io import DatasetFormatsContainer, DatasetIO
 
@@ -33,7 +33,7 @@ def test_dataset():
 
 
 def test_datasets_io(train_dataset, test_dataset):
-    dg = DatasetsGroup(name="TestContainer", train=train_dataset, test=test_dataset)
+    dg = TTVSets(name="TestContainer", train=train_dataset, test=test_dataset)
 
     DatasetIO.save(DatasetFormatsContainer.NpzFormat(), ".", dg)
     load_dg = DatasetIO.load("./TestContainer", DatasetFormatsContainer)

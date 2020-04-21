@@ -5,7 +5,7 @@ from typing import Optional
 from dial_core.datasets import Dataset  # noqa: F401
 
 
-class DatasetsGroup:
+class TTVSets:
     def __init__(
         self,
         name: str,
