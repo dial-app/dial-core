@@ -9,7 +9,7 @@ from dial_core.datasets import Dataset
 from dial_core.datasets.datatype import DataTypeContainer
 
 
-class DatasetIOFormat:
+class TTVSetsIOFormat:
     def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
         """Writes the passed dataset to the file system.
 
@@ -37,7 +37,7 @@ class DatasetIOFormat:
         return type(self).__name__
 
 
-class NpzFormat(DatasetIOFormat):
+class NpzFormat(TTVSetsIOFormat):
     def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
         """Writes the passed dataset to the file system.
 
@@ -71,7 +71,7 @@ class NpzFormat(DatasetIOFormat):
             return None
 
 
-class TxtFormat(DatasetIOFormat):
+class TxtFormat(TTVSetsIOFormat):
     def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
         """Writes the passed dataset to the file system.
 

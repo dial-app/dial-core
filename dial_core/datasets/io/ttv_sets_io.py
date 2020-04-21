@@ -7,23 +7,23 @@ from typing import TYPE_CHECKING
 from dial_core.datasets import TTVSets
 
 if TYPE_CHECKING:
-    from .dataset_io_format import DatasetIOFormat
+    from .ttv_sets_io_format import TTVSetsIOFormat
 
 
-class DatasetIO:
-    """This class provides an interface for saving/loading DatasetGroup classes from/to
+class TTVSetsIO:
+    """This class provides an interface for saving/loading TTVSets classes from/to
     memory. The format used for the stored elements (files, directories, npz files..)
     depends on the `io_format` argument.
 
-    For more information about how each `io_format` works, see the `DatasetIOFormat`
+    For more information about how each `io_format` works, see the `TTVSetsIOFormat`
     class.
     """
 
     @classmethod
     def save(
-        cls, io_format: "DatasetIOFormat", save_path: str, ttv_sets: "TTVSets",
+        cls, io_format: "TTVSetsIOFormat", save_path: str, ttv_sets: "TTVSets",
     ):
-        """Saves a DatasetGroup on the file system.
+        """Saves a TTVSets object on the file system.
 
         Depending on the passed `io_format`, the files structure will be different, but
         all datasets must have a `description.json` file defining the general structure

@@ -3,16 +3,17 @@
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-from .dataset_io import DatasetIO
-from .dataset_io_format import DatasetIOFormat, NpzFormat, TxtFormat
+from .ttv_sets_io import TTVSetsIO
+from .ttv_sets_io_format import TTVSetsIOFormat, NpzFormat, TxtFormat
 
-DatasetFormatsContainer = containers.DynamicContainer()
-DatasetFormatsContainer.NpzFormat = providers.Factory(NpzFormat)
-DatasetFormatsContainer.TxtFormat = providers.Factory(TxtFormat)
+TTVSetsFormatsContainer = containers.DynamicContainer()
+TTVSetsFormatsContainer.NpzFormat = providers.Factory(NpzFormat)
+TTVSetsFormatsContainer.TxtFormat = providers.Factory(TxtFormat)
 
 __all__ = [
-    "DatasetIO",
-    "DatasetIOFormat",
-    "DatasetFormatsContainer",
-    "NpzIOFormat",
+    "TTVSetsIO",
+    "TTVSetsIOFormat",
+    "TTVSetsFormatsContainer",
+    "NpzFormat",
+    "TxtFormat"
 ]
