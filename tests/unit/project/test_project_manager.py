@@ -109,6 +109,6 @@ def test_save_project_without_file_path(project_manager):
 def test_save_project_as(_, project_manager):
     assert not project_manager.active.file_path
 
-    project_manager.save_project_as(project_manager.active, "foo")
+    project_manager.save_project_as(project_manager.active, "foo_dir")
 
-    assert project_manager.active.file_path == "foo"
+    assert project_manager.active.file_path == "foo_dir/TestProject.dial"

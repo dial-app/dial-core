@@ -22,10 +22,10 @@ def test_save_and_load_project():
     assert test_node in active_project.scene
 
     # Save project to memory
-    project_manager.save_project_as(project_manager.active, "foo.dial")
+    project_manager.save_project_as(project_manager.active, "foo")
 
     # Load project from memory
-    opened_project = project_manager.open_project("foo.dial")
+    opened_project = project_manager.open_project("foo/Default Project.dial")
 
     # The last and new projects are different...
     assert active_project is not opened_project

@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import os
 import pickle
 from copy import deepcopy
 from typing import TYPE_CHECKING, List
@@ -159,7 +160,7 @@ class ProjectManager:
 
         return project
 
-    def save_project_as(self, project: "Project", file_path: str) -> "Project":
+    def save_project_as(self, project: "Project", parent_dir: str) -> "Project":
         """Save the project on a new file path.
 
         Once a project has been saved with `save_project_as`, it can also be saved with
@@ -169,6 +170,11 @@ class ProjectManager:
             The new `file_path` will be set as the project file path, replacing any
             previous paths.
         """
+        if not os.path.isdir(parent_dir):
+            os.mkdir(parent_dir)
+
+        file_path = parent_dir + os.path.sep + project.name + ".dial"
+
         project.file_path = file_path
         LOGGER.info("New file path for the project: %s", file_path)
 
