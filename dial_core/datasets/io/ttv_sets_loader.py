@@ -7,15 +7,14 @@ from tensorflow.keras.datasets import boston_housing, cifar10, fashion_mnist, mn
 
 from dial_core.utils import Timer, log
 
-from . import datatype
-from .dataset import Dataset
+from dial_core.datasets import Dataset, TTVSets, datatype
 
 LOGGER = log.get_logger(__name__)
 
 
-class DatasetLoader(metaclass=ABCMeta):
+class TTVSetsLoader(metaclass=ABCMeta):
     """
-    Abstract class for loading any dataset.
+    Abstract class for loading any TTVSets instance.
     """
 
     def __init__(
@@ -30,31 +29,28 @@ class DatasetLoader(metaclass=ABCMeta):
         self.x_type = x_type
         self.y_type = y_type
 
-    def load(self) -> Tuple["Dataset", "Dataset"]:
+    def load(self) -> "TTVSets":
         """
         Load and return the train/test dataset objects.
         """
         with Timer() as timer:
-            (x_train, y_train), (x_test, y_test) = self._load_data()
+            train, test, validation = self._load_data()
 
         LOGGER.info("Fetched dataset data in %s ms", timer.elapsed())
 
-        train_dataset = Dataset(x_train, y_train, self.x_type, self.y_type)
-        test_dataset = Dataset(x_test, y_test, self.x_type, self.y_type)
-
-        return train_dataset, test_dataset
+        return TTVSets(name=self.name, train=train, test=test, validation=validation)
 
     @abstractmethod
-    def _load_data(self):  # pragma: no cover
+    def _load_data(self) -> Tuple["Dataset", "Dataset", "Dataset"]:  # pragma: no cover
         """
-        Return the train/test pairs.
+        Returns the TTVSets instance.
         """
 
     def __str__(self) -> str:
         return self.name
 
 
-class MnistLoader(DatasetLoader):
+class MnistLoader(TTVSetsLoader):
     """
     Mnist dataset loader.
     """
@@ -68,10 +64,16 @@ class MnistLoader(DatasetLoader):
         )
 
     def _load_data(self):  # pragma: no cover
-        return mnist.load_data()
+        (x_train, y_train), (x_test, y_test) = mnist.load_data()
+
+        train = Dataset(x_train, y_train, self.x_type, self.y_type)
+        test = Dataset(x_test, y_test, self.x_type, self.y_type)
+
+        return train, test, None
 
 
-class FashionMnistLoader(DatasetLoader):
+
+class FashionMnistLoader(TTVSetsLoader):
     """
     Fashion Mnist dataset loader.
     """
@@ -100,10 +102,15 @@ class FashionMnistLoader(DatasetLoader):
         )
 
     def _load_data(self):  # pragma: no cover
-        return fashion_mnist.load_data()
+        (x_train, y_train), (x_test, y_test) = fashion_mnist.load_data()
+
+        train = Dataset(x_train, y_train, self.x_type, self.y_type)
+        test = Dataset(x_test, y_test, self.x_type, self.y_type)
+
+        return train, test, None
 
 
-class Cifar10Loader(DatasetLoader):
+class Cifar10Loader(TTVSetsLoader):
     """
     Cifar10 dataset loader.
     """
@@ -132,10 +139,15 @@ class Cifar10Loader(DatasetLoader):
         )
 
     def _load_data(self):  # pragma: no cover
-        return cifar10.load_data()
+        (x_train, y_train), (x_test, y_test) = cifar10.load_data()
+
+        train = Dataset(x_train, y_train, self.x_type, self.y_type)
+        test = Dataset(x_test, y_test, self.x_type, self.y_type)
+
+        return train, test, None
 
 
-class BostonHousingLoader(DatasetLoader):
+class BostonHousingLoader(TTVSetsLoader):
     """
     Boston Housing dataset loader.
     """
@@ -149,4 +161,10 @@ class BostonHousingLoader(DatasetLoader):
         )
 
     def _load_data(self):  # pragma: no cover
-        return boston_housing.load_data()
+        (x_train, y_train), (x_test, y_test) = boston_housing.load_data()
+
+        train = Dataset(x_train, y_train, self.x_type, self.y_type)
+        test = Dataset(x_test, y_test, self.x_type, self.y_type)
+
+        return train, test, None
+

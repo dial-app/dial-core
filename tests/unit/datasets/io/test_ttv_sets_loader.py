@@ -2,35 +2,44 @@
 
 import numpy as np
 
-from dial_core.datasets import DatasetLoader, PredefinedDatasetLoaders, datatype
+from dial_core.datasets import Dataset, datatype
+from dial_core.datasets.io import PredefinedTTVSetsContainer, TTVSetsLoader
 
 
 def test_dataset_loader():
-    class CustomLoader(DatasetLoader):
+    class CustomLoader(TTVSetsLoader):
         def __init__(self):
             super().__init__(
                 "CustomLoader",
                 "Custom Loader class",
-                datatype.Numeric(),
-                datatype.Numeric(),
+                datatype.NumericArray(),
+                datatype.NumericArray(),
             )
 
         def _load_data(self):
-            return (np.array([1]), np.array([2])), (np.array([3]), np.array([4]))
+            train = Dataset(np.array([1]), np.array([10]), self.x_type, self.y_type)
+            test = Dataset(np.array([2]), np.array([20]), self.x_type, self.y_type)
+            validation = Dataset(
+                np.array([3]), np.array([30]), self.x_type, self.y_type
+            )
+
+            return train, test, validation
 
     custom_loader = CustomLoader()
 
-    train_dataset, test_dataset = custom_loader.load()
+    ttv = custom_loader.load()
 
-    assert len(train_dataset) == 1
-    assert len(test_dataset) == 1
+    assert len(ttv.train) == 1
+    assert len(ttv.test) == 1
+    assert len(ttv.validation) == 1
 
-    assert train_dataset.head(1) == ([1], [2])
-    assert test_dataset.head(1) == ([3], [4])
+    assert ttv.train.head(1) == ([1], [10])
+    assert ttv.test.head(1) == ([2], [20])
+    assert ttv.validation.head(1) == ([3], [30])
 
 
 def test_mnist_loader():
-    mnist_loader = PredefinedDatasetLoaders.Mnist()
+    mnist_loader = PredefinedTTVSetsContainer.Mnist()
 
     assert isinstance(mnist_loader.x_type, datatype.ImageArray)
     assert isinstance(mnist_loader.y_type, datatype.Categorical)
@@ -41,7 +50,7 @@ def test_mnist_loader():
 
 
 def test_fashion_mnist_loader():
-    fashion_mnist_loader = PredefinedDatasetLoaders.FashionMnist()
+    fashion_mnist_loader = PredefinedTTVSetsContainer.FashionMnist()
 
     assert isinstance(fashion_mnist_loader.x_type, datatype.ImageArray)
     assert isinstance(fashion_mnist_loader.y_type, datatype.Categorical)
@@ -63,7 +72,7 @@ def test_fashion_mnist_loader():
 
 
 def test_cifar10_loader():
-    cifar10_loader = PredefinedDatasetLoaders.Cifar10()
+    cifar10_loader = PredefinedTTVSetsContainer.Cifar10()
 
     assert isinstance(cifar10_loader.x_type, datatype.ImageArray)
     assert isinstance(cifar10_loader.y_type, datatype.Categorical)
@@ -85,7 +94,7 @@ def test_cifar10_loader():
 
 
 def test_boston_housing_loader():
-    boston_housing_loader = PredefinedDatasetLoaders.BostonHousing()
+    boston_housing_loader = PredefinedTTVSetsContainer.BostonHousing()
 
     assert isinstance(boston_housing_loader.x_type, datatype.NumericArray)
     assert isinstance(boston_housing_loader.y_type, datatype.Numeric)

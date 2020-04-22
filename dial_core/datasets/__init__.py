@@ -5,14 +5,10 @@ The datasets package has all the classes related to Datasets, datatypes and data
 loading.
 """
 
-from .container import PredefinedDatasetLoaders
 from .dataset import Dataset
-from .dataset_loader import DatasetLoader
 from .ttv_sets import TTVSets
 
 __all__ = [
     "Dataset",
-    "PredefinedDatasetLoaders",
-    "DatasetLoader",
     "TTVSets",
 ]
