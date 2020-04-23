@@ -24,11 +24,11 @@ PredefinedTTVSetsContainer.Cifar10 = providers.Factory(Cifar10Loader)
 PredefinedTTVSetsContainer.BostonHousing = providers.Factory(BostonHousingLoader)
 
 __all__ = [
+    "TTVSetsLoader",
     "TTVSetsIO",
     "TTVSetsIOFormat",
     "TTVSetsFormatsContainer",
     "PredefinedTTVSetsContainer",
-    "TTVSetsLoader",
     "NpzFormat",
     "TxtFormat",
 ]

@@ -22,6 +22,7 @@ class TTVSetsIO:
     @classmethod
     def save(
         cls, io_format: "TTVSetsIOFormat", save_path: str, ttv_sets: "TTVSets",
+        override=False
     ):
         """Saves a TTVSets object on the file system.
 
@@ -32,8 +33,12 @@ class TTVSetsIO:
         """
         # Save all datasets inside this directory
         root_dir = save_path + os.path.sep + ttv_sets.name + os.path.sep
+
         if not os.path.isdir(root_dir):
             os.mkdir(root_dir)
+        elif not override:
+            print("Returning without overriding")
+            return
 
         desc = ttv_sets.to_dict()
         desc["format"] = str(io_format)  # Must store the format for loading later

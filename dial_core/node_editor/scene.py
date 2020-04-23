@@ -17,8 +17,10 @@ class Scene:
         nodes: The list of nodes currently on the scene.
     """
 
-    def __init__(self):
+    def __init__(self, parent = None):
         super().__init__()
+
+        self.parent = parent
 
         self.__nodes: List["Node"] = []
 
@@ -31,11 +33,14 @@ class Scene:
     def add_node(self, node: "Node"):
         """Adds a new node to the scene."""
         self.nodes.append(node)
+        node.parent = self
 
     def remove_node(self, node: "Node"):
         """Removes a node from the scene."""
         try:
             self.nodes.remove(node)
+
+            node.parent = None
             node.clear_all_connections()
 
         except ValueError: # No node found to remove
