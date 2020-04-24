@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 """
-DataTypes used by the datasets
+DataTypes used by the datasets.
 """
 
 import dependency_injector.containers as containers
