@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import os
+
 import dependency_injector.providers as providers
 
 from dial_core.node_editor import Scene, SceneFactory

@@ -4,7 +4,6 @@ from copy import deepcopy
 from typing import Any, Callable, Dict, Optional
 
 from dial_core.utils import log
-# from dial_core.utils.log import DEBUG, log_on_end
 from dial_core.utils.exceptions import PortNotConnectedError
 
 from .port import Port

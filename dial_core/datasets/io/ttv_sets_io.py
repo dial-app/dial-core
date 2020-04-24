@@ -21,8 +21,11 @@ class TTVSetsIO:
 
     @classmethod
     def save(
-        cls, io_format: "TTVSetsIOFormat", save_path: str, ttv_sets: "TTVSets",
-        override=False
+        cls,
+        io_format: "TTVSetsIOFormat",
+        save_path: str,
+        ttv_sets: "TTVSets",
+        override=False,
     ):
         """Saves a TTVSets object on the file system.
 

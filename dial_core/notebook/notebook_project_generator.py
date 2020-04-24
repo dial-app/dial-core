@@ -5,6 +5,7 @@ from typing import Dict, Optional
 
 import dependency_injector.providers as providers
 import nbformat as nbf
+
 from dial_core.node_editor import Node, Scene
 from dial_core.project import Project
 from dial_core.utils import log

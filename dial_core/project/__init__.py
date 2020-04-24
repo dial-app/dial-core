@@ -5,7 +5,7 @@ The project package provides classes for storing and managing projects: Sets of 
 and configurations that can be stored and loaded.
 """
 
-from .project import Project, DefaultProjectFactory
+from .project import DefaultProjectFactory, Project
 from .project_manager import (
     ProjectManager,
     ProjectManagerFactory,

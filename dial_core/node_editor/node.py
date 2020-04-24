@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class Node:
-    def __init__(self, title: str, inner_widget: Any = None, parent = None):
+    def __init__(self, title: str, inner_widget: Any = None, parent=None):
         self._title = title
 
         self._inner_widget: Optional[Any] = inner_widget
@@ -225,7 +225,7 @@ class Node:
         setattr(result, "_inputs", deepcopy(self._inputs, memo))
         setattr(result, "_outputs", deepcopy(self._outputs, memo))
         setattr(result, "_inner_widget", deepcopy(self._inner_widget, memo))
-        setattr(result, "parent", self.parent) # Don't deepcopy!
+        setattr(result, "parent", self.parent)  # Don't deepcopy!
 
         for port in list(self.inputs.values()) + list(self.outputs.values()):
             port.node = self
@@ -252,7 +252,11 @@ class Node:
         self._outputs = new_state["outputs"]
 
     def __reduce__(self):
-        return (Node, (self._title, self._inner_widget, self.parent), self.__getstate__())
+        return (
+            Node,
+            (self._title, self._inner_widget, self.parent),
+            self.__getstate__(),
+        )
 
     def __str__(self):
         """Retuns the string representation of the Port object."""

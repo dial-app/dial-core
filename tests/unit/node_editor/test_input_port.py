@@ -3,6 +3,7 @@
 import pickle
 
 import pytest
+
 from dial_core.utils.exceptions import InvalidPortTypeError
 
 

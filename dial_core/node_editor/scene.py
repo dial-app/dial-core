@@ -4,6 +4,7 @@ from copy import deepcopy
 from typing import TYPE_CHECKING, List
 
 import dependency_injector.providers as providers
+
 from dial_core.utils.log import DEBUG, log_on_end
 
 if TYPE_CHECKING:
@@ -17,7 +18,7 @@ class Scene:
         nodes: The list of nodes currently on the scene.
     """
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super().__init__()
 
         self.parent = parent
@@ -43,7 +44,7 @@ class Scene:
             node.parent = None
             node.clear_all_connections()
 
-        except ValueError: # No node found to remove
+        except ValueError:  # No node found to remove
             pass
 
     def duplicate_nodes(self, nodes: List["Node"]) -> List["Node"]:

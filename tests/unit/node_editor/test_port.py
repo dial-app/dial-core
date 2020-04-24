@@ -1,11 +1,11 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import pickle
+from copy import deepcopy
 
 import pytest
 
 from dial_core.utils.exceptions import InvalidPortTypeError, PortNotConnectedError
-from copy import deepcopy
 
 
 def test_port_attributes(port_int_a):

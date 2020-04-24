@@ -8,6 +8,7 @@ from typing import TYPE_CHECKING, List
 import dependency_injector.providers as providers
 
 from dial_core.utils import Timer, log
+
 from .project import DefaultProjectFactory
 
 if TYPE_CHECKING:

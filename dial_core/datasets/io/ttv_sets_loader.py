@@ -5,9 +5,8 @@ from typing import Tuple
 
 from tensorflow.keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
-from dial_core.utils import Timer, log
-
 from dial_core.datasets import Dataset, TTVSets, datatype
+from dial_core.utils import Timer, log
 
 LOGGER = log.get_logger(__name__)
 
@@ -70,7 +69,6 @@ class MnistLoader(TTVSetsLoader):
         test = Dataset(x_test, y_test, self.x_type, self.y_type)
 
         return train, test, None
-
 
 
 class FashionMnistLoader(TTVSetsLoader):
@@ -167,4 +165,3 @@ class BostonHousingLoader(TTVSetsLoader):
         test = Dataset(x_test, y_test, self.x_type, self.y_type)
 
         return train, test, None
-

@@ -1,4 +1,5 @@
 import nbformat as nbf
+
 from dial_core.node_editor import Node
 from dial_core.notebook import (
     NodeCells,

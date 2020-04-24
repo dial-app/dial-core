@@ -14,7 +14,6 @@ package.
 from . import enum, initialization
 from .enum import Dial
 from .timer import Timer
-
 from .traverse import find_parent_of
 
 __all__ = ["Timer", "Dial", "initialization", "enum", "find_parent_of"]
