@@ -6,46 +6,8 @@ import numpy as np
 import pytest
 
 from dial_core.datasets import Dataset
-from dial_core.datasets.datatype import Categorical, Numeric, NumericArray
 
 np.random.seed(0)
-
-
-@pytest.fixture
-def empty_dataset():
-    return Dataset()
-
-
-@pytest.fixture
-def simple_numeric_dataset():
-    return Dataset(
-        x_data=np.array([1, 2, 3, 4]),
-        y_data=np.array([10, 20, 30, 40]),
-        x_type=Numeric(),
-        y_type=Numeric(),
-    )
-
-
-@pytest.fixture
-def simple_categorical_dataset():
-    return Dataset(
-        x_data=np.array([0, 1, 2]),
-        y_data=np.array([0, 1, 2]),
-        x_type=Numeric(),
-        y_type=Categorical(["foo", "bar", "hue"]),
-    )
-
-
-@pytest.fixture
-def simple_array_dataset():
-    return Dataset(
-        x_data=np.array(
-            [np.array([1, 1, 1]), np.array([2, 2, 2]), np.array([3, 3, 3])]
-        ),
-        y_data=np.array([1, 2, 3]),
-        x_type=NumericArray(),
-        y_type=Numeric(),
-    )
 
 
 def test_empty_dataset(empty_dataset):

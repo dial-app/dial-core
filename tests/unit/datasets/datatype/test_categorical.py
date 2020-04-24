@@ -5,17 +5,6 @@ import pickle
 import numpy as np
 import pytest
 
-from dial_core.datasets.datatype import Categorical
-
-
-@pytest.fixture
-def categorical_obj():
-    """
-    Returns an instance of Categorical with categories ["t-shirt", "jeans", "glasses"]
-    """
-
-    return Categorical(["t-shirt", "jeans", "glasses"])
-
 
 @pytest.mark.parametrize("test_input, expected", [(1, [0, 1, 0]), (2, [0, 0, 1])])
 def test_process(categorical_obj, test_input, expected):

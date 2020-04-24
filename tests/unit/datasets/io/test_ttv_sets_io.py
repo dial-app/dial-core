@@ -1,10 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-# import numpy as np
-
-# from dial_core.datasets import Dataset, datatype
-# from dial_core.datasets.io import PredefinedTTVSetsContainer, TTVSetsLoader
+from dial_core.datasets.io import NpzFormat, TTVSetsIO
 
 
-def test_save_ttv():
-    pass
+# @patch("builtins.open", new_callable=mock_open)
+def test_save_ttv(ttv_sets):
+    TTVSetsIO.save(NpzFormat(), "foo/", ttv_sets)

@@ -1,23 +1,10 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from argparse import Namespace
 from unittest import mock
 
 import pytest
 
 from dial_core.utils import log
-
-
-@pytest.fixture
-def namespace():
-    """
-    Return a Namespace (argparse) with the default parameters.
-    """
-    __namespace = Namespace()
-    __namespace.__setattr__("debug", False)
-    __namespace.__setattr__("loglevel", "info")
-
-    return __namespace
 
 
 def test_init_with_debug(namespace):

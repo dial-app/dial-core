@@ -5,16 +5,6 @@ import pickle
 import numpy as np
 import pytest
 
-from dial_core.datasets.datatype import NumericArray
-
-
-@pytest.fixture
-def numericarray_obj():
-    """
-    Returns an instance of NumericArray.
-    """
-    return NumericArray()
-
 
 @pytest.mark.parametrize(
     "test_input, expected", [(np.array([1, 2, 3]), np.array([1, 2, 3]))]

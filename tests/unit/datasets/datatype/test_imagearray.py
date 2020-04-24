@@ -5,16 +5,6 @@ import pickle
 import numpy as np
 import pytest
 
-from dial_core.datasets.datatype import ImageArray
-
-
-@pytest.fixture
-def imagearray_obj():
-    """
-    Returns an instance of ImageArray.
-    """
-    return ImageArray()
-
 
 @pytest.mark.parametrize(
     "test_input, expected",

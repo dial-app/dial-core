@@ -1,9 +1,13 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from argparse import Namespace
 from unittest.mock import Mock, patch
 
+import numpy as np
 import pytest
 
+from dial_core.datasets import Dataset, TTVSets
+from dial_core.datasets.datatype import Categorical, ImageArray, Numeric, NumericArray
 from dial_core.node_editor import InputPort, Node, NodeRegistry, OutputPort, Port, Scene
 from dial_core.notebook import NodeCellsRegistryFactory, NotebookProjectGeneratorFactory
 from dial_core.plugin import Plugin, PluginManager
@@ -195,3 +199,119 @@ def notebook_project_generator(project_a):
 @pytest.fixture
 def node_transformers_registry():
     return NodeCellsRegistryFactory()
+
+
+@pytest.fixture
+def categorical_obj():
+    """
+    Returns an instance of Categorical with categories ["t-shirt", "jeans", "glasses"]
+    """
+
+    return Categorical(["t-shirt", "jeans", "glasses"])
+
+
+@pytest.fixture
+def imagearray_obj():
+    """
+    Returns an instance of ImageArray.
+    """
+    return ImageArray()
+
+
+@pytest.fixture
+def numeric_obj():
+    """
+    Returns an instance of Numeric.
+    """
+    return Numeric()
+
+
+@pytest.fixture
+def numericarray_obj():
+    """
+    Returns an instance of NumericArray.
+    """
+    return NumericArray()
+
+
+@pytest.fixture
+def empty_dataset():
+    return Dataset()
+
+
+@pytest.fixture
+def simple_numeric_dataset():
+    return Dataset(
+        x_data=np.array([1, 2, 3, 4]),
+        y_data=np.array([10, 20, 30, 40]),
+        x_type=Numeric(),
+        y_type=Numeric(),
+    )
+
+
+@pytest.fixture
+def simple_categorical_dataset():
+    return Dataset(
+        x_data=np.array([0, 1, 2]),
+        y_data=np.array([0, 1, 2]),
+        x_type=Numeric(),
+        y_type=Categorical(["foo", "bar", "hue"]),
+    )
+
+
+@pytest.fixture
+def simple_array_dataset():
+    return Dataset(
+        x_data=np.array(
+            [np.array([1, 1, 1]), np.array([2, 2, 2]), np.array([3, 3, 3])]
+        ),
+        y_data=np.array([1, 2, 3]),
+        x_type=NumericArray(),
+        y_type=Numeric(),
+    )
+
+
+@pytest.fixture
+def ttv_sets(simple_numeric_dataset):
+    return TTVSets(
+        "TTVSets",
+        train=simple_numeric_dataset,
+        test=simple_numeric_dataset,
+        validation=None,
+    )
+
+
+@pytest.fixture
+def train_dataset():
+    return Dataset(
+        x_data=np.array(
+            [np.array([1, 1, 1]), np.array([2, 2, 2]), np.array([3, 3, 3])]
+        ),
+        y_data=np.array([1, 2, 3]),
+        x_type=NumericArray(),
+        y_type=Numeric(),
+    )
+
+
+@pytest.fixture
+def test_dataset():
+    return Dataset(
+        x_data=np.array(
+            [np.array([1, 1, 1]), np.array([2, 2, 2]), np.array([3, 3, 3])]
+        ),
+        y_data=np.array([1, 2, 3]),
+        x_type=NumericArray(),
+        y_type=Numeric(),
+    )
+
+
+@pytest.fixture
+def namespace():
+    """
+    Return a Namespace (argparse) with the default parameters.
+    """
+    __namespace = Namespace()
+    __namespace.__setattr__("debug", False)
+    __namespace.__setattr__("loglevel", "info")
+
+    return __namespace

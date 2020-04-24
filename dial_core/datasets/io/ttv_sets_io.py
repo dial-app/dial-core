@@ -22,7 +22,7 @@ class TTVSetsIO:
     @classmethod
     def save(
         cls, io_format: "TTVSetsIOFormat", parent_dir: str, ttv_sets: "TTVSets",
-    ):
+    ) -> dict:
         """Saves a TTVSets object on the file system.
 
         Depending on the passed `io_format`, the files structure will be different, but
@@ -33,6 +33,9 @@ class TTVSetsIO:
         Args:
             io_format: Format in which the datasets will be stored.
             parent_path: Directory where the dataset will be created.
+
+        Returns:
+            The saved dictionary with the ttv_sets information
         """
         # Save all datasets inside this directory
         ttv_dir = parent_dir + os.path.sep + ttv_sets.name + os.path.sep
@@ -57,6 +60,8 @@ class TTVSetsIO:
         # Writes the datasets structure on a json file
         with open(ttv_dir + os.path.sep + "description.json", "w") as desc_file:
             json.dump(ttv_desc, desc_file, indent=4)
+
+        return ttv_desc
 
     @classmethod
     def load(cls, load_path: str, dataset_io_formats) -> "TTVSets":

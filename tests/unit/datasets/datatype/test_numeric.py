@@ -4,16 +4,6 @@ import pickle
 
 import pytest
 
-from dial_core.datasets.datatype import Numeric
-
-
-@pytest.fixture
-def numeric_obj():
-    """
-    Returns an instance of Numeric.
-    """
-    return Numeric()
-
 
 @pytest.mark.parametrize("test_input, expected", [(1, 1), (2, 2)])
 def test_process(numeric_obj, test_input, expected):
