@@ -6,6 +6,11 @@ from abc import ABCMeta, abstractmethod
 class DataType(metaclass=ABCMeta):
     """
     Abstract class for any data type.
+
+    Subclass this class for defining new types that Dataset objects can store.
+
+    This class must provide an implementation for `process` and `display` methods. See
+    the methods documentation for more information.
     """
 
     def __init__(self):
@@ -24,7 +29,7 @@ class DataType(metaclass=ABCMeta):
         """Returns the display representation of the data.
 
         For example, for Categorical types this will be the actual category name instead
-        of an interger.
+        of the interger.
         """
 
     def __str__(self) -> str:
@@ -32,11 +37,10 @@ class DataType(metaclass=ABCMeta):
 
     @abstractmethod
     def convert_to_expected_format(self, data):
-        """Transforms the passed data to a format expected by the dataset, that can be
-        stored.
+        """Transforms the passed data to a format expected to be stored by the dataset.
 
         See the derived DataType classes (Categorical, Numeric...) for more
-            explanations.
+        explanations.
 
         Raises:
             ValueError: If the data can't be converted
