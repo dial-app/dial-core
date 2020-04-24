@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import pickle
+
 import pytest
 
 from dial_core.datasets.datatype import Numeric
@@ -25,3 +27,8 @@ def test_display(numeric_obj, test_input, expected):
 
 def test_convert_to_expected_format(numeric_obj):
     assert numeric_obj.convert_to_expected_format(5) == 5
+
+
+def test_pickable(numeric_obj):
+    obj = pickle.dumps(numeric_obj)
+    pickle.loads(obj)

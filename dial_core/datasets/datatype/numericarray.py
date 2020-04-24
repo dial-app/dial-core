@@ -19,3 +19,6 @@ class NumericArray(DataType):
     def convert_to_expected_format(self, data: "np.ndarray") -> "np.ndarray":
         """Doesn't do any transformation. Expects data to be passed correctly."""
         return np.array(data)
+
+    def __reduce__(self):
+        return (NumericArray, (), super().__getstate__())

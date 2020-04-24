@@ -11,9 +11,9 @@ if TYPE_CHECKING:
 
 
 class TTVSetsIO:
-    """This class provides an interface for saving/loading TTVSets classes from/to
-    memory. The format used for the stored elements (files, directories, npz files..)
-    depends on the `io_format` argument.
+    """The TTVSetsIO class provides an interface for saving/loading TTVSets classes
+    from/to memory. The format used for the stored elements (files, directories, npz
+    files..) depends on the `io_format` argument.
 
     For more information about how each `io_format` works, see the `TTVSetsIOFormat`
     class.
@@ -21,11 +21,7 @@ class TTVSetsIO:
 
     @classmethod
     def save(
-        cls,
-        io_format: "TTVSetsIOFormat",
-        save_path: str,
-        ttv_sets: "TTVSets",
-        override=False,
+        cls, io_format: "TTVSetsIOFormat", parent_dir: str, ttv_sets: "TTVSets",
     ):
         """Saves a TTVSets object on the file system.
 
@@ -33,33 +29,34 @@ class TTVSetsIO:
         all datasets must have a `description.json` file defining the general structure
         of the Dataset: name, description, paths to train/test/validation datasets (if
         any), datatypes used...
+
+        Args:
+            io_format: Format in which the datasets will be stored.
+            parent_path: Directory where the dataset will be created.
         """
         # Save all datasets inside this directory
-        root_dir = save_path + os.path.sep + ttv_sets.name + os.path.sep
+        ttv_dir = parent_dir + os.path.sep + ttv_sets.name + os.path.sep
 
-        if not os.path.isdir(root_dir):
-            os.mkdir(root_dir)
-        elif not override:
-            print("Returning without overriding")
-            return
+        if not os.path.isdir(ttv_dir):
+            os.makedirs(ttv_dir, exist_ok=True)
 
-        desc = ttv_sets.to_dict()
-        desc["format"] = str(io_format)  # Must store the format for loading later
+        ttv_desc = ttv_sets.to_dict()
+        ttv_desc["format"] = str(io_format)  # Must store the format for loading later
 
         if ttv_sets.train:
-            io_format.save(root_dir, "train", desc["train"], ttv_sets.train)
+            io_format.save(ttv_dir, "train", ttv_desc["train"], ttv_sets.train)
 
         if ttv_sets.test:
-            io_format.save(root_dir, "test", desc["test"], ttv_sets.test)
+            io_format.save(ttv_dir, "test", ttv_desc["test"], ttv_sets.test)
 
         if ttv_sets.validation:
             io_format.save(
-                root_dir, "validation", desc["validation"], ttv_sets.valvalidation
+                ttv_dir, "validation", ttv_desc["validation"], ttv_sets.valvalidation
             )
 
         # Writes the datasets structure on a json file
-        with open(root_dir + os.path.sep + "description.json", "w") as desc_file:
-            json.dump(desc, desc_file, indent=4)
+        with open(ttv_dir + os.path.sep + "description.json", "w") as desc_file:
+            json.dump(ttv_desc, desc_file, indent=4)
 
     @classmethod
     def load(cls, load_path: str, dataset_io_formats) -> "TTVSets":

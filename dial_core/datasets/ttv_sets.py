@@ -1,11 +1,13 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Optional
+from typing import Dict, Optional
 
 from dial_core.datasets import Dataset  # noqa: F401
 
 
 class TTVSets:
+    """The TTVSets class is a container for train/test/validation datasets."""
+
     def __init__(
         self,
         name: str,
@@ -19,7 +21,7 @@ class TTVSets:
         self.test = test
         self.validation = validation
 
-    def to_dict(self):
+    def to_dict(self) -> Dict[str, str]:
         def extract_dataset_info(dataset):
             return (
                 {"x_type": str(dataset.x_type), "y_type": str(dataset.y_type)}

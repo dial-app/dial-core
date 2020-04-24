@@ -33,3 +33,6 @@ class ImageArray(DataType):
         translate from one format to another.
         """
         return np.array(data)
+
+    def __reduce__(self):
+        return (ImageArray, (), super().__getstate__())

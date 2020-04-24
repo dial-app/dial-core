@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import pickle
+
 import numpy as np
 import pytest
 
@@ -62,3 +64,26 @@ def test_convert_to_expected_format(categorical_obj):
 
 def test_str(categorical_obj):
     assert str(categorical_obj) == "Categorical"
+
+
+def test_to_dict(categorical_obj):
+    assert categorical_obj.to_dict() == {
+        "class": "Categorical",
+        "categories": ["t-shirt", "jeans", "glasses"],
+    }
+
+
+def test_from_dict(categorical_obj):
+    categorical_obj.from_dict({"categories": ["a", "b"]})
+
+    assert categorical_obj.to_dict() == {
+        "class": "Categorical",
+        "categories": ["a", "b"],
+    }
+
+
+def test_pickable(categorical_obj):
+    obj = pickle.dumps(categorical_obj)
+    pickled_categorical_obj = pickle.loads(obj)
+
+    assert categorical_obj.categories == pickled_categorical_obj.categories

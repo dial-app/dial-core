@@ -28,3 +28,6 @@ class Numeric(DataType):
             ValueError, TypeError: if data can't be transformed.
         """
         return int(data)
+
+    def __reduce__(self):
+        return (Numeric, (), super().__getstate__())

@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import pickle
+
 import numpy as np
 import pytest
 
@@ -29,3 +31,8 @@ def test_display(imagearray_obj, input_output):
 
 def test_convert_to_expected_format(imagearray_obj):
     assert imagearray_obj.convert_to_expected_format([0, 5, 12]).tolist() == [0, 5, 12]
+
+
+def test_pickable(imagearray_obj):
+    obj = pickle.dumps(imagearray_obj)
+    pickle.loads(obj)

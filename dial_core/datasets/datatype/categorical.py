@@ -129,3 +129,17 @@ class Categorical(DataType):
             return data_as_int
 
         raise ValueError
+
+    def __getstate__(self) -> dict:
+        dc = super().__getstate__()
+        dc["categories"] = self.categories
+
+        return dc
+
+    def __setstate__(self, new_state: dict):
+        super().__setstate__(new_state)
+
+        self.categories = new_state["categories"]
+
+    def __reduce__(self):
+        return (Categorical, (self.categories,), self.__getstate__())

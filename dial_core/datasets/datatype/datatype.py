@@ -32,9 +32,6 @@ class DataType(metaclass=ABCMeta):
         of the interger.
         """
 
-    def __str__(self) -> str:
-        return type(self).__name__
-
     @abstractmethod
     def convert_to_expected_format(self, data):
         """Transforms the passed data to a format expected to be stored by the dataset.
@@ -45,3 +42,21 @@ class DataType(metaclass=ABCMeta):
         Raises:
             ValueError: If the data can't be converted
         """
+
+    def to_dict(self):
+        return self.__getstate__()
+
+    def from_dict(self, dc: dict):
+        self.__setstate__(dc)
+
+    def __getstate__(self) -> dict:
+        return {"class": str(self)}
+
+    def __setstate__(self, new_state: dict):
+        pass
+
+    def __reduce__(self):
+        return (DataType, (), self.__getstate__())
+
+    def __str__(self) -> str:
+        return type(self).__name__
