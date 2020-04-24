@@ -55,6 +55,14 @@ def test_empty_dataset(empty_dataset):
     assert len(y) == 0
 
 
+def test_input_shape(simple_array_dataset):
+    assert simple_array_dataset.input_shape == (3,)
+
+
+def test_output_shape(simple_array_dataset):
+    assert simple_array_dataset.output_shape == ()
+
+
 def test_head(simple_numeric_dataset):
     x, y = simple_numeric_dataset.head(2)
 

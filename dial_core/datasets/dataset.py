@@ -13,6 +13,21 @@ if TYPE_CHECKING:
 
 
 class Dataset(keras.utils.Sequence):
+    """The Dataset class is a data container. It can be used as a data generator by
+    keras methos like fit, predict... and any other method that requires to be feed with
+    data batches.
+
+    Two Datatypes must also be provided. This classes specify how an specific data is
+    stored on memory and how it should be loaded, processed, and returned.
+
+    Attributes:
+        _x: x (input) array.
+        _y: y (output) array.
+        x_type: Datatype of x array.
+        y_type: Datatype of y array.
+        batch_size: Batch size.
+    """
+
     class Role(Enum):
         Raw = 0
         Display = 1
@@ -25,32 +40,32 @@ class Dataset(keras.utils.Sequence):
         y_type: "DataType" = None,
         batch_size: int = 32,
     ):
-
-        if x_data is None:
-            x_data = np.empty(0)
-
-        if y_data is None:
-            y_data = np.empty(0)
-
-        if x_type is None:
-            x_type = Numeric()
-
-        if y_type is None:
-            y_type = Numeric()
-
         # Data arrays
-        self._x, self._y = x_data, y_data
+        self._x = np.empty(0) if x_data is None else x_data
+        self._y = np.empty(0) if y_data is None else y_data
 
         # Data types
-        self.x_type, self.y_type = x_type, y_type
+        self.x_type = Numeric() if x_type is None else x_type
+        self.y_type = Numeric() if y_type is None else y_type
 
         self.batch_size = batch_size
 
     @property
     def input_shape(self):
+        """Returns the shape of the `_x` array, or (0,) if not loaded/not defined."""
         return self.x_type.process(self._x[0]).shape if len(self._x) > 0 else (0,)
 
+    @property
+    def output_shape(self):
+        """Returns the shape of the `_y` array, or (0,) if not loaded/not defined."""
+        return self.y_type.process(self._y[0]).shape if len(self._y) else (0,)
+
     def insert(self, position: int, x: List[Any], y: List[Any]):
+        """Inserts x and y elements at the given position.
+
+        Raises:
+            ValueError: If the two lists don't have the same length.
+        """
         if len(x) != len(y):
             raise ValueError(f"Can't insert {len(x)} values on x and {len(y)} on y!")
 
@@ -58,21 +73,19 @@ class Dataset(keras.utils.Sequence):
         self._y = np.insert(self._y, position, y, axis=0)
 
     def delete_rows(self, start: int, n: int = 1):
+        """Deletes `n` rows at `start` position, including `start`"""
         self._x = np.delete(self._x, range(start, start + n), axis=0)
         self._y = np.delete(self._y, range(start, start + n), axis=0)
 
     def head(self, n: int = 10, role: "Role" = Role.Raw) -> Tuple[List, List]:
-        """
-        Returns the first `n` items on the dataset.
-        """
+        """Returns the first `n` items on the dataset."""
         return self.items(0, n, role)
 
     def items(
         self, start: int = None, end: int = None, role: "Role" = Role.Raw
     ) -> Tuple["np.array", "np.array"]:
-        """
-        Return the `n` elements between start and end as a tuple of (x, y) items
-        Range is EXCLUSIVE [start, end)
+        """Returns the `n` elements between start and end as a tuple of (x, y) items
+        Range is EXCLUSIVE [start, end).
         """
         x_set, y_set = self.__preprocess_data(
             self._x[start:end], self._y[start:end], role
@@ -84,15 +97,11 @@ class Dataset(keras.utils.Sequence):
         return len(self._x)
 
     def __len__(self) -> int:
-        """
-        Return the length of the dataset (In batches)
-        """
+        """Returns the length of the dataset (in batches)."""
         return int(np.ceil(len(self._x) / float(self.batch_size)))
 
     def __getitem__(self, idx: int) -> Tuple["np.array", "np.array"]:
-        """
-        Return the batch of items starting on `idx`.
-        """
+        """Returns the batch of items starting at `idx`."""
         batch_start = idx * self.batch_size
         batch_end = (idx + 1) * self.batch_size
 
@@ -108,9 +117,8 @@ class Dataset(keras.utils.Sequence):
     def __preprocess_data(
         self, x_data: "np.array", y_data: "np.array", role: "Role" = Role.Raw
     ) -> Tuple["np.array", "np.array"]:
-        """
-        Preprocess the data. For example, if the image is a path to a file, load it and
-        return the corresponding array.
+        """ Preprocess the data. For example, if the image is a path to a file, load it
+        and return the corresponding array.
         """
         if role == self.Role.Raw:
             x_data = np.array([self.x_type.process(element) for element in x_data])
