@@ -56,6 +56,9 @@ def test_convert_to_expected_format(categorical_obj):
     with pytest.raises(ValueError):
         assert categorical_obj.convert_to_expected_format([0, 0, 0, 0, 1, 0])
 
+    with pytest.raises(ValueError):
+        assert categorical_obj.convert_to_expected_format(None)
+
 
 def test_str(categorical_obj):
     assert str(categorical_obj) == "Categorical"

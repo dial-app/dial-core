@@ -25,3 +25,7 @@ def test_process(imagearray_obj, test_input, expected):
 @pytest.mark.parametrize("input_output", [(np.array([1, 2, 3]))])
 def test_display(imagearray_obj, input_output):
     assert np.alltrue(imagearray_obj.display(input_output) == input_output)
+
+
+def test_convert_to_expected_format(imagearray_obj):
+    assert imagearray_obj.convert_to_expected_format([0, 5, 12]).tolist() == [0, 5, 12]

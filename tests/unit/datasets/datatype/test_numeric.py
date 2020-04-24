@@ -21,3 +21,7 @@ def test_process(numeric_obj, test_input, expected):
 @pytest.mark.parametrize("test_input, expected", [(0, "0"), (1, "1")])
 def test_display(numeric_obj, test_input, expected):
     assert numeric_obj.display(test_input) == expected
+
+
+def test_convert_to_expected_format(numeric_obj):
+    assert numeric_obj.convert_to_expected_format(5) == 5

@@ -24,3 +24,7 @@ def test_process(numericarray_obj, test_input, expected):
 @pytest.mark.parametrize("test_input, expected", [(np.array([1, 2]), "[1, 2]")])
 def test_display(numericarray_obj, test_input, expected):
     assert numericarray_obj.display(test_input) == expected
+
+
+def test_convert_to_expected_format(numericarray_obj):
+    assert numericarray_obj.convert_to_expected_format([1, 2]).tolist() == [1, 2]

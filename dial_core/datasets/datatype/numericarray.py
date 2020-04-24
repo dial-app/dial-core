@@ -16,6 +16,6 @@ class NumericArray(DataType):
         """Returns `data` as a string representation."""
         return np.array2string(data, precision=4, suppress_small=True, separator=", ")
 
-    def convert_to_expected_format(self, data: "np.array") -> "np.array":
+    def convert_to_expected_format(self, data: "np.ndarray") -> "np.ndarray":
         """Doesn't do any transformation. Expects data to be passed correctly."""
-        return data
+        return np.array(data)

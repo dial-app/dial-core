@@ -1,11 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import TYPE_CHECKING
+import numpy as np
 
 from .datatype import DataType
-
-if TYPE_CHECKING:
-    import numpy as np
 
 
 class ImageArray(DataType):
@@ -27,12 +24,12 @@ class ImageArray(DataType):
 
         return data
 
-    def display(self, data: "np.ndarray"):
+    def display(self, data: "np.ndarray") -> "np.ndarray":
         """Returns the data _as it is_, and can be used to paint the image."""
         return data
 
-    def convert_to_expected_format(self, data) -> "np.array":
+    def convert_to_expected_format(self, data: "np.ndarray") -> "np.ndarray":
         """This class actually expects data to be passed correctly, as it is hard to
         translate from one format to another.
         """
-        return data
+        return np.array(data)
