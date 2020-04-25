@@ -40,7 +40,7 @@ class TTVSetsIO:
         # Save all datasets inside this directory
         ttv_dir = parent_dir + os.path.sep + ttv_sets.name + os.path.sep
 
-        if not os.path.isdir(ttv_dir):
+        if not os.path.exists(ttv_dir):
             os.makedirs(ttv_dir, exist_ok=True)
 
         ttv_desc = ttv_sets.to_dict()
