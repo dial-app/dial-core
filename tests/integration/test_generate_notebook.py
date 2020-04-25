@@ -51,7 +51,7 @@ class PrintNode(Node):
         self.inputs["value"].set_processor_function(self.__print_value)
 
     def print_input(self):
-        value = self.inputs["value"].receive()
+        value = self.inputs["value"].get_value()
         self.__print_value(value)
 
     def __print_value(self, value):

@@ -12,6 +12,10 @@ LOGGER = log.get_logger(__name__)
 
 
 class InputPort(Port):
+    """The InputPort class is a subclass of Port that only allows single connections
+    to an OutputPort object.
+    """
+
     def __init__(self, name: str, port_type: Any):
         super().__init__(name, port_type, allows_multiple_connections=False)
 
@@ -19,8 +23,7 @@ class InputPort(Port):
 
         self.compatible_port_classes.add(OutputPort)
 
-        self._is_receiving_input = True
-        self._processor_function: Optional[Callable] = None
+        self._processor_function: Callable = self._default_processor_function
 
     @property
     def port_connected_to(self) -> Optional["Port"]:
@@ -36,21 +39,33 @@ class InputPort(Port):
 
         return None
 
-    def toggle_receives_input(self, toggle: bool):
-        self._is_receiving_input = toggle
-
     def set_processor_function(self, processor_function: Callable):
+        """Sets a new processor function that will be used by this port when a new value
+        is received.
+
+        `_processor_function` needs to be a Callable that receives one argument: the
+        object being processed. It can should also return the processed value.
+
+        Raises:
+            TypeError: If processor_function is not Callable.
+        """
+        processor_function = (
+            self._default_processor_function
+            if processor_function is None
+            else processor_function
+        )
+
+        if not callable(processor_function):
+            raise TypeError(f"{processor_function} is not callable.")
+
         self._processor_function = processor_function
 
-    def process_input(self, value: Any):
-        if not self._is_receiving_input:
-            return
-
-        if not self._processor_function:
-            raise NotImplementedError(f"`processor_function` not implemented in {self}")
-
+    def process_input(self, value: Any) -> Any:
+        """Processes the passed value, calling the assigned processor function for it.
+        """
         try:
-            self._processor_function(value)
+            return self._processor_function(value)
+
         except PortNotConnectedError as err:
             LOGGER.debug(
                 "%s processor function failed (%s) Details:\n%s",
@@ -60,21 +75,47 @@ class InputPort(Port):
             )
 
     def receive(self) -> Any:
+        """Receives and processes a value.
+
+        This value can be passed by argument or fetched directly from the connected
+        OutputPort.
+
+        Raises:
+            PortNotConnectedError: If not connected to any OutputPort and a raw_value
+            was not provided.
+        """
+        if not self.port_connected_to:
+            raise PortNotConnectedError(f"{self} is not connected to any other port.")
+
+        return self.process_input(self.port_connected_to.generate_output())
+
+    def get_value(self) -> Any:
         if not self.port_connected_to:
             raise PortNotConnectedError(f"{self} is not connected to any other port.")
 
         return self.port_connected_to.generate_output()
 
     def propagate_to(self, output_port):
-        def processor_function_propagate_to(self):
+        """Triggers the `output_port.process` function when receives a value.
+
+        Important:
+            This function is deprecated. Please use `InputPort.trigger(output_port)`.
+        """
+
+        def processor_function_propagate(x):
             output_port.send()
 
-        self._processor_function = processor_function_propagate_to
+            return x
+
+        self._processor_function = processor_function_propagate
+
+    def _default_processor_function(self, value: Any) -> Any:
+        """Default function used for `_processor_function` when its not overriden."""
+        return value
 
     def __deepcopy__(self, memo):
         base = super().__deepcopy__(memo)
 
-        setattr(base, "_is_receiving_input", deepcopy(self._is_receiving_input, memo))
         setattr(base, "_processor_function", deepcopy(self._processor_function, memo))
 
         return base
@@ -91,4 +132,5 @@ class InputPort(Port):
         self._processor_function = new_state["processor_function"]
 
     def __reduce__(self):
+        return (InputPort, (self.name, self.port_type), self.__getstate__())
         return (InputPort, (self.name, self.port_type), self.__getstate__())

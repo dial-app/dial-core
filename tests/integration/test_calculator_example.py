@@ -43,8 +43,8 @@ class AddNode(Node):
         self.outputs["result"].set_generator_function(self.add_ops)
 
     def add_ops(self):
-        value_op1 = self.inputs["op1"].receive()
-        value_op2 = self.inputs["op2"].receive()
+        value_op1 = self.inputs["op1"].get_value()
+        value_op2 = self.inputs["op2"].get_value()
         result = value_op1 + value_op2
         # print("value op1", value_op1)
         # print("value op2", value_op2)
@@ -67,7 +67,7 @@ class TypeConversionNode(Node):
         self.outputs["output"].set_generator_function(self.__convert_type)
 
     def __convert_type(self):
-        return self.output_type(self.inputs["input"].receive())
+        return self.output_type(self.inputs["input"].get_value())
 
 
 class PrintNode(Node):
@@ -78,7 +78,7 @@ class PrintNode(Node):
         self.inputs["value"].set_processor_function(self.__print_value)
 
     def print_input(self):
-        value = self.inputs["value"].receive()
+        value = self.inputs["value"].get_value()
         self.__print_value(value)
 
     def __print_value(self, value):
@@ -126,11 +126,3 @@ def test_calculator_example(capsys):
 
     captured = capsys.readouterr()
     assert "10\n" == captured.out
-
-    # Now, if we change a value the propagation is stopped at the int_to_str node
-    int_to_str_node.outputs["output"].toggle_sends_output(False)
-
-    add_node.outputs["result"].send()
-
-    captured = capsys.readouterr()
-    assert "" == captured.out

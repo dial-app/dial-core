@@ -54,17 +54,6 @@ def test_automatic_propagation():
     assert value_node.value == 20
     assert receive_value_node.value == 20
 
-    # But if we activate propagation
-    receive_value_node.inputs["value"].toggle_receives_input(False)
-
-    value_node.value = 5
-    assert value_node.value == 5
-    assert receive_value_node.value == 20
-
-    value_node.value = 8
-    assert value_node.value == 8
-    assert receive_value_node.value == 20
-
 
 class AddTwoValues(Node):
     def __init__(self):
@@ -78,8 +67,8 @@ class AddTwoValues(Node):
         self.result = 0
 
     def __add_values(self, _):
-        value1 = self.inputs["value1"].receive()
-        value2 = self.inputs["value2"].receive()
+        value1 = self.inputs["value1"].get_value()
+        value2 = self.inputs["value2"].get_value()
 
         self.result = value1 + value2
 

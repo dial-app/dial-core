@@ -10,6 +10,9 @@ from dial_core.datasets.datatype import DataTypeContainer
 
 
 class TTVSetsIOFormat:
+    """The TTVSetsIOFormat provides an interface for defining different formats in which
+    a dataset could be stored on the file system."""
+
     def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
         """Writes the passed dataset to the file system.
 
@@ -38,6 +41,9 @@ class TTVSetsIOFormat:
 
 
 class NpzFormat(TTVSetsIOFormat):
+    """The NpzFormat class stores datasets using Numpy's .npz files. See `np.savez` for
+    more details."""
+
     def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
         """Writes the passed dataset to the file system.
 
@@ -72,6 +78,8 @@ class NpzFormat(TTVSetsIOFormat):
 
 
 class TxtFormat(TTVSetsIOFormat):
+    """The TxtFormat class stores datasets on plain readable .txt files."""
+
     def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
         """Writes the passed dataset to the file system.
 

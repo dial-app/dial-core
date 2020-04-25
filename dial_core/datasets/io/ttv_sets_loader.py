@@ -12,8 +12,8 @@ LOGGER = log.get_logger(__name__)
 
 
 class TTVSetsLoader(metaclass=ABCMeta):
-    """
-    Abstract class for loading any TTVSets instance.
+    """The TTVSetsLoader class provides an abstract interface for defining classes that
+    can load predefined TTVSets, like the ones included with keras.
     """
 
     def __init__(
@@ -50,9 +50,7 @@ class TTVSetsLoader(metaclass=ABCMeta):
 
 
 class MnistLoader(TTVSetsLoader):
-    """
-    Mnist dataset loader.
-    """
+    """Mnist dataset loader."""
 
     def __init__(self):
         super().__init__(
@@ -72,9 +70,7 @@ class MnistLoader(TTVSetsLoader):
 
 
 class FashionMnistLoader(TTVSetsLoader):
-    """
-    Fashion Mnist dataset loader.
-    """
+    """Fashion Mnist dataset loader."""
 
     y_type: datatype.Categorical
 
@@ -109,9 +105,7 @@ class FashionMnistLoader(TTVSetsLoader):
 
 
 class Cifar10Loader(TTVSetsLoader):
-    """
-    Cifar10 dataset loader.
-    """
+    """Cifar10 dataset loader."""
 
     y_type: datatype.Categorical
 
@@ -146,9 +140,7 @@ class Cifar10Loader(TTVSetsLoader):
 
 
 class BostonHousingLoader(TTVSetsLoader):
-    """
-    Boston Housing dataset loader.
-    """
+    """Boston Housing dataset loader."""
 
     def __init__(self):
         super().__init__(

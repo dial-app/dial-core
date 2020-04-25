@@ -24,6 +24,8 @@ class Port:
         port_type: The type of this port. A Port object can only be connected to other
             Ports that share its same type.
         connections: Set with all the Ports this port is currently connected to.
+        compatible_port_classes: Set of Port subclasses that are compatible (and can be
+            connected) with this port if they share the same type.
         node: The Node object this Port belongs to, if any.
         allows_multiple_connections: A boolean option, indicating the type of connection
         this port allows (one-to-one or many-to-many)
@@ -34,7 +36,7 @@ class Port:
     ):
         self._name = name
         self._port_type = port_type
-        self._connected_to: Set["Port"] = set()  # Avoid repeat ports
+        self._connected_to: Set["Port"] = set()  # Avoid repeated ports
         self.compatible_port_classes: Set[Type["Port"]] = set([Port])
 
         self.node: Optional["Node"] = None  # type: ignore
@@ -59,7 +61,7 @@ class Port:
         """Returns the ports this port is currently connected.
 
         Shouldn't be manipulated directly. Use the `connect_to`, `disconnect_from`
-        functions to handle port connections
+        functions to handle port connections.
 
         Returns:
            A set with all the Ports connected to this port.
@@ -87,9 +89,11 @@ class Port:
         """Connects the current port to another port.
 
         Its a two way connection (the two ports will be connected to each other)
-        a = Port()
-        b = Port()
-        a.connect_to(b)
+
+        Examples:
+            a = Port()
+            b = Port()
+            a.connect_to(b) # now, `a` is in `b.connections`, and `b` in `a.connections`
 
         Args:
             port: `Port` object being connected to.
@@ -133,7 +137,6 @@ class Port:
     @log_on_end(DEBUG, "All connections cleared on {self}")
     def clear_all_connections(self):
         """Removes all connections to this port."""
-
         # Use a list to avoid removing an item from self._connected_to while iterating
         for port in list(self._connected_to):
             port.disconnect_from(self)
