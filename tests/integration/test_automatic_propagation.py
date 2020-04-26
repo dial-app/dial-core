@@ -40,6 +40,8 @@ class ReceiveValueNode(Node):
     def __set_value(self, value):
         self.value = value
 
+        return self.value
+
 
 def test_automatic_propagation():
     value_node = ValueNode(10)
@@ -67,10 +69,12 @@ class AddTwoValues(Node):
         self.result = 0
 
     def __add_values(self, _):
-        value1 = self.inputs["value1"].get_value()
-        value2 = self.inputs["value2"].get_value()
+        value1 = self.inputs["value1"].receive()
+        value2 = self.inputs["value2"].receive()
 
         self.result = value1 + value2
+
+        return self.result
 
 
 def test_incomplete_propagation():

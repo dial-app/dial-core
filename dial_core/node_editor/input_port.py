@@ -28,6 +28,7 @@ class InputPort(Port):
         self._processor_function: Callable = self._default_processor_function
 
         self.receiving = False
+        self.processing = False
 
     def triggers(self, output_port):
         self._triggered_ports.add(output_port)
@@ -70,12 +71,16 @@ class InputPort(Port):
     def process_input(self, value: Any) -> Any:
         """Processes the passed value, calling the assigned processor function for it.
         """
-        try:
-            value = self._processor_function(value)
+        if self.processing or (self.node and self.node._ports_processing >= 1):
+            return value
 
-            if not self.receiving:
-                for t in self._triggered_ports:
-                    t.send()
+        try:
+            self.processing = True
+            if self.node:
+                self.node._ports_processing += 1
+                self.node._processed_fun = self.process_input
+
+            value = self._processor_function(value)
 
             return value
 
@@ -86,6 +91,11 @@ class InputPort(Port):
                 self._processor_function.__name__,
                 str(err),
             )
+        finally:
+            if self.node:
+                self.node._ports_processing -= 1
+            self.processing = False
+            return value
 
     def receive(self) -> Any:
         """Receives and processes a value.
@@ -106,19 +116,9 @@ class InputPort(Port):
 
         return nvalue
 
-    def propagate_to(self, output_port):
-        """Triggers the `output_port.process` function when receives a value.
-
-        Important:
-            This function is deprecated. Please use `InputPort.trigger(output_port)`.
-        """
-
-        def processor_function_propagate(x):
-            output_port.send()
-
-            return x
-
-        self._processor_function = processor_function_propagate
+    def propagate(self):
+        for t in self._triggered_ports:
+            t.send()
 
     def _default_processor_function(self, value: Any) -> Any:
         """Default function used for `_processor_function` when its not overriden."""

@@ -44,9 +44,6 @@ def test_send(input_port_a, output_port_a):
     output_port_a.send()
     assert input_port_a.__test_value == 10
 
-    output_port_a.send(20)  # Now it doesn't need to call generate
-    assert input_port_a.__test_value == 20
-
 
 def test_pickable(output_port_a, input_port_a):
     output_port_a.connect_to(input_port_a)

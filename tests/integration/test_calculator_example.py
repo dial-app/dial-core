@@ -46,9 +46,6 @@ class AddNode(Node):
         value_op1 = self.inputs["op1"].receive()
         value_op2 = self.inputs["op2"].receive()
         result = value_op1 + value_op2
-        # print("value op1", value_op1)
-        # print("value op2", value_op2)
-        # print("Result", result)
 
         return result
 

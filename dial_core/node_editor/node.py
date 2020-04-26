@@ -24,6 +24,9 @@ class Node:
         self._inputs: Dict[str, "InputPort"] = {}
         self._outputs: Dict[str, "OutputPort"] = {}
 
+        self._ports_processing = 0
+        self._processed_fun = None
+
     @property
     def title(self) -> str:
         """Returns the title of the node."""

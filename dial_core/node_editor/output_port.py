@@ -31,6 +31,7 @@ class OutputPort(Port):
         # Tries to send output automatically when a new input port is connected.
         try:
             input_port.process_input(self.generate_output())
+            input_port.propagate()
 
         except (NotImplementedError, PortNotConnectedError) as err:
             LOGGER.exception(err)
@@ -62,10 +63,10 @@ class OutputPort(Port):
 
         return self._generator_function()
 
-    def send(self, value: Any = None) -> Any:
+    def send(self) -> Any:
         """Generates and sends a value to all the connected ports."""
         try:
-            value = self.generate_output() if value is None else value
+            value = self.generate_output()
 
         except (PortNotConnectedError, NotImplementedError) as err:
             LOGGER.exception(
@@ -78,6 +79,7 @@ class OutputPort(Port):
 
             try:
                 input_port.process_input(value)
+                input_port.propagate()
 
             except (PortNotConnectedError, NotImplementedError) as err:
                 LOGGER.exception(
