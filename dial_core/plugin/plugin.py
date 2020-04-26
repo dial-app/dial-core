@@ -11,66 +11,66 @@ LOGGER = log.get_logger(__name__)
 
 class Plugin:
     def __init__(self, name: str, plugins_specs: dict):
-        self.__name = name
-        self.__version = plugins_specs["version"]
-        self.__summary = plugins_specs["summary"]
-        self.__active = plugins_specs["active"]
+        self._name = name
+        self._version = plugins_specs["version"]
+        self._summary = plugins_specs["summary"]
+        self._active = plugins_specs["active"]
 
-        self.__module = None
+        self._module = None
 
     @property
     def name(self) -> str:
-        return self.__name
+        return self._name
 
     @property
     def version(self) -> str:
-        return self.__version
+        return self._version
 
     @property
     def summary(self) -> str:
-        return self.__summary
+        return self._summary
 
     @property
     def active(self) -> bool:
-        return self.__active
+        return self._active
 
     @active.setter
     def active(self, toggle: bool):
-        self.__active = toggle
+        self._active = toggle
 
-        if self.__active:
+        if self._active:
             self.load()
         else:
             self.unload()
 
     @property
     def module(self):
-        return self.__module
+        return self._module
 
     def load(self):
         module_importable_name = self.name.replace("-", "_")
-        self.__module = importlib.import_module(module_importable_name)
+        self._module = importlib.import_module(module_importable_name)
 
         try:
-            self.__module.load_plugin()
-            self.__update_plugin_metadata()
+            self._module.load_plugin()
+            self._update_plugin_metadata()
         except AttributeError as err:  # pragma: no cover
             LOGGER.warning("Error with `load_plugin` for %s.", self.name)
             LOGGER.exception(err)
 
-        self.__active = True
+        self._active = True
 
     def unload(self):
         try:
-            self.__module.unload_plugin()
+            self._module.unload_plugin()
         except AttributeError as err:  # pragma: no cover
             LOGGER.warning("Error with `unload_plugin` for %s.", self.name)
             LOGGER.exception(err)
 
-        self.__active = False
-        self.__module = None
+        self._active = False
+        self._module = None
 
-    def __update_plugin_metadata(self):
+    def _update_plugin_metadata(self):
         try:
 
             def get_metadata_value(key: str, package):
@@ -80,8 +80,8 @@ class Plugin:
                         return v
 
             package = pkg_resources.require(self.name)[0]
-            self.__version = get_metadata_value("Version", package)
-            self.__summary = get_metadata_value("Summary", package)
+            self._version = get_metadata_value("Version", package)
+            self._summary = get_metadata_value("Summary", package)
         except FileNotFoundError as err:  # pragma: no cover
             LOGGER.exception(err)
 

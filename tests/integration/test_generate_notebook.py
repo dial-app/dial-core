@@ -15,22 +15,22 @@ class ValueNode(Node):
 
         # Port configuration
         self.add_output_port(name="value", port_type=int)
-        self.outputs["value"].set_generator_function(self.__generate_value)
+        self.outputs["value"].set_generator_function(self._generate_value)
 
         # Attributes
-        self.__value = value
+        self._value = value
 
     @property
     def value(self):
-        return self.__value
+        return self._value
 
     @value.setter
     def value(self, new_value):
-        self.__value = new_value
+        self._value = new_value
 
         self.outputs["value"].send()
 
-    def __generate_value(self):
+    def _generate_value(self):
         return self.value
 
 
@@ -48,13 +48,13 @@ class PrintNode(Node):
         super().__init__(name)
 
         self.add_input_port(name="value", port_type=int)
-        self.inputs["value"].set_processor_function(self.__print_value)
+        self.inputs["value"].set_processor_function(self._print_value)
 
     def print_input(self):
         value = self.inputs["value"].receive()
-        self.__print_value(value)
+        self._print_value(value)
 
-    def __print_value(self, value):
+    def _print_value(self, value):
         print(value)
 
 

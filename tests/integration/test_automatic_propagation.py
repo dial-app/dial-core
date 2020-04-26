@@ -9,23 +9,23 @@ class ValueNode(Node):
 
         # Port configuration
         self.add_output_port(name="value", port_type=int)
-        self.outputs["value"].set_generator_function(self.__generate_value)
+        self.outputs["value"].set_generator_function(self._generate_value)
 
         # Attributes
-        self.__value = value
+        self._value = value
 
     @property
     def value(self):
-        return self.__value
+        return self._value
 
     @value.setter
     def value(self, new_value):
-        self.__value = new_value
+        self._value = new_value
 
         self.outputs["value"].send()
 
-    def __generate_value(self):
-        return self.__value
+    def _generate_value(self):
+        return self._value
 
 
 class ReceiveValueNode(Node):
@@ -33,11 +33,11 @@ class ReceiveValueNode(Node):
         super().__init__("Receive Value Node")
 
         self.add_input_port(name="value", port_type=int)
-        self.inputs["value"].set_processor_function(self.__set_value)
+        self.inputs["value"].set_processor_function(self._set_value)
 
         self.value = None
 
-    def __set_value(self, value):
+    def _set_value(self, value):
         self.value = value
 
         return self.value
@@ -63,12 +63,12 @@ class AddTwoValues(Node):
 
         self.add_input_port(name="value1", port_type=int)
         self.add_input_port(name="value2", port_type=int)
-        self.inputs["value1"].set_processor_function(self.__add_values)
-        self.inputs["value2"].set_processor_function(self.__add_values)
+        self.inputs["value1"].set_processor_function(self._add_values)
+        self.inputs["value2"].set_processor_function(self._add_values)
 
         self.result = 0
 
-    def __add_values(self, _):
+    def _add_values(self, _):
         value1 = self.inputs["value1"].receive()
         value2 = self.inputs["value2"].receive()
 

@@ -30,6 +30,15 @@ def test_projects_count(project_manager):
     assert project_manager.projects_count() == 2
 
 
+def test_index_of(project_manager, project_a):
+    project_manager.add_project(project_a)
+
+    assert len(project_manager.projects) == 2
+    assert project_manager.index_of(project_a) == 1
+
+    assert project_manager.index_of(None) == -1
+
+
 def test_set_active_project(
     project_manager, project_manager_default_project, project_a
 ):

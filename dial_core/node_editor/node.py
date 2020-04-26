@@ -14,18 +14,16 @@ if TYPE_CHECKING:
 
 
 class Node:
-    def __init__(self, title: str, inner_widget: Any = None, parent=None):
-        self._title = title
-
-        self._inner_widget: Optional[Any] = inner_widget
-
+    def __init__(self, title: str, inner_widget: Any = None, parent: Any = None):
         self.parent = parent
+
+        self._title = title
+        self._inner_widget: Optional[Any] = inner_widget
 
         self._inputs: Dict[str, "InputPort"] = {}
         self._outputs: Dict[str, "OutputPort"] = {}
 
-        self._ports_processing = 0
-        self._processed_fun = None
+        self._ports_processing = 0  # TODO: Document
 
     @property
     def title(self) -> str:
@@ -58,11 +56,11 @@ class Node:
 
     def connected_input_nodes(self) -> List["Node"]:
         """Returns a list with the nodes connected to the input ports."""
-        return self.__nodes_connected_to(self.inputs.values())
+        return self._nodes_connected_to(self.inputs.values())
 
     def connected_output_nodes(self) -> List["Node"]:
         """Returns a list with the nodes connected to the output ports."""
-        return self.__nodes_connected_to(self.outputs.values())
+        return self._nodes_connected_to(self.outputs.values())
 
     def add_input_port(self, name: str, port_type: Any) -> "InputPort":
         """Creates a new input port and adds it to the list of ports.
@@ -74,7 +72,7 @@ class Node:
         Retuns:
             The added InputPort instance.
         """
-        return self.__add_port_to(self.inputs, InputPort(name, port_type))
+        return self._add_port_to(self.inputs, InputPort(name, port_type))
 
     def add_output_port(self, name: str, port_type: Any) -> "OutputPort":
         """Creates a new output port and adds it to the list of ports.
@@ -86,7 +84,7 @@ class Node:
         Retuns:
             The added InputPort instance.
         """
-        return self.__add_port_to(self.outputs, OutputPort(name, port_type))
+        return self._add_port_to(self.outputs, OutputPort(name, port_type))
 
     def add_port(
         self, port: Union["InputPort", "OutputPort"]
@@ -105,9 +103,9 @@ class Node:
             `OutputPort`
         """
         if isinstance(port, InputPort):
-            return self.__add_port_to(self.inputs, port)
+            return self._add_port_to(self.inputs, port)
         elif isinstance(port, OutputPort):
-            return self.__add_port_to(self.outputs, port)
+            return self._add_port_to(self.outputs, port)
         else:
             raise InvalidPortTypeError(
                 "Port {port} must be of type InputPort or OutputPort."
@@ -122,7 +120,7 @@ class Node:
         Raises:
             ValueError: If can't find a port to remove named `port_name`.
         """
-        removed = self.__remove_port_from(self.inputs, port_name)
+        removed = self._remove_port_from(self.inputs, port_name)
 
         if not removed:
             raise ValueError(
@@ -138,7 +136,7 @@ class Node:
         Raises:
             ValueError: If can't find a port to remove named `port_name`.
         """
-        removed = self.__remove_port_from(self.outputs, port_name)
+        removed = self._remove_port_from(self.outputs, port_name)
 
         if not removed:
             raise ValueError(
@@ -150,7 +148,7 @@ class Node:
         for port in list(self.inputs.values()) + list(self.outputs.values()):
             port.clear_all_connections()
 
-    def __nodes_connected_to(self, ports: Union[List["Port"], "Port"]) -> List["Node"]:
+    def _nodes_connected_to(self, ports: Union[List["Port"], "Port"]) -> List["Node"]:
         """Returns a list of all the nodes connected to any port in the passed list.
 
         This function is useful to get the connections directly between nodes, like in a
@@ -176,7 +174,7 @@ class Node:
         return connected_nodes
 
     @log_on_end(DEBUG, "{port} added to {self}")
-    def __add_port_to(self, ports_dict: Dict[str, "Port"], port: "Port") -> "Port":
+    def _add_port_to(self, ports_dict: Dict[str, "Port"], port: "Port") -> "Port":
         """Adds a port to a dictionary of ports.
 
         When a port is added, a reference to this Node is added (`port.node = self`)
@@ -194,7 +192,7 @@ class Node:
         return port
 
     @log_on_end(DEBUG, "{port_name} removed from {self}")
-    def __remove_port_from(self, ports_dict: Dict[str, "Port"], port_name: str) -> bool:
+    def _remove_port_from(self, ports_dict: Dict[str, "Port"], port_name: str) -> bool:
         """Removes a port from a dictionary of ports.
 
         Before removing, if the ports is present, it is disconnected from all other

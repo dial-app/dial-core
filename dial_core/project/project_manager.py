@@ -28,14 +28,14 @@ class ProjectManager:
     """
 
     def __init__(self, default_project: "Project"):
-        self.__default_project = default_project
+        self._default_project = default_project
 
-        self.__projects: List["Project"] = []
+        self._projects: List["Project"] = []
         self.new_project()
 
     @property
     def projects(self):
-        return self.__projects
+        return self._projects
 
     @property
     def active(self) -> "Project":
@@ -45,16 +45,16 @@ class ProjectManager:
 
         See `set_active_project` to learn how to change the active project.
         """
-        return self.__active
+        return self._active
 
     def projects_count(self) -> int:
         """Returns the number of created projects."""
-        return len(self.__projects)
+        return len(self._projects)
 
     def index_of(self, project: "Project") -> int:
         """Returns the index of the project, or -1 if not found."""
         try:
-            return self.__projects.index(project)
+            return self._projects.index(project)
         except ValueError:
             return -1
 
@@ -62,7 +62,7 @@ class ProjectManager:
         """Adds a new default project to the project manager.
 
         A copy of a default project (The one defined on the variable
-        `self.__default_project` will be added)
+        `self._default_project` will be added)
 
         Returns:
             The recently added active project
@@ -80,7 +80,7 @@ class ProjectManager:
         """
 
         self._add_project_impl(project)
-        LOGGER.debug("Project added to the projects list: %s", self.__projects)
+        LOGGER.debug("Project added to the projects list: %s", self._projects)
 
         # Activate last project
         return self.set_active_project(self.projects_count() - 1)
@@ -96,10 +96,10 @@ class ProjectManager:
         """
         self._set_active_project_impl(index)
         LOGGER.info(
-            "Active project changed: %s(%s)", index, self.__active,
+            "Active project changed: %s(%s)", index, self._active,
         )
 
-        return self.__active
+        return self._active
 
     def close_project(self, project: "Project"):
         index = self.projects.index(project)
@@ -182,19 +182,19 @@ class ProjectManager:
         return self.save_project(project)
 
     def _new_project_impl(self) -> "Project":
-        return deepcopy(self.__default_project)
+        return deepcopy(self._default_project)
 
     def _add_project_impl(self, project: "Project") -> "Project":
-        self.__projects.append(project)
+        self._projects.append(project)
         return project
 
     def _set_active_project_impl(self, index: int) -> "Project":
-        self.__active = self.__projects[index]
-        return self.__active
+        self._active = self._projects[index]
+        return self._active
 
     def _remove_project_impl(self, project: "Project") -> "Project":
-        index = self.__projects.index(project)
-        del self.__projects[index]
+        index = self._projects.index(project)
+        del self._projects[index]
 
         if self.projects_count() == 0:
             self.new_project()

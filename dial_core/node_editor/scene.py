@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from copy import deepcopy
-from typing import TYPE_CHECKING, List
+from typing import TYPE_CHECKING, Any, List
 
 import dependency_injector.providers as providers
 
@@ -18,17 +18,17 @@ class Scene:
         nodes: The list of nodes currently on the scene.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, parent: Any = None):
         super().__init__()
 
         self.parent = parent
 
-        self.__nodes: List["Node"] = []
+        self._nodes: List["Node"] = []
 
     @property
     def nodes(self) -> List["Node"]:
         """Returns a list with all the nodes on the scene."""
-        return self.__nodes
+        return self._nodes
 
     @log_on_end(DEBUG, "{node} added to the scene.")
     def add_node(self, node: "Node"):
@@ -98,7 +98,7 @@ class Scene:
     def __repr__(self):
         output = ""
 
-        for node in self.__nodes:
+        for node in self._nodes:
             output += f"Node {node!r} has:\n"
 
             for port in list(node.inputs.values()) + list(node.outputs.values()):
@@ -109,7 +109,7 @@ class Scene:
         return output
 
     def __iter__(self):
-        return iter(self.__nodes)
+        return iter(self._nodes)
 
     def __eq__(self, other):
         return self.nodes == other.nodes

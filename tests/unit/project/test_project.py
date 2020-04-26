@@ -9,10 +9,14 @@ def test_project_attributes(project_a):
     assert hasattr(project_a, "scene")
 
 
+def test_directory(project_a):
+    project_a.file_path = "foo/bar/file.dial"
+    assert project_a.directory() == "foo/bar"
+
+
 def test_pickable(project_a):
     obj = pickle.dumps(project_a)
 
     loaded_project_a = pickle.loads(obj)
 
     assert loaded_project_a.name == project_a.name
-    test_project_attributes(loaded_project_a)

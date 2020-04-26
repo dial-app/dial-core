@@ -29,10 +29,10 @@ def test_set_invalid_generator_function(output_port_a):
 
 
 def test_send(input_port_a, output_port_a):
-    input_port_a.__test_value = 0
+    input_port_a._test_value = 0
 
     def change_port_test_value_to(port, x):
-        port.__test_value = x
+        port._test_value = x
 
     input_port_a.connect_to(output_port_a)
 
@@ -42,7 +42,7 @@ def test_send(input_port_a, output_port_a):
     )
 
     output_port_a.send()
-    assert input_port_a.__test_value == 10
+    assert input_port_a._test_value == 10
 
 
 def test_pickable(output_port_a, input_port_a):

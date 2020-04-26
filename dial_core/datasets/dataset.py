@@ -87,7 +87,7 @@ class Dataset(keras.utils.Sequence):
         """Returns the `n` elements between start and end as a tuple of (x, y) items
         Range is EXCLUSIVE [start, end).
         """
-        x_set, y_set = self.__preprocess_data(
+        x_set, y_set = self._preprocess_data(
             self._x[start:end], self._y[start:end], role
         )
         return x_set, y_set
@@ -108,13 +108,13 @@ class Dataset(keras.utils.Sequence):
         batch_x = self._x[batch_start:batch_end]
         batch_y = self._y[batch_start:batch_end]
 
-        batch_x, batch_y = self.__preprocess_data(
+        batch_x, batch_y = self._preprocess_data(
             self._x[batch_start:batch_end], self._y[batch_start:batch_end]
         )
 
         return batch_x, batch_y
 
-    def __preprocess_data(
+    def _preprocess_data(
         self, x_data: "np.array", y_data: "np.array", role: "Role" = Role.Raw
     ) -> Tuple["np.array", "np.array"]:
         """ Preprocess the data. For example, if the image is a path to a file, load it

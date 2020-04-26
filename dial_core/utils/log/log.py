@@ -43,8 +43,8 @@ def init_logs(args: "argparse.Namespace"):
         LOG_LEVEL = logging.DEBUG
 
     # Configure root logger
-    add_handler_to_root(__get_console_handler())
-    add_handler_to_root(__get_string_handler())
+    add_handler_to_root(_get_console_handler())
+    add_handler_to_root(_get_string_handler())
 
     for name in logging.root.manager.loggerDict:  # type: ignore
         logger = logging.getLogger(name)
@@ -74,7 +74,7 @@ def get_logger(logger_name: str) -> "logging.Logger":
     return logger
 
 
-def __get_console_handler() -> "logging.StreamHandler":
+def _get_console_handler() -> "logging.StreamHandler":
     """Returns a log handler that sends its output to the terminal (stdout)."""
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(FORMATTER)
@@ -82,7 +82,7 @@ def __get_console_handler() -> "logging.StreamHandler":
     return console_handler
 
 
-def __get_string_handler() -> "logging.StreamHandler":
+def _get_string_handler() -> "logging.StreamHandler":
     """Returns a log handler that sends its output to a string."""
     string_handler = logging.StreamHandler(LOG_STREAM)
     string_handler.setFormatter(FORMATTER)

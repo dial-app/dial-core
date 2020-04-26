@@ -40,12 +40,12 @@ class NodeRegistry(containers.DynamicContainer):
             raise TypeError("Registered nodes must inherit from `Node` class!!")
 
         factory = providers.Factory(value, *args, **kwargs)
-        self.__register_factory(identifier, factory)
+        self._register_factory(identifier, factory)
 
     def unregister_node(self, identifier: str):
         self.providers.pop(identifier, None)
 
-    def __register_factory(self, identifier: str, node_factory: "providers.Factory"):
+    def _register_factory(self, identifier: str, node_factory: "providers.Factory"):
         """Registers a new node factory."""
         self.providers[identifier] = node_factory
 

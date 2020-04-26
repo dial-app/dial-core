@@ -27,11 +27,7 @@ class InputPort(Port):
 
         self._processor_function: Callable = self._default_processor_function
 
-        self.receiving = False
         self.processing = False
-
-    def triggers(self, output_port):
-        self._triggered_ports.add(output_port)
 
     @property
     def port_connected_to(self) -> Optional["Port"]:
@@ -78,7 +74,6 @@ class InputPort(Port):
             self.processing = True
             if self.node:
                 self.node._ports_processing += 1
-                self.node._processed_fun = self.process_input
 
             value = self._processor_function(value)
 
@@ -94,7 +89,9 @@ class InputPort(Port):
         finally:
             if self.node:
                 self.node._ports_processing -= 1
+
             self.processing = False
+
             return value
 
     def receive(self) -> Any:
@@ -110,13 +107,21 @@ class InputPort(Port):
         if not self.port_connected_to:
             raise PortNotConnectedError(f"{self} is not connected to any other port.")
 
-        self.receiving = True
         nvalue = self.process_input(self.port_connected_to.generate_output())
-        self.receiving = False
 
         return nvalue
 
+    def triggers(self, output_port):
+        """Add the output_port to the list of ports that are triggered when this port
+        is updated."""
+        self._triggered_ports.add(output_port)
+
+    def remove_trigger(self, output_port):
+        """Removes a port from the list of triggered ports."""
+        self._triggered_ports.pop(output_port, None)
+
     def propagate(self):
+        """Calls `send` for all ports."""
         for t in self._triggered_ports:
             t.send()
 
