@@ -31,6 +31,7 @@ class OutputPort(Port):
         # Tries to send output automatically when a new input port is connected.
         try:
             input_port.process_input(self.generate_output())
+
         except (NotImplementedError, PortNotConnectedError) as err:
             LOGGER.exception(err)
 

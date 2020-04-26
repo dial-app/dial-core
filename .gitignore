@@ -115,6 +115,9 @@ tags
 *.lock
 .idea
 
+# VSCODE
+.vscode
+
 # Custom
 *.dial
 *.pickle

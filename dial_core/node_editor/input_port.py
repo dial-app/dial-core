@@ -21,9 +21,16 @@ class InputPort(Port):
 
         from .output_port import OutputPort
 
+        self._triggered_ports = set()
+
         self.compatible_port_classes.add(OutputPort)
 
         self._processor_function: Callable = self._default_processor_function
+
+        self.receiving = False
+
+    def triggers(self, output_port):
+        self._triggered_ports.add(output_port)
 
     @property
     def port_connected_to(self) -> Optional["Port"]:
@@ -64,7 +71,13 @@ class InputPort(Port):
         """Processes the passed value, calling the assigned processor function for it.
         """
         try:
-            return self._processor_function(value)
+            value = self._processor_function(value)
+
+            if not self.receiving:
+                for t in self._triggered_ports:
+                    t.send()
+
+            return value
 
         except PortNotConnectedError as err:
             LOGGER.debug(
@@ -87,13 +100,11 @@ class InputPort(Port):
         if not self.port_connected_to:
             raise PortNotConnectedError(f"{self} is not connected to any other port.")
 
-        return self.process_input(self.port_connected_to.generate_output())
+        self.receiving = True
+        nvalue = self.process_input(self.port_connected_to.generate_output())
+        self.receiving = False
 
-    def get_value(self) -> Any:
-        if not self.port_connected_to:
-            raise PortNotConnectedError(f"{self} is not connected to any other port.")
-
-        return self.port_connected_to.generate_output()
+        return nvalue
 
     def propagate_to(self, output_port):
         """Triggers the `output_port.process` function when receives a value.

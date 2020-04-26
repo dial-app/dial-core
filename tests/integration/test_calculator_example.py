@@ -37,14 +37,14 @@ class AddNode(Node):
 
         self.add_output_port(name="result", port_type=int)
 
-        self.inputs["op1"].propagate_to(self.outputs["result"])
-        self.inputs["op2"].propagate_to(self.outputs["result"])
+        self.inputs["op1"].triggers(self.outputs["result"])
+        self.inputs["op2"].triggers(self.outputs["result"])
 
         self.outputs["result"].set_generator_function(self.add_ops)
 
     def add_ops(self):
-        value_op1 = self.inputs["op1"].get_value()
-        value_op2 = self.inputs["op2"].get_value()
+        value_op1 = self.inputs["op1"].receive()
+        value_op2 = self.inputs["op2"].receive()
         result = value_op1 + value_op2
         # print("value op1", value_op1)
         # print("value op2", value_op2)
@@ -63,11 +63,11 @@ class TypeConversionNode(Node):
         self.add_input_port(name="input", port_type=input_type)
         self.add_output_port(name="output", port_type=output_type)
 
-        self.inputs["input"].propagate_to(self.outputs["output"])
+        self.inputs["input"].triggers(self.outputs["output"])
         self.outputs["output"].set_generator_function(self.__convert_type)
 
     def __convert_type(self):
-        return self.output_type(self.inputs["input"].get_value())
+        return self.output_type(self.inputs["input"].receive())
 
 
 class PrintNode(Node):
@@ -78,7 +78,7 @@ class PrintNode(Node):
         self.inputs["value"].set_processor_function(self.__print_value)
 
     def print_input(self):
-        value = self.inputs["value"].get_value()
+        value = self.inputs["value"].receive()
         self.__print_value(value)
 
     def __print_value(self, value):
@@ -108,6 +108,7 @@ def test_calculator_example(capsys):
 
     # Add connections
     node_op1.outputs["value"].connect_to(add_node.inputs["op1"])
+
     node_op2.outputs["value"].connect_to(add_node.inputs["op2"])
 
     assert add_node.add_ops() == 7
