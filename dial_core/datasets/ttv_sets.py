@@ -24,7 +24,7 @@ class TTVSets:
     def to_dict(self) -> Dict[str, str]:
         def extract_dataset_info(dataset):
             return (
-                {"x_type": str(dataset.x_type), "y_type": str(dataset.y_type)}
+                {"x_type": dataset.x_type.to_dict(), "y_type": dataset.y_type.to_dict()}
                 if dataset
                 else {}
             )

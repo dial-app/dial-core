@@ -63,7 +63,7 @@ class OutputPort(Port):
 
         return self._generator_function()
 
-    def send(self) -> Any:
+    def send(self):
         """Generates and sends a value to all the connected ports."""
         try:
             value = self.generate_output()

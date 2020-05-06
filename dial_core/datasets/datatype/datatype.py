@@ -49,8 +49,10 @@ class DataType(metaclass=ABCMeta):
     def from_dict(self, dc: dict):
         self.__setstate__(dc)
 
+        return self
+
     def __getstate__(self) -> dict:
-        return {"class": str(self)}
+        return {"type": str(self)}
 
     def __setstate__(self, new_state: dict):
         pass

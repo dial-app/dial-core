@@ -35,6 +35,10 @@ def test_head(simple_numeric_dataset):
 def test_head_with_more_elements(simple_numeric_dataset):
     x, y = simple_numeric_dataset.head(10000)
 
+    # print("Numeric", simple_numeric_dataset)
+
+    # pytest.fail("asdf")
+
     assert x.tolist() == [1, 2, 3, 4]
     assert y.tolist() == [10, 20, 30, 40]
 

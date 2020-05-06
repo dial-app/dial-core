@@ -7,6 +7,9 @@ import numpy as np
 
 from dial_core.datasets import Dataset
 from dial_core.datasets.datatype import DataTypeContainer
+from dial_core.utils import log
+
+LOGGER = log.get_logger(__name__)
 
 
 class TTVSetsIOFormat:
@@ -68,8 +71,8 @@ class NpzFormat(TTVSetsIOFormat):
         try:
             data = np.load(root_path + os.path.sep + dataset_desc["path"])
 
-            x_type = getattr(DataTypeContainer, dataset_desc["x_type"])()
-            y_type = getattr(DataTypeContainer, dataset_desc["y_type"])()
+            x_type = getattr(DataTypeContainer, dataset_desc["x_type"]["type"])()
+            y_type = getattr(DataTypeContainer, dataset_desc["y_type"]["type"])()
 
             return Dataset(data["x"], data["y"], x_type, y_type)
 
@@ -105,10 +108,51 @@ class TxtFormat(TTVSetsIOFormat):
             x = np.loadtxt(root_path + os.path.sep + dataset_desc["x_path"])
             y = np.loadtxt(root_path + os.path.sep + dataset_desc["y_path"])
 
-            x_type = getattr(DataTypeContainer, dataset_desc["x_type"])()
-            y_type = getattr(DataTypeContainer, dataset_desc["y_type"])()
+            x_type = getattr(
+                DataTypeContainer, dataset_desc["x_type"]["type"]
+            ).from_dict(dataset_desc["x_type"])
+            y_type = getattr(
+                DataTypeContainer, dataset_desc["y_type"]["type"]
+            ).from_dict(dataset_desc["y_type"])
 
             return Dataset(x, y, x_type, y_type)
 
-        except KeyError:
+        except KeyError as err:
+            LOGGER.exception(err)
+            return None
+
+
+class CategoryImagesFormat(TTVSetsIOFormat):
+    def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
+        # Y must be Categorical type
+
+        # Start iterating over all Y elements
+        #    - For each category, store its X path on a folder named after the category
+
+        for category in dataset.y_type.categories:
+            os.mkdir(root_path + os.path.sep + category)
+
+        LOGGER.debug("Categories: ", dataset.y_type.categories)
+
+        for (x, y) in dataset.items():
+            original_name = os.path.basename(x)
+            category_name = dataset.y_type.display(y)
+            print(original_name, category_name)
+
+    def load(self, root_path: str, dataset_desc: dict) -> Optional["Dataset"]:
+        try:
+            x = os.listdir(root_path + os.path.sep + dataset_desc["x_path"])
+            y = os.listdir(root_path + os.path.sep + dataset_desc["y_path"])
+
+            x_type = getattr(
+                DataTypeContainer, dataset_desc["x_type"]["type"]
+            ).from_dict(dataset_desc["x_type"])
+            y_type = getattr(
+                DataTypeContainer, dataset_desc["y_type"]["type"]
+            ).from_dict(dataset_desc["y_type"])
+
+            return Dataset(x, y, x_type, y_type)
+
+        except KeyError as err:
+            LOGGER.exception(err)
             return None

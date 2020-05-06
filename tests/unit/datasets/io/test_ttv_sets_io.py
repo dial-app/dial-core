@@ -14,8 +14,8 @@ def test_save_ttv(mock_file_open, mock_json, ttv_sets):
 
     assert calls_list[0][0][0] == desc
 
-    assert desc["train"]["x_type"] == str(ttv_sets.train.x_type)
-    assert desc["train"]["y_type"] == str(ttv_sets.train.x_type)
+    assert desc["train"]["x_type"] == ttv_sets.train.x_type.to_dict()
+    assert desc["train"]["y_type"] == ttv_sets.train.x_type.to_dict()
 
-    assert desc["test"]["x_type"] == str(ttv_sets.test.x_type)
-    assert desc["test"]["y_type"] == str(ttv_sets.test.x_type)
+    assert desc["test"]["x_type"] == ttv_sets.test.x_type.to_dict()
+    assert desc["test"]["y_type"] == ttv_sets.test.x_type.to_dict()

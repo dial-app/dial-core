@@ -128,3 +128,6 @@ class Dataset(keras.utils.Sequence):
             y_data = np.array([self.y_type.display(element) for element in y_data])
 
         return (x_data, y_data)
+
+    def __str__(self):
+        return f"Dataset (x={self.x_type}, y={self.y_type})"

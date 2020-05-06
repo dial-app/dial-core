@@ -4,7 +4,12 @@ import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
 from .ttv_sets_io import TTVSetsIO
-from .ttv_sets_io_format import NpzFormat, TTVSetsIOFormat, TxtFormat
+from .ttv_sets_io_format import (
+    CategoryImagesFormat,
+    NpzFormat,
+    TTVSetsIOFormat,
+    TxtFormat,
+)
 from .ttv_sets_loader import (
     BostonHousingLoader,
     Cifar10Loader,
@@ -16,6 +21,7 @@ from .ttv_sets_loader import (
 TTVSetsFormatsContainer = containers.DynamicContainer()
 TTVSetsFormatsContainer.NpzFormat = providers.Factory(NpzFormat)
 TTVSetsFormatsContainer.TxtFormat = providers.Factory(TxtFormat)
+TTVSetsFormatsContainer.CategoryImagesFormat = providers.Factory(CategoryImagesFormat)
 
 PredefinedTTVSetsContainer = containers.DynamicContainer()
 PredefinedTTVSetsContainer.Mnist = providers.Factory(MnistLoader)
@@ -31,4 +37,5 @@ __all__ = [
     "PredefinedTTVSetsContainer",
     "NpzFormat",
     "TxtFormat",
+    "CategoryImagesFormat",
 ]

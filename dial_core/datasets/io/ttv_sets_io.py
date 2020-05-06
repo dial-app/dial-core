@@ -43,8 +43,7 @@ class TTVSetsIO:
         if not os.path.exists(ttv_dir):
             os.makedirs(ttv_dir, exist_ok=True)
 
-        ttv_desc = ttv_sets.to_dict()
-        ttv_desc["format"] = str(io_format)  # Must store the format for loading later
+        ttv_desc = {"format": str(io_format), **ttv_sets.to_dict()}
 
         if ttv_sets.train:
             io_format.save(ttv_dir, "train", ttv_desc["train"], ttv_sets.train)
