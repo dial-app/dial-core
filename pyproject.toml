@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "dial-core"
-version = "0.17a0"
+version = "0.18a0"
 description = "Deep Learning, node-based framework"
 authors = ["David Afonso <davafons@gmail.com>"]
 
