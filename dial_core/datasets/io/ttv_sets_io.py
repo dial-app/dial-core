@@ -5,7 +5,7 @@ import os
 from typing import TYPE_CHECKING
 
 from dial_core.datasets import TTVSets
-from dial_core.datasets.io import DatasetIOContainer
+from dial_core.datasets.io import DatasetIORegistrySingleton
 
 if TYPE_CHECKING:
     from .ttv_sets_io_format import DatasetIO
@@ -74,7 +74,9 @@ class TTVSetsIO:
         }
 
     @classmethod
-    def load(cls, ttv_dir: str, dataset_io_providers=DatasetIOContainer) -> "TTVSets":
+    def load(
+        cls, ttv_dir: str, dataset_io_providers=DatasetIORegistrySingleton()
+    ) -> "TTVSets":
         """Loads a DatasetsGroup from the file system.
 
         This method will first find the `description.json` file inside the dataset

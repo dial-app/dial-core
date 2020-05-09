@@ -2,9 +2,8 @@
 
 import json
 import os
-from typing import Optional
+from typing import Dict, Optional, Type
 
-import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 import numpy as np
 from PIL import Image
@@ -313,7 +312,26 @@ class CategoricalImgDatasetIO(DatasetIO):
         )
 
 
-DatasetIOContainer = containers.DynamicContainer()
-DatasetIOContainer.NpzDatasetIO = providers.Factory(NpzDatasetIO)
-DatasetIOContainer.TxtDatasetIO = providers.Factory(TxtDatasetIO)
-DatasetIOContainer.CategoricalImgDatasetIO = providers.Factory(CategoricalImgDatasetIO)
+class DatasetIORegistry:
+    def __init__(self):
+        self._providers: Dict[str, Type["DatasetIO"]] = {}
+
+    @property
+    def providers(self):
+        return self._providers
+
+    def register_format(self, name: str, dataset_io: Type["DatasetIO"]):
+        self._providers[name] = dataset_io
+
+    def unregister_format(self, name: str):
+        self._providers.pop(name, None)
+
+
+DatasetIORegistryFactory = providers.Factory(DatasetIORegistry)
+DatasetIORegistrySingleton = providers.Singleton(DatasetIORegistry)
+
+DatasetIORegistrySingleton().register_format("NpzDatasetIO", NpzDatasetIO)
+DatasetIORegistrySingleton().register_format("TxtDatasetIO", TxtDatasetIO)
+DatasetIORegistrySingleton().register_format(
+    "CategoricalImgDatasetIO", CategoricalImgDatasetIO
+)
