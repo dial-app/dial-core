@@ -79,11 +79,11 @@ class TTVSetsIOFormat:
         """
         x_type = getattr(
             DataTypeContainer, dataset_description["x_type"]["type"]
-        ).from_dict(dataset_description["x_type"])
+        )().from_dict(dataset_description["x_type"])
 
         y_type = getattr(
             DataTypeContainer, dataset_description["y_type"]["type"]
-        ).from_dict(dataset_description["y_type"])
+        )().from_dict(dataset_description["y_type"])
 
         # Dataset data (x, y) must be filled by subclasses overriding this method
         return Dataset(x_type=x_type, y_type=y_type)
