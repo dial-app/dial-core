@@ -4,8 +4,8 @@ from dial_core.datasets.io import NpzDatasetIO, TTVSetsIO
 
 
 def test_ttv_io(ttv_sets):
-    TTVSetsIO.save("foo", NpzDatasetIO, ttv_sets)
-    ttv_sets = TTVSetsIO.load("foo/TTVSets")
+    TTVSetsIO.save("TestContainer", NpzDatasetIO, ttv_sets)
+    ttv_sets = TTVSetsIO.load("TestContainer/TTVSets")
 
     # NpzDatasetIO.save("train", "foo/description.json", ttv_sets.train)
     # TTVSetsIO.save("foo", NpzDatasetIO, ttv_sets)
