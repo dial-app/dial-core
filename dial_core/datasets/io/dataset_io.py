@@ -10,7 +10,12 @@ import numpy as np
 from PIL import Image
 
 from dial_core.datasets import Dataset
-from dial_core.datasets.datatype import Categorical, DataTypeContainer, ImageArray
+from dial_core.datasets.datatype import (
+    Categorical,
+    DataType,
+    DataTypeContainer,
+    ImageArray,
+)
 from dial_core.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -102,6 +107,24 @@ class DatasetIO:
         return type(self).__name__
 
 
+class DatasetIOBuilder:
+    def __init__(self):
+        self._dataset_desc = {"x_type": {}, "y_type": {}}
+
+    def set_x_type(self, x_type: DataType) -> "DatasetIOBuilder":
+        self._dataset_desc["x_type"] = x_type.to_dict()
+
+        return self
+
+    def set_y_type(self, y_type: DataType) -> "DatasetIOBuilder":
+        self._dataset_desc["y_type"] = y_type.to_dict()
+
+        return self
+
+    def load(parent_dir: str, self) -> "Dataset":
+        return DatasetIO.load_from_description(parent_dir, self._dataset_desc)
+
+
 class NpzDatasetIO(DatasetIO):
     """The NpzFormat class stores datasets using Numpy's .npz files. See `np.savez` for
     more details."""
@@ -151,6 +174,21 @@ class NpzDatasetIO(DatasetIO):
         return dataset
 
 
+class NpzDatasetIOBuilder(DatasetIOBuilder):
+    def __init__(self):
+        super().__init__()
+
+        self._dataset_desc["filename"] = ""
+
+    def set_filename(self, filename: str) -> "NpzDatasetIOBuilder":
+        self._dataset_desc["filename"] = filename
+
+        return self
+
+    def load(parent_dir: str, self) -> "Dataset":
+        return NpzDatasetIO.load_from_description(parent_dir, self._dataset_desc)
+
+
 class TxtDatasetIO(DatasetIO):
     """The TxtFormat class stores datasets on plain readable .txt files."""
 
@@ -198,6 +236,27 @@ class TxtDatasetIO(DatasetIO):
         )
 
         return dataset
+
+
+class TxtDatasetIOBuilder(DatasetIOBuilder):
+    def __init__(self):
+        super().__init__()
+
+        self._dataset_desc["x_filename"] = ""
+        self._dataset_desc["y_filename"] = ""
+
+    def set_x_filename(self, x_filename: str) -> "TxtDatasetIOBuilder":
+        self._dataset_desc["x_filename"] = x_filename
+
+        return self
+
+    def set_y_filename(self, y_filename: str) -> "TxtDatasetIOBuilder":
+        self._dataset_desc["y_filename"] = y_filename
+
+        return self
+
+    def load(parent_dir: str, self) -> "Dataset":
+        return NpzDatasetIO.load_from_description(parent_dir, self._dataset_desc)
 
 
 class CategoricalImgDatasetIO(DatasetIO):

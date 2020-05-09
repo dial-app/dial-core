@@ -6,8 +6,10 @@ import dependency_injector.providers as providers
 from .dataset_io import (
     CategoricalImgDatasetIO,
     DatasetIO,
+    DatasetIOBuilder,
     DatasetIOContainer,
     NpzDatasetIO,
+    NpzDatasetIOBuilder,
     TxtDatasetIO,
 )
 from .ttv_sets_io import TTVSetsIO
@@ -27,8 +29,11 @@ PredefinedTTVSetsContainer.BostonHousing = providers.Factory(BostonHousingLoader
 
 __all__ = [
     "DatasetIO",
+    "DatasetIOBuilder",
     "NpzDatasetIO",
+    "NpzDatasetIOBuilder",
     "TxtDatasetIO",
+    "TxtDatasetIOBuilder",
     "CategoricalImgDatasetIO",
     "DatasetIOContainer",
     "TTVSetsIO",
