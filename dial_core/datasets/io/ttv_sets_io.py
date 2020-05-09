@@ -57,31 +57,32 @@ class TTVSetsIO:
             )
 
         # Writes the datasets structure on a json file
-        with open(ttv_dir + os.path.sep + "description.json", "w") as desc_file:
+        with open(ttv_dir + os.path.sep + "ttv_description.json", "w") as desc_file:
             json.dump(ttv_desc, desc_file, indent=4)
 
         return ttv_desc
 
     @classmethod
-    def load(cls, load_path: str, dataset_io_formats) -> "TTVSets":
+    def load(cls, description_file_path: str, dataset_io_formats) -> "TTVSets":
         """Loads a DatasetsGroup from the file system.
 
         This method will first find the `description.json` file inside the dataset
         directory. This file has the whole structure of the datasets and how to locate
         the necessary files, along with which io_formats use.
         """
-        with open(load_path + os.path.sep + "description.json", "r") as desc_file:
-            desc = json.load(desc_file)
+        pass
+        # with open(description_file_path, "r") as desc_file:
+        #     desc = json.load(desc_file)
 
-            io_format = getattr(dataset_io_formats, desc["format"])()
+        # io_format = getattr(dataset_io_formats, desc["format"])()
 
-            train = io_format.load(load_path, desc["train"])
-            test = io_format.load(load_path, desc["test"])
-            validation = io_format.load(load_path, desc["validation"])
+        # train = io_format.load(load_path, desc["train"])
+        # test = io_format.load(load_path, desc["test"])
+        # validation = io_format.load(load_path, desc["validation"])
 
-            return TTVSets(
-                name=desc["dataset"]["name"],
-                train=train,
-                test=test,
-                validation=validation,
-            )
+        # return TTVSets(
+        #     name=desc["dataset"]["name"],
+        #     train=train,
+        #     test=test,
+        #     validation=validation,
+        # )

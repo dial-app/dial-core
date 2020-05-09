@@ -1,5 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import json
 import os
 from typing import Optional
 
@@ -16,7 +17,10 @@ class TTVSetsIOFormat:
     """The TTVSetsIOFormat provides an interface for defining different formats in which
     a dataset could be stored on the file system."""
 
-    def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
+    @classmethod
+    def save(
+        self, identifier: str, description_file_path: str, dataset: "Dataset",
+    ) -> dict:
         """Writes the passed dataset to the file system.
 
         Args:
@@ -25,9 +29,27 @@ class TTVSetsIOFormat:
             dataset_desc: dataset_description dictionary (Data types, relative path...)
             dataset: Dataset to save.
         """
-        raise NotImplementedError()
+        parent_dir = os.path.dirname(description_file_path)
 
-    def load(self, root_path: str, dataset_desc: dict) -> "Dataset":
+        dataset_description = self.save_to_description(parent_dir, dataset)
+
+        with open(description_file_path, "w") as desc_file:
+            json.dump(desc_file, dataset_description, indent=4)
+
+        return dataset_description
+
+    @classmethod
+    def save_to_description(
+        self, identifier: str, parent_dir: str, dataset: "Dataset"
+    ) -> dict:
+        dataset_description = {}
+        dataset_description["x_type"] = dataset.x_type.to_dict()
+        dataset_description["y_type"] = dataset.y_type.to_dict()
+
+        return dataset_description
+
+    @classmethod
+    def load(self, description_file_path: str) -> Optional["Dataset"]:
         """Loads the dataset from the file system.
 
         Args:
@@ -37,7 +59,34 @@ class TTVSetsIOFormat:
         Returns:
             The loaded dataset.
         """
-        raise NotImplementedError()
+        with open(description_file_path, "r") as desc_file:
+            dataset_description = json.load(desc_file)
+
+        parent_dir = os.path.dirname(description_file_path)
+
+        return self.load_from_description(parent_dir, dataset_description)
+
+    @classmethod
+    def load_from_description(
+        self, parent_dir: str, dataset_description: dict
+    ) -> "Dataset":
+        """Loads the dataset from the specified `dataset_description` object. A
+        `parent_dir` must be passed to resolve relative paths on the
+        `dataset_description`.
+
+        Returns:
+            The loaded dataset.
+        """
+        x_type = getattr(
+            DataTypeContainer, dataset_description["x_type"]["type"]
+        ).from_dict(dataset_description["x_type"])
+
+        y_type = getattr(
+            DataTypeContainer, dataset_description["y_type"]["type"]
+        ).from_dict(dataset_description["y_type"])
+
+        # Dataset data (x, y) must be filled by subclasses overriding this method
+        return Dataset(x_type=x_type, y_type=y_type)
 
     def __str__(self):
         return type(self).__name__
@@ -47,7 +96,10 @@ class NpzFormat(TTVSetsIOFormat):
     """The NpzFormat class stores datasets using Numpy's .npz files. See `np.savez` for
     more details."""
 
-    def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
+    @classmethod
+    def save_to_description(
+        self, identifier: str, parent_dir: str, dataset: "Dataset",
+    ):
         """Writes the passed dataset to the file system.
 
         Args:
@@ -56,34 +108,46 @@ class NpzFormat(TTVSetsIOFormat):
             dataset_desc: dataset_description dictionary (Data types, relative path...)
             dataset: Dataset to save.
         """
-        dataset_desc["path"] = f"{name}.npz"
-
-        np.savez(
-            root_path + os.path.sep + dataset_desc["path"], x=dataset._x, y=dataset._y
+        dataset_description = super().save_to_description(
+            identifier, parent_dir, dataset
         )
 
-    def load(self, root_path: str, dataset_desc: dict) -> Optional["Dataset"]:
+        dataset_description["filename"] = f"{identifier}.npz"
+
+        np.savez(
+            parent_dir + os.path.sep + dataset_description["filename"],
+            x=dataset.x,
+            y=dataset.y,
+        )
+
+        return dataset_description
+
+    @classmethod
+    def load_from_description(
+        self, parent_dir: str, dataset_description: dict
+    ) -> Optional["Dataset"]:
         """Loads the dataset from the file system.
         Args:
             root_path: Path to the directory where the dataset file/dir is contained.
             dataset_desc: dataset_desc dictionary (Data types, relative path...)
         """
-        try:
-            data = np.load(root_path + os.path.sep + dataset_desc["path"])
+        dataset = super().load_from_description(parent_dir, dataset_description)
 
-            x_type = getattr(DataTypeContainer, dataset_desc["x_type"]["type"])()
-            y_type = getattr(DataTypeContainer, dataset_desc["y_type"]["type"])()
+        data = np.load(parent_dir + os.path.sep + dataset_description["filename"])
 
-            return Dataset(data["x"], data["y"], x_type, y_type)
+        dataset.x = data["x"]
+        dataset.y = data["y"]
 
-        except KeyError:
-            return None
+        return dataset
 
 
 class TxtFormat(TTVSetsIOFormat):
     """The TxtFormat class stores datasets on plain readable .txt files."""
 
-    def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
+    @classmethod
+    def save_to_description(
+        self, identifier: str, parent_dir: str, dataset: "Dataset",
+    ):
         """Writes the passed dataset to the file system.
 
         Args:
@@ -92,67 +156,49 @@ class TxtFormat(TTVSetsIOFormat):
             dataset_desc: dataset_description dictionary (Data types, relative path...)
             dataset: Dataset to save.
         """
-        dataset_desc["x_path"] = f"{name}_x.txt"
-        dataset_desc["y_path"] = f"{name}_y.txt"
+        dataset_description = super().save_to_description(
+            identifier, parent_dir, dataset
+        )
 
-        np.savetxt(root_path + os.path.sep + dataset_desc["x_path"], dataset._x)
-        np.savetxt(root_path + os.path.sep + dataset_desc["y_path"], dataset._y)
+        dataset_description["x_filename"] = f"x_{identifier}.txt"
+        dataset_description["y_filename"] = f"y_{identifier}.txt"
 
-    def load(self, root_path: str, dataset_desc: dict) -> Optional["Dataset"]:
-        """Loads the dataset from the file system.
-        Args:
-            root_path: Path to the directory where the dataset file/dir is contained.
-            dataset_desc: dataset_desc dictionary (Data types, relative path...)
-        """
-        try:
-            x = np.loadtxt(root_path + os.path.sep + dataset_desc["x_path"])
-            y = np.loadtxt(root_path + os.path.sep + dataset_desc["y_path"])
+        np.savetxt(
+            parent_dir + os.path.sep + dataset_description["x_filename"], dataset.x,
+        )
+        np.savetxt(
+            parent_dir + os.path.sep + dataset_description["y_filename"], dataset.y,
+        )
 
-            x_type = getattr(
-                DataTypeContainer, dataset_desc["x_type"]["type"]
-            ).from_dict(dataset_desc["x_type"])
-            y_type = getattr(
-                DataTypeContainer, dataset_desc["y_type"]["type"]
-            ).from_dict(dataset_desc["y_type"])
+        return dataset_description
 
-            return Dataset(x, y, x_type, y_type)
+    @classmethod
+    def load_from_description(
+        self, parent_dir: str, dataset_description: dict
+    ) -> "Dataset":
+        """"""
+        dataset = super().load_from_description(parent_dir, dataset_description)
 
-        except KeyError as err:
-            LOGGER.exception(err)
-            return None
+        dataset.x = np.loadtxt(
+            parent_dir + os.path.sep + dataset_description["x_filename"]
+        )
+
+        dataset.y = np.loadtxt(
+            parent_dir + os.path.sep + dataset_description["y_filename"]
+        )
+
+        return dataset
 
 
 class CategoryImagesFormat(TTVSetsIOFormat):
-    def save(self, root_path: str, name: str, dataset_desc: dict, dataset: "Dataset"):
-        # Y must be Categorical type
+    @classmethod
+    def save_from_description(
+        self, identifier: str, parent_dir: str, dataset: "Dataset"
+    ):
+        print("save")
 
-        # Start iterating over all Y elements
-        #    - For each category, store its X path on a folder named after the category
-
-        for category in dataset.y_type.categories:
-            os.mkdir(root_path + os.path.sep + category)
-
-        LOGGER.debug("Categories: ", dataset.y_type.categories)
-
-        for (x, y) in dataset.items():
-            original_name = os.path.basename(x)
-            category_name = dataset.y_type.display(y)
-            print(original_name, category_name)
-
-    def load(self, root_path: str, dataset_desc: dict) -> Optional["Dataset"]:
-        try:
-            x = os.listdir(root_path + os.path.sep + dataset_desc["x_path"])
-            y = os.listdir(root_path + os.path.sep + dataset_desc["y_path"])
-
-            x_type = getattr(
-                DataTypeContainer, dataset_desc["x_type"]["type"]
-            ).from_dict(dataset_desc["x_type"])
-            y_type = getattr(
-                DataTypeContainer, dataset_desc["y_type"]["type"]
-            ).from_dict(dataset_desc["y_type"])
-
-            return Dataset(x, y, x_type, y_type)
-
-        except KeyError as err:
-            LOGGER.exception(err)
-            return None
+    @classmethod
+    def load_from_description(
+        self, parent_dir: str, dataset_description: dict
+    ) -> Optional["Dataset"]:
+        print("load")

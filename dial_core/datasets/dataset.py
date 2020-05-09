@@ -21,8 +21,8 @@ class Dataset(keras.utils.Sequence):
     stored on memory and how it should be loaded, processed, and returned.
 
     Attributes:
-        _x: x (input) array.
-        _y: y (output) array.
+        x: x (input) array.
+        y: y (output) array.
         x_type: Datatype of x array.
         y_type: Datatype of y array.
         batch_size: Batch size.
@@ -41,8 +41,8 @@ class Dataset(keras.utils.Sequence):
         batch_size: int = 32,
     ):
         # Data arrays
-        self._x = np.empty(0) if x_data is None else x_data
-        self._y = np.empty(0) if y_data is None else y_data
+        self.x = np.empty(0) if x_data is None else x_data
+        self.y = np.empty(0) if y_data is None else y_data
 
         # Data types
         self.x_type = Numeric() if x_type is None else x_type
@@ -53,12 +53,12 @@ class Dataset(keras.utils.Sequence):
     @property
     def input_shape(self):
         """Returns the shape of the `_x` array, or (0,) if not loaded/not defined."""
-        return self.x_type.process(self._x[0]).shape if len(self._x) > 0 else (0,)
+        return self.x_type.process(self.x[0]).shape if len(self.x) > 0 else (0,)
 
     @property
     def output_shape(self):
-        """Returns the shape of the `_y` array, or (0,) if not loaded/not defined."""
-        return self.y_type.process(self._y[0]).shape if len(self._y) else (0,)
+        """Returns the shape of the `y` array, or (0,) if not loaded/not defined."""
+        return self.y_type.process(self.y[0]).shape if len(self.y) else (0,)
 
     def insert(self, position: int, x: List[Any], y: List[Any]):
         """Inserts x and y elements at the given position.
@@ -69,13 +69,13 @@ class Dataset(keras.utils.Sequence):
         if len(x) != len(y):
             raise ValueError(f"Can't insert {len(x)} values on x and {len(y)} on y!")
 
-        self._x = np.insert(self._x, position, x, axis=0)
-        self._y = np.insert(self._y, position, y, axis=0)
+        self.x = np.insert(self.x, position, x, axis=0)
+        self.y = np.insert(self.y, position, y, axis=0)
 
     def delete_rows(self, start: int, n: int = 1):
         """Deletes `n` rows at `start` position, including `start`"""
-        self._x = np.delete(self._x, range(start, start + n), axis=0)
-        self._y = np.delete(self._y, range(start, start + n), axis=0)
+        self.x = np.delete(self.x, range(start, start + n), axis=0)
+        self.y = np.delete(self.y, range(start, start + n), axis=0)
 
     def head(self, n: int = 10, role: "Role" = Role.Raw) -> Tuple[List, List]:
         """Returns the first `n` items on the dataset."""
@@ -87,29 +87,27 @@ class Dataset(keras.utils.Sequence):
         """Returns the `n` elements between start and end as a tuple of (x, y) items
         Range is EXCLUSIVE [start, end).
         """
-        x_set, y_set = self._preprocess_data(
-            self._x[start:end], self._y[start:end], role
-        )
+        x_set, y_set = self._preprocess_data(self.x[start:end], self.y[start:end], role)
         return x_set, y_set
 
     def row_count(self) -> int:
         """Returns the number of rows on the dataset."""
-        return len(self._x)
+        return len(self.x)
 
     def __len__(self) -> int:
         """Returns the length of the dataset (in batches)."""
-        return int(np.ceil(len(self._x) / float(self.batch_size)))
+        return int(np.ceil(len(self.x) / float(self.batch_size)))
 
     def __getitem__(self, idx: int) -> Tuple["np.array", "np.array"]:
         """Returns the batch of items starting at `idx`."""
         batch_start = idx * self.batch_size
         batch_end = (idx + 1) * self.batch_size
 
-        batch_x = self._x[batch_start:batch_end]
-        batch_y = self._y[batch_start:batch_end]
+        batch_x = self.x[batch_start:batch_end]
+        batch_y = self.y[batch_start:batch_end]
 
         batch_x, batch_y = self._preprocess_data(
-            self._x[batch_start:batch_end], self._y[batch_start:batch_end]
+            self.x[batch_start:batch_end], self.y[batch_start:batch_end]
         )
 
         return batch_x, batch_y
