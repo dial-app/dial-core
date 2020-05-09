@@ -166,8 +166,12 @@ class NpzDatasetIO(DatasetIO):
         """
         dataset = super().load_from_description(parent_dir, dataset_description)
 
-        data = np.load(os.path.join(parent_dir, dataset_description["filename"]))
+        npz_filepath = os.path.join(parent_dir, dataset_description["filename"])
 
+        if not npz_filepath:
+            return None
+
+        data = np.load(npz_filepath)
         dataset.x = data["x"]
         dataset.y = data["y"]
 

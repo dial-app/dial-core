@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 # import pytest
-
+# from dial_core.datasets import Dataset
 # from dial_core.datasets.io import (
 #     CategoricalImgDatasetIO,
 #     MnistLoader,
@@ -20,8 +20,13 @@ def test_ttv_io():
 
     # print(ttv.train.y)
 
-    # ttv_sets = TTVSetsIO.load("TestContainer/TTVSets")
+    # ttv_sets = TTVSetsIO.load(
+    #     "/home/david/dial-gui/projects/Default Project/Fashion MNIST"
+    # )
 
+    # print(ttv_sets.train.items(role=Dataset.Role.Display))
+
+    # pytest.fail("asdf")
     # NpzDatasetIO.save("train", "foo/description.json", ttv_sets.train)
     # TTVSetsIO.save("foo", NpzDatasetIO, ttv_sets)
 
