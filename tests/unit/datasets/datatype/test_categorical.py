@@ -57,7 +57,7 @@ def test_str(categorical_obj):
 
 def test_to_dict(categorical_obj):
     assert categorical_obj.to_dict() == {
-        "type": "Categorical",
+        "class": "Categorical",
         "categories": ["t-shirt", "jeans", "glasses"],
     }
 
@@ -66,7 +66,7 @@ def test_from_dict(categorical_obj):
     categorical_obj.from_dict({"categories": ["a", "b"]})
 
     assert categorical_obj.to_dict() == {
-        "type": "Categorical",
+        "class": "Categorical",
         "categories": ["a", "b"],
     }
 

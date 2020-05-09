@@ -171,10 +171,10 @@ class ProjectManager:
             The new `file_path` will be set as the project file path, replacing any
             previous paths.
         """
-        project_dir = parent_dir + os.path.sep + project.name
+        project_dir = os.path.join(parent_dir, project.name)
         os.makedirs(project_dir, exist_ok=True)
 
-        file_path = project_dir + os.path.sep + project.name + ".dial"
+        file_path = os.path.join(project_dir, f"{project.name}.dial")
 
         project.file_path = file_path
         LOGGER.info("New file path for the project: %s", file_path)

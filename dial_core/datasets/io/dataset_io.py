@@ -4,6 +4,8 @@ import json
 import os
 from typing import Optional
 
+import dependency_injector.containers as containers
+import dependency_injector.providers as providers
 import numpy as np
 
 from dial_core.datasets import Dataset
@@ -19,7 +21,7 @@ class DatasetIO:
 
     @classmethod
     def save(
-        self, identifier: str, description_file_path: str, dataset: "Dataset",
+        cls, identifier: str, description_file_path: str, dataset: "Dataset",
     ) -> dict:
         """Writes the passed dataset to the file system.
 
@@ -31,17 +33,24 @@ class DatasetIO:
         """
         parent_dir = os.path.dirname(description_file_path)
 
-        dataset_description = self.save_to_description(parent_dir, dataset)
+        dataset_description = cls.save_to_description(identifier, parent_dir, dataset)
+        print(dataset_description)
 
         with open(description_file_path, "w") as desc_file:
-            json.dump(desc_file, dataset_description, indent=4)
+            json.dump(dataset_description, desc_file, indent=4)
 
         return dataset_description
 
     @classmethod
     def save_to_description(
-        self, identifier: str, parent_dir: str, dataset: "Dataset"
+        cls, identifier: str, parent_dir: str, dataset: "Dataset"
     ) -> dict:
+        if not dataset:
+            raise ValueError("Invalid dataset")
+
+        if not os.path.exists(parent_dir):
+            os.makedirs(parent_dir, exist_ok=True)
+
         dataset_description = {}
         dataset_description["x_type"] = dataset.x_type.to_dict()
         dataset_description["y_type"] = dataset.y_type.to_dict()
@@ -49,7 +58,7 @@ class DatasetIO:
         return dataset_description
 
     @classmethod
-    def load(self, description_file_path: str) -> Optional["Dataset"]:
+    def load(cls, description_file_path: str) -> Optional["Dataset"]:
         """Loads the dataset from the file system.
 
         Args:
@@ -64,11 +73,11 @@ class DatasetIO:
 
         parent_dir = os.path.dirname(description_file_path)
 
-        return self.load_from_description(parent_dir, dataset_description)
+        return cls.load_from_description(parent_dir, dataset_description)
 
     @classmethod
     def load_from_description(
-        self, parent_dir: str, dataset_description: dict
+        cls, parent_dir: str, dataset_description: dict
     ) -> "Dataset":
         """Loads the dataset from the specified `dataset_description` object. A
         `parent_dir` must be passed to resolve relative paths on the
@@ -78,11 +87,11 @@ class DatasetIO:
             The loaded dataset.
         """
         x_type = getattr(
-            DataTypeContainer, dataset_description["x_type"]["type"]
+            DataTypeContainer, dataset_description["x_type"]["class"]
         )().from_dict(dataset_description["x_type"])
 
         y_type = getattr(
-            DataTypeContainer, dataset_description["y_type"]["type"]
+            DataTypeContainer, dataset_description["y_type"]["class"]
         )().from_dict(dataset_description["y_type"])
 
         # Dataset data (x, y) must be filled by subclasses overriding this method
@@ -98,7 +107,7 @@ class NpzDatasetIO(DatasetIO):
 
     @classmethod
     def save_to_description(
-        self, identifier: str, parent_dir: str, dataset: "Dataset",
+        cls, identifier: str, parent_dir: str, dataset: "Dataset",
     ):
         """Writes the passed dataset to the file system.
 
@@ -115,7 +124,7 @@ class NpzDatasetIO(DatasetIO):
         dataset_description["filename"] = f"{identifier}.npz"
 
         np.savez(
-            parent_dir + os.path.sep + dataset_description["filename"],
+            os.path.join(parent_dir, dataset_description["filename"]),
             x=dataset.x,
             y=dataset.y,
         )
@@ -124,7 +133,7 @@ class NpzDatasetIO(DatasetIO):
 
     @classmethod
     def load_from_description(
-        self, parent_dir: str, dataset_description: dict
+        cls, parent_dir: str, dataset_description: dict
     ) -> Optional["Dataset"]:
         """Loads the dataset from the file system.
         Args:
@@ -133,7 +142,7 @@ class NpzDatasetIO(DatasetIO):
         """
         dataset = super().load_from_description(parent_dir, dataset_description)
 
-        data = np.load(parent_dir + os.path.sep + dataset_description["filename"])
+        data = np.load(os.path.join(parent_dir, dataset_description["filename"]))
 
         dataset.x = data["x"]
         dataset.y = data["y"]
@@ -146,7 +155,7 @@ class TxtDatasetIO(DatasetIO):
 
     @classmethod
     def save_to_description(
-        self, identifier: str, parent_dir: str, dataset: "Dataset",
+        cls, identifier: str, parent_dir: str, dataset: "Dataset",
     ):
         """Writes the passed dataset to the file system.
 
@@ -164,27 +173,27 @@ class TxtDatasetIO(DatasetIO):
         dataset_description["y_filename"] = f"y_{identifier}.txt"
 
         np.savetxt(
-            parent_dir + os.path.sep + dataset_description["x_filename"], dataset.x,
+            os.path.join(parent_dir, dataset_description["x_filename"]), dataset.x,
         )
         np.savetxt(
-            parent_dir + os.path.sep + dataset_description["y_filename"], dataset.y,
+            os.path.join(parent_dir, dataset_description["y_filename"]), dataset.y,
         )
 
         return dataset_description
 
     @classmethod
     def load_from_description(
-        self, parent_dir: str, dataset_description: dict
+        cls, parent_dir: str, dataset_description: dict
     ) -> "Dataset":
         """"""
         dataset = super().load_from_description(parent_dir, dataset_description)
 
         dataset.x = np.loadtxt(
-            parent_dir + os.path.sep + dataset_description["x_filename"]
+            os.path.join(parent_dir, dataset_description["x_filename"])
         )
 
         dataset.y = np.loadtxt(
-            parent_dir + os.path.sep + dataset_description["y_filename"]
+            os.path.join(parent_dir, dataset_description["y_filename"])
         )
 
         return dataset
@@ -193,12 +202,18 @@ class TxtDatasetIO(DatasetIO):
 class CategoricalImgDatasetIO(DatasetIO):
     @classmethod
     def save_from_description(
-        self, identifier: str, parent_dir: str, dataset: "Dataset"
+        cls, identifier: str, parent_dir: str, dataset: "Dataset"
     ):
         print("save")
 
     @classmethod
     def load_from_description(
-        self, parent_dir: str, dataset_description: dict
+        cls, parent_dir: str, dataset_description: dict
     ) -> Optional["Dataset"]:
         print("load")
+
+
+DatasetIOContainer = containers.DynamicContainer()
+DatasetIOContainer.NpzDatasetIO = providers.Factory(NpzDatasetIO)
+DatasetIOContainer.TxtDatasetIO = providers.Factory(TxtDatasetIO)
+DatasetIOContainer.CategoricalImgDatasetIO = providers.Factory(CategoricalImgDatasetIO)

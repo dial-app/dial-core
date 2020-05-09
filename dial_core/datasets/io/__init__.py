@@ -3,7 +3,13 @@
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
-from .dataset_io import CategoricalImgDatasetIO, DatasetIO, NpzDatasetIO, TxtDatasetIO
+from .dataset_io import (
+    CategoricalImgDatasetIO,
+    DatasetIO,
+    DatasetIOContainer,
+    NpzDatasetIO,
+    TxtDatasetIO,
+)
 from .ttv_sets_io import TTVSetsIO
 from .ttv_sets_loader import (
     BostonHousingLoader,
@@ -12,11 +18,6 @@ from .ttv_sets_loader import (
     MnistLoader,
     TTVSetsLoader,
 )
-
-DatasetIOContainer = containers.DynamicContainer()
-DatasetIOContainer.Npz = providers.Factory(NpzDatasetIO)
-DatasetIOContainer.Txt = providers.Factory(TxtDatasetIO)
-DatasetIOContainer.CategoricalImg = providers.Factory(CategoricalImgDatasetIO)
 
 PredefinedTTVSetsContainer = containers.DynamicContainer()
 PredefinedTTVSetsContainer.Mnist = providers.Factory(MnistLoader)
@@ -29,7 +30,8 @@ __all__ = [
     "NpzDatasetIO",
     "TxtDatasetIO",
     "CategoricalImgDatasetIO",
-    "DatasetIOContainer" "TTVSetsIO",
+    "DatasetIOContainer",
+    "TTVSetsIO",
     "TTVSetsIO",
     "BostonHousingLoader",
     "Cifar10Loader",

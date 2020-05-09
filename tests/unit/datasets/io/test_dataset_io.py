@@ -20,7 +20,7 @@ def test_npz_save_to_description(mock_np, train_dataset):
     assert dataset_description["y_type"] == train_dataset.y_type.to_dict()
 
     mock_np.savez.assert_called_once_with(
-        parent_dir + os.path.sep + f"{identifier}.npz",
+        os.path.join(parent_dir, f"{identifier}.npz"),
         x=train_dataset.x,
         y=train_dataset.y,
     )
@@ -42,7 +42,7 @@ def test_npz_load_from_description(mock_np, train_dataset):
     loaded_dataset = NpzDatasetIO.load_from_description(parent_dir, dataset_description)
 
     mock_np.load.assert_called_once_with(
-        parent_dir + os.path.sep + dataset_description["filename"]
+        os.path.join(parent_dir, dataset_description["filename"])
     )
 
     assert loaded_dataset.x.tolist() == train_dataset.x.tolist()
@@ -60,11 +60,11 @@ def test_txt_save_to_description(mock_np, train_dataset):
 
     calls_list = mock_np.savetxt.call_args_list
     assert calls_list[0][0] == (
-        parent_dir + os.path.sep + dataset_description["x_filename"],
+        os.path.join(parent_dir, dataset_description["x_filename"]),
         train_dataset.x,
     )
     assert calls_list[1][0] == (
-        parent_dir + os.path.sep + dataset_description["y_filename"],
+        os.path.join(parent_dir, dataset_description["y_filename"]),
         train_dataset.y,
     )
 
@@ -92,10 +92,10 @@ def test_txt_load_from_description(mock_np, train_dataset):
 
     calls_list = mock_np.loadtxt.call_args_list
     assert calls_list[0][0] == (
-        parent_dir + os.path.sep + dataset_description["x_filename"],
+        os.path.join(parent_dir, dataset_description["x_filename"]),
     )
     assert calls_list[1][0] == (
-        parent_dir + os.path.sep + dataset_description["y_filename"],
+        os.path.join(parent_dir, dataset_description["y_filename"]),
     )
 
     assert loaded_dataset.x.tolist() == train_dataset.x.tolist()
