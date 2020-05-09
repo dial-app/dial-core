@@ -7,9 +7,10 @@ from typing import Optional
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 import numpy as np
+from PIL import Image
 
 from dial_core.datasets import Dataset
-from dial_core.datasets.datatype import DataTypeContainer
+from dial_core.datasets.datatype import Categorical, DataTypeContainer, ImageArray
 from dial_core.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -201,16 +202,52 @@ class TxtDatasetIO(DatasetIO):
 
 class CategoricalImgDatasetIO(DatasetIO):
     @classmethod
-    def save_from_description(
-        cls, identifier: str, parent_dir: str, dataset: "Dataset"
-    ):
-        print("save")
+    def save_to_description(cls, identifier: str, parent_dir: str, dataset: "Dataset"):
+        dataset_description = super().save_to_description(
+            identifier, parent_dir, dataset
+        )
+
+        for category in dataset.y_type.categories:
+            os.makedirs(os.path.join(parent_dir, category), exist_ok=True)
+
+        num_zeros = len(str(len(dataset)))
+
+        for i, (x, y) in enumerate(zip(dataset.x, dataset.y)):
+            im = Image.fromarray(x)
+            im.save(
+                os.path.join(
+                    parent_dir,
+                    str(dataset.y_type.display(y)),
+                    f"{str(i).zfill(num_zeros)}.png",
+                )
+            )
+
+        return dataset_description
 
     @classmethod
     def load_from_description(
         cls, parent_dir: str, dataset_description: dict
     ) -> Optional["Dataset"]:
-        print("load")
+        print(os.listdir(parent_dir))
+        x = []
+        y = []
+
+        x_type = ImageArray()
+        y_type = Categorical(categories=os.listdir(parent_dir))
+
+        for category_dir in os.listdir(parent_dir):
+            for image in os.listdir(os.path.join(parent_dir, category_dir)):
+                print(os.path.join(parent_dir, category_dir, image))
+                image = Image.open(os.path.join(parent_dir, category_dir, image))
+
+                x.append(np.array(image))
+                y.append(category_dir)
+
+                image.close()
+
+        return Dataset(
+            x_data=np.array(x), y_data=np.array(y), x_type=x_type, y_type=y_type
+        )
 
 
 DatasetIOContainer = containers.DynamicContainer()

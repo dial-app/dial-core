@@ -1,11 +1,26 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from dial_core.datasets.io import NpzDatasetIO, TTVSetsIO
+# import pytest
+
+# from dial_core.datasets.io import (
+#     CategoricalImgDatasetIO,
+#     MnistLoader,
+#     NpzDatasetIO,
+#     TTVSetsIO,
+# )
 
 
-def test_ttv_io(ttv_sets):
-    TTVSetsIO.save("TestContainer", NpzDatasetIO, ttv_sets)
-    ttv_sets = TTVSetsIO.load("TestContainer/TTVSets")
+def test_ttv_io():
+    pass
+    # ttv_sets = MnistLoader().load()
+
+    # TTVSetsIO.save("TestContainer", CategoricalImgDatasetIO, ttv_sets)
+
+    # ttv = TTVSetsIO.load("TestContainer/MNIST")
+
+    # print(ttv.train.y)
+
+    # ttv_sets = TTVSetsIO.load("TestContainer/TTVSets")
 
     # NpzDatasetIO.save("train", "foo/description.json", ttv_sets.train)
     # TTVSetsIO.save("foo", NpzDatasetIO, ttv_sets)

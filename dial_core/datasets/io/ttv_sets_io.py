@@ -57,12 +57,13 @@ class TTVSetsIO:
         self, parent_dir: str, dataset_io: "DatasetIO", ttv_sets: "TTVSets"
     ):
         def save_dataset(identifier, dataset):
-            try:
-                return dataset_io.save_to_description(
+            return (
+                dataset_io.save_to_description(
                     identifier, os.path.join(parent_dir, identifier), dataset
                 )
-            except ValueError:
-                return {}
+                if dataset
+                else {}
+            )
 
         return {
             "name": ttv_sets.name,
