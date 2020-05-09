@@ -121,7 +121,7 @@ class DatasetIOBuilder:
 
         return self
 
-    def load(parent_dir: str, self) -> "Dataset":
+    def load(self, parent_dir: str) -> "Dataset":
         return DatasetIO.load_from_description(parent_dir, self._dataset_desc)
 
 
@@ -185,7 +185,7 @@ class NpzDatasetIOBuilder(DatasetIOBuilder):
 
         return self
 
-    def load(parent_dir: str, self) -> "Dataset":
+    def load(self, parent_dir: str) -> "Dataset":
         return NpzDatasetIO.load_from_description(parent_dir, self._dataset_desc)
 
 
@@ -255,8 +255,8 @@ class TxtDatasetIOBuilder(DatasetIOBuilder):
 
         return self
 
-    def load(parent_dir: str, self) -> "Dataset":
-        return NpzDatasetIO.load_from_description(parent_dir, self._dataset_desc)
+    def load(self, parent_dir: str) -> "Dataset":
+        return TxtDatasetIO.load_from_description(parent_dir, self._dataset_desc)
 
 
 class CategoricalImgDatasetIO(DatasetIO):

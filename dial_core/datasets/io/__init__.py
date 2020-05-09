@@ -11,6 +11,7 @@ from .dataset_io import (
     NpzDatasetIO,
     NpzDatasetIOBuilder,
     TxtDatasetIO,
+    TxtDatasetIOBuilder,
 )
 from .ttv_sets_io import TTVSetsIO
 from .ttv_sets_loader import (
