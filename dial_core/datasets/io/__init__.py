@@ -3,13 +3,8 @@
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 
+from .dataset_io import CategoricalImgDatasetIO, DatasetIO, NpzDatasetIO, TxtDatasetIO
 from .ttv_sets_io import TTVSetsIO
-from .ttv_sets_io_format import (
-    CategoryImagesFormat,
-    NpzFormat,
-    TTVSetsIOFormat,
-    TxtFormat,
-)
 from .ttv_sets_loader import (
     BostonHousingLoader,
     Cifar10Loader,
@@ -18,10 +13,10 @@ from .ttv_sets_loader import (
     TTVSetsLoader,
 )
 
-TTVSetsFormatsContainer = containers.DynamicContainer()
-TTVSetsFormatsContainer.NpzFormat = providers.Factory(NpzFormat)
-TTVSetsFormatsContainer.TxtFormat = providers.Factory(TxtFormat)
-TTVSetsFormatsContainer.CategoryImagesFormat = providers.Factory(CategoryImagesFormat)
+DatasetIOContainer = containers.DynamicContainer()
+DatasetIOContainer.Npz = providers.Factory(NpzDatasetIO)
+DatasetIOContainer.Txt = providers.Factory(TxtDatasetIO)
+DatasetIOContainer.CategoricalImg = providers.Factory(CategoricalImgDatasetIO)
 
 PredefinedTTVSetsContainer = containers.DynamicContainer()
 PredefinedTTVSetsContainer.Mnist = providers.Factory(MnistLoader)
@@ -30,12 +25,16 @@ PredefinedTTVSetsContainer.Cifar10 = providers.Factory(Cifar10Loader)
 PredefinedTTVSetsContainer.BostonHousing = providers.Factory(BostonHousingLoader)
 
 __all__ = [
-    "TTVSetsLoader",
+    "DatasetIO",
+    "NpzDatasetIO",
+    "TxtDatasetIO",
+    "CategoricalImgDatasetIO",
+    "DatasetIOContainer" "TTVSetsIO",
     "TTVSetsIO",
-    "TTVSetsIOFormat",
-    "TTVSetsFormatsContainer",
+    "BostonHousingLoader",
+    "Cifar10Loader",
+    "FashionMnistLoader",
+    "MnistLoader",
+    "TTVSetsLoader",
     "PredefinedTTVSetsContainer",
-    "NpzFormat",
-    "TxtFormat",
-    "CategoryImagesFormat",
 ]

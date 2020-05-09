@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 from dial_core.datasets import TTVSets
 
 if TYPE_CHECKING:
-    from .ttv_sets_io_format import TTVSetsIOFormat
+    from .ttv_sets_io_format import DatasetIO
 
 
 class TTVSetsIO:
@@ -15,13 +15,13 @@ class TTVSetsIO:
     from/to memory. The format used for the stored elements (files, directories, npz
     files..) depends on the `io_format` argument.
 
-    For more information about how each `io_format` works, see the `TTVSetsIOFormat`
+    For more information about how each `dataset_io` works, see the `DatasetIO`
     class.
     """
 
     @classmethod
     def save(
-        cls, io_format: "TTVSetsIOFormat", parent_dir: str, ttv_sets: "TTVSets",
+        cls, dataset_io: "DatasetIO", parent_dir: str, ttv_sets: "TTVSets",
     ) -> dict:
         """Saves a TTVSets object on the file system.
 
@@ -43,16 +43,16 @@ class TTVSetsIO:
         if not os.path.exists(ttv_dir):
             os.makedirs(ttv_dir, exist_ok=True)
 
-        ttv_desc = {"format": str(io_format), **ttv_sets.to_dict()}
+        ttv_desc = {"format": str(dataset_io), **ttv_sets.to_dict()}
 
         if ttv_sets.train:
-            io_format.save(ttv_dir, "train", ttv_desc["train"], ttv_sets.train)
+            dataset_io.save(ttv_dir, "train", ttv_desc["train"], ttv_sets.train)
 
         if ttv_sets.test:
-            io_format.save(ttv_dir, "test", ttv_desc["test"], ttv_sets.test)
+            dataset_io.save(ttv_dir, "test", ttv_desc["test"], ttv_sets.test)
 
         if ttv_sets.validation:
-            io_format.save(
+            dataset_io.save(
                 ttv_dir, "validation", ttv_desc["validation"], ttv_sets.valvalidation
             )
 
@@ -63,7 +63,7 @@ class TTVSetsIO:
         return ttv_desc
 
     @classmethod
-    def load(cls, description_file_path: str, dataset_io_formats) -> "TTVSets":
+    def load(cls, description_file_path: str, dataset_io_providers) -> "TTVSets":
         """Loads a DatasetsGroup from the file system.
 
         This method will first find the `description.json` file inside the dataset

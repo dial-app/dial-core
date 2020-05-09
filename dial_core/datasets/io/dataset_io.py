@@ -13,7 +13,7 @@ from dial_core.utils import log
 LOGGER = log.get_logger(__name__)
 
 
-class TTVSetsIOFormat:
+class DatasetIO:
     """The TTVSetsIOFormat provides an interface for defining different formats in which
     a dataset could be stored on the file system."""
 
@@ -92,7 +92,7 @@ class TTVSetsIOFormat:
         return type(self).__name__
 
 
-class NpzFormat(TTVSetsIOFormat):
+class NpzDatasetIO(DatasetIO):
     """The NpzFormat class stores datasets using Numpy's .npz files. See `np.savez` for
     more details."""
 
@@ -141,7 +141,7 @@ class NpzFormat(TTVSetsIOFormat):
         return dataset
 
 
-class TxtFormat(TTVSetsIOFormat):
+class TxtDatasetIO(DatasetIO):
     """The TxtFormat class stores datasets on plain readable .txt files."""
 
     @classmethod
@@ -190,7 +190,7 @@ class TxtFormat(TTVSetsIOFormat):
         return dataset
 
 
-class CategoryImagesFormat(TTVSetsIOFormat):
+class CategoricalImgDatasetIO(DatasetIO):
     @classmethod
     def save_from_description(
         self, identifier: str, parent_dir: str, dataset: "Dataset"

@@ -3,15 +3,15 @@
 import os
 from unittest.mock import patch
 
-from dial_core.datasets.io import NpzFormat, TxtFormat
+from dial_core.datasets.io import NpzDatasetIO, TxtDatasetIO
 
 
-@patch("dial_core.datasets.io.ttv_sets_io_format.np")
+@patch("dial_core.datasets.io.dataset_io.np")
 def test_npz_save_to_description(mock_np, train_dataset):
     identifier = "train"
     parent_dir = "foo"
 
-    dataset_description = NpzFormat.save_to_description(
+    dataset_description = NpzDatasetIO.save_to_description(
         identifier, parent_dir, train_dataset
     )
 
@@ -26,7 +26,7 @@ def test_npz_save_to_description(mock_np, train_dataset):
     )
 
 
-@patch("dial_core.datasets.io.ttv_sets_io_format.np")
+@patch("dial_core.datasets.io.dataset_io.np")
 def test_npz_load_from_description(mock_np, train_dataset):
     identifier = "train"
     parent_dir = "foo"
@@ -39,7 +39,7 @@ def test_npz_load_from_description(mock_np, train_dataset):
 
     mock_np.load.side_effect = [{"x": train_dataset.x, "y": train_dataset.y}]
 
-    loaded_dataset = NpzFormat.load_from_description(parent_dir, dataset_description)
+    loaded_dataset = NpzDatasetIO.load_from_description(parent_dir, dataset_description)
 
     mock_np.load.assert_called_once_with(
         parent_dir + os.path.sep + dataset_description["filename"]
@@ -49,12 +49,12 @@ def test_npz_load_from_description(mock_np, train_dataset):
     assert loaded_dataset.y.tolist() == train_dataset.y.tolist()
 
 
-@patch("dial_core.datasets.io.ttv_sets_io_format.np")
+@patch("dial_core.datasets.io.dataset_io.np")
 def test_txt_save_to_description(mock_np, train_dataset):
     identifier = "train"
     parent_dir = "foo"
 
-    dataset_description = TxtFormat.save_to_description(
+    dataset_description = TxtDatasetIO.save_to_description(
         identifier, parent_dir, train_dataset
     )
 
@@ -74,7 +74,7 @@ def test_txt_save_to_description(mock_np, train_dataset):
     assert dataset_description["y_type"] == train_dataset.y_type.to_dict()
 
 
-@patch("dial_core.datasets.io.ttv_sets_io_format.np")
+@patch("dial_core.datasets.io.dataset_io.np")
 def test_txt_load_from_description(mock_np, train_dataset):
     identifier = "train"
     parent_dir = "foo"
@@ -88,7 +88,7 @@ def test_txt_load_from_description(mock_np, train_dataset):
 
     mock_np.loadtxt.side_effect = [train_dataset.x, train_dataset.y]
 
-    loaded_dataset = TxtFormat.load_from_description(parent_dir, dataset_description)
+    loaded_dataset = TxtDatasetIO.load_from_description(parent_dir, dataset_description)
 
     calls_list = mock_np.loadtxt.call_args_list
     assert calls_list[0][0] == (
