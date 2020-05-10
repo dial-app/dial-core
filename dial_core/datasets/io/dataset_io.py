@@ -2,8 +2,9 @@
 
 import json
 import os
+import re
 from enum import Enum
-from typing import Optional
+from typing import Any, Optional
 
 import dependency_injector.containers as containers
 import dependency_injector.providers as providers
@@ -11,7 +12,7 @@ import numpy as np
 from PIL import Image
 
 from dial_core.datasets import Dataset
-from dial_core.datasets.datatype import Categorical, DataType, ImageArray
+from dial_core.datasets.datatype import Categorical, DataType
 from dial_core.utils import log
 
 LOGGER = log.get_logger(__name__)
@@ -26,11 +27,13 @@ class DatasetIO:
     def __init__(self):
         self._dataset_description = {"x_type": {}, "y_type": {}}
 
+        self._overrriden = {}
+
     def get_x_type(self) -> "DataType":
         return DataType.create(self._dataset_description["x_type"])
 
     def set_x_type(self, x_type: "DataType") -> "DatasetIO":
-        self._dataset_description["x_type"] = x_type.to_dict()
+        self._set_attribute("x_type", x_type.to_dict())
 
         return self
 
@@ -38,7 +41,7 @@ class DatasetIO:
         return DataType.create(self._dataset_description["y_type"])
 
     def set_y_type(self, y_type: "DataType") -> "DatasetIO":
-        self._dataset_description["y_type"] = y_type.to_dict()
+        self._set_attribute("y_type", y_type.to_dict())
 
         return self
 
@@ -106,10 +109,16 @@ class DatasetIO:
         """
         with open(description_file_path, "r") as desc_file:
             self._dataset_description = json.load(desc_file)
+            self._dataset_description.update(self._overrriden)
+            self._overrriden = {}
 
         parent_dir = os.path.dirname(description_file_path)
 
         return self.load(parent_dir)
+
+    def _set_attribute(self, attribute: str, value: Any):
+        self._dataset_description[attribute] = value
+        self._overrriden[attribute] = value
 
     def __str__(self) -> str:
         return self.Label
@@ -130,7 +139,7 @@ class NpzDatasetIO(DatasetIO):
         return self._dataset_description["filename"]
 
     def set_filename(self, filename: str) -> "NpzDatasetIO":
-        self._dataset_description["filename"] = filename
+        self._set_attribute("filename", filename)
 
         return self
 
@@ -188,7 +197,7 @@ class TxtDatasetIO(DatasetIO):
         return self._dataset_description["x_filename"]
 
     def set_x_filename(self, x_filename: str) -> "TxtDatasetIO":
-        self._dataset_description["x_filename"] = x_filename
+        self._set_attribute("x_filename", x_filename)
 
         return self
 
@@ -196,7 +205,7 @@ class TxtDatasetIO(DatasetIO):
         return self._dataset_description["y_filename"]
 
     def set_y_filename(self, y_filename: str) -> "TxtDatasetIO":
-        self._dataset_description["y_filename"] = y_filename
+        self._set_attribute("y_filename", y_filename)
 
         return self
 
@@ -240,62 +249,133 @@ class CategoricalImgDatasetIO(DatasetIO):
         super().__init__()
 
         self.set_organization(self.Organization.CategoryOnFolders)
+        self.set_filename_category_regex(r"")
 
     def get_organization(self) -> "Organization":
         return self.Organization[self._dataset_description["organization"]]
 
     def set_organization(self, organization: "Organization"):
-        self._dataset_description["organization"] = organization.name()
+        self._set_attribute("organization", organization.name)
+
+        return self
+
+    def get_filename_category_regex(self) -> str:
+        return self._dataset_description["filename_category_regex"]
+
+    def set_filename_category_regex(self, filename_category_regex: str):
+        self._set_attribute("filename_category_regex", filename_category_regex)
 
         return self
 
     def save(self, parent_dir: str, dataset: "Dataset"):
         super().save(parent_dir, dataset)
 
+        num_zeros = len(str(len(dataset)))
+
         if self.get_organization() == self.Organization.CategoryOnFolders:
             # Create a folder for each category
-            for category in dataset.y_type.categories:
-                os.makedirs(os.path.join(parent_dir, category), exist_ok=True)
-
-            num_zeros = len(str(len(dataset)))
+            for category_idx in range(len(dataset.y_type.categories)):
+                os.makedirs(os.path.join(parent_dir, str(category_idx)), exist_ok=True)
 
             for i, (x, y) in enumerate(zip(dataset.x, dataset.y)):
                 im = Image.fromarray(x)
                 im.save(
-                    os.path.join(
-                        parent_dir,
-                        str(dataset.y_type.display(y)),  # Category name
-                        f"{str(i).zfill(num_zeros)}.png",
-                    )
+                    os.path.join(parent_dir, str(y), f"{str(i).zfill(num_zeros)}.png",)
                 )
 
         elif self.get_organization() == self.Organization.CategoryOnFilename:
-            pass
+            for i, (x, y) in enumerate(zip(dataset.x, dataset.y)):
+                im = Image.fromarray(x)
+                im.save(
+                    os.path.join(
+                        parent_dir, f"{str(y)}__{str(i).zfill(num_zeros)}.png",
+                    )
+                )
 
         else:
             raise ValueError(f"Invalid organization value: {self.get_organization()}")
 
         return self._dataset_description
 
-    def load(self, parent_dir: str) -> "Dataset":
-        print(os.listdir(parent_dir))
+    def load(self, dataset_dir: str) -> "Dataset":
+        category_extractor_regex = re.compile(self.get_filename_category_regex())
+
+        dataset = super().load(dataset_dir)
+
+        # Get categories if not defined
+        if self.get_y_type() is None:
+            categorical_datatype = Categorical()
+
+            if self.get_organization() == self.Organization.CategoryOnFolders:
+                categorical_datatype.categories = os.listdir(dataset_dir)
+
+            elif self.get_organization() == self.Organization.CategoryOnFilename:
+                unique_categories = set()
+
+                for image_filename in os.listdir(dataset_dir):
+                    try:
+                        category_name = category_extractor_regex.match(
+                            image_filename
+                        ).group(1)
+                        unique_categories.add(category_name)
+                    except Exception as err:
+                        print("Error parsing", image_filename, err)
+
+                categorical_datatype.categories = list(unique_categories)
+
+            else:
+                raise ValueError(
+                    f"Invalid organization value: {self.get_organization()}"
+                )
+
+            self.set_y_type(categorical_datatype)
+
+        print("Categories", self.get_y_type().categories)
+
+        # Load files
         x = []
         y = []
 
-        self.set_x_type(ImageArray())
-        self.set_y_type(Categorical(categories=os.listdir(parent_dir)))
+        if self.get_organization() == self.Organization.CategoryOnFolders:
+            for category_dir in os.listdir(dataset_dir):
+                if not os.path.isdir(os.path.join(dataset_dir, category_dir)):
+                    continue
 
-        dataset = super().load(parent_dir)
+                category_data = self.get_y_type().convert_to_expected_format(
+                    category_dir
+                )
 
-        for category_dir in os.listdir(parent_dir):
-            for image in os.listdir(os.path.join(parent_dir, category_dir)):
-                print(os.path.join(parent_dir, category_dir, image))
-                image = Image.open(os.path.join(parent_dir, category_dir, image))
+                for image in os.listdir(os.path.join(dataset_dir, category_dir)):
+                    image = Image.open(os.path.join(dataset_dir, category_dir, image))
 
-                x.append(np.array(image))
-                y.append(category_dir)
+                    x.append(np.array(image))
+                    y.append(category_data)
 
-                image.close()
+                    image.close()
+
+        elif self.get_organization() == self.Organization.CategoryOnFilename:
+            for image_filename in os.listdir(os.path.join(dataset_dir)):
+                try:
+                    category_name = category_extractor_regex.match(
+                        image_filename
+                    ).group(1)
+
+                    category_data = self.get_y_type().convert_to_expected_format(
+                        category_name
+                    )
+
+                    image = Image.open(os.path.join(dataset_dir, image_filename))
+
+                    x.append(np.array(image))
+                    y.append(category_data)
+
+                    image.close()
+
+                except Exception as err:
+                    print(err)
+
+        else:
+            raise ValueError(f"Invalid organization value: {self.get_organization()}")
 
         dataset.x = np.array(x)
         dataset.y = np.array(y)

@@ -1,47 +1,73 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-import pytest
+# import pytest
 
-from dial_core.datasets import Dataset
-from dial_core.datasets.io import (
-    CategoricalImgDatasetIO,
-    MnistLoader,
-    NpzDatasetIO,
-    TTVSetsIO,
-)
+# from dial_core.datasets import Dataset, datatype
+# from dial_core.datasets.io import (
+#     CategoricalImgDatasetIO,
+#     FashionMnistLoader,
+#     MnistLoader,
+#     NpzDatasetIO,
+#     TTVSetsIO,
+# )
 
+# def test_ttv_io():
+#     pass
+#     ttv_sets = FashionMnistLoader().load()
 
-def test_ttv_io():
-    pass
-    # ttv_sets = MnistLoader().load()
+#     dataset_desc = (
+#         CategoricalImgDatasetIO().set_organization(
+#             CategoricalImgDatasetIO.Organization.CategoryOnFolders
+#         )
+#         # .set_filename_category_regex(r"^(\d+)")
+#         .save_to_file("TestContainer/fashion/description.json", ttv_sets.test)
+#     )
 
-    # TTVSetsIO.save("TestContainer", , ttv_sets)
+#     print(dataset_desc)
 
-    # ttv = TTVSetsIO.load("TestContainer/MNIST")
+#     dataset = (
+#         CategoricalImgDatasetIO()
+#         .set_organization(CategoricalImgDatasetIO.Organization.CategoryOnFolders)
+#         .set_filename_category_regex("(.*?)__")
+#         .load_from_file("/home/david/dial-core/TestContainer/fashion/description.json")
+#     )
 
-    # print(ttv.train.y)
+#     print("Y", dataset.y)
 
-    # ttv_sets = TTVSetsIO.load(
-    #     "/home/david/dial-gui/projects/Default Project/Fashion MNIST"
-    # )
+#     pytest.fail("ASDF")
 
-    # print(ttv_sets.train.items(role=Dataset.Role.Display))
+# dataset = CategoricalImgDatasetIO().load_from_file(
+#     "TestContainer/mnist/description.json"
+# )
 
-    # pytest.fail("asdf")
-    # NpzDatasetIO.save("train", "foo/description.json", ttv_sets.train)
-    # TTVSetsIO.save("foo", NpzDatasetIO, ttv_sets)
+# print(dataset.x)
+# print(dataset.y)
 
-    # dg = TTVSets(name="TestContainer", train=train_dataset, test=test_dataset)
+# ttv = TTVSetsIO.load("TestContainer/MNIST")
 
-    # TTVSetsIO.save(TTVSetsFormatsContainer.NpzFormat(), ".", dg)
-    # load_dg = TTVSetsIO.load("./TestContainer", TTVSetsFormatsContainer)
+# print(ttv.train.y)
 
-    # for dataset, loaded_dataset in zip(
-    #     [dg.train, dg.test], [load_dg.train, load_dg.test],
-    # ):
-    #     x, y = dataset.items()
-    #     xl, ly = loaded_dataset.items()
+# ttv_sets = TTVSetsIO.load(
+#     "/home/david/dial-gui/projects/Default Project/Fashion MNIST"
+# )
 
-    #     assert x.tolist() == xl.tolist()
+# print(ttv_sets.train.items(role=Dataset.Role.Display))
 
-    # assert load_dg.validation is None
+# pytest.fail("asdf")
+# NpzDatasetIO.save("train", "foo/description.json", ttv_sets.train)
+# TTVSetsIO.save("foo", NpzDatasetIO, ttv_sets)
+
+# dg = TTVSets(name="TestContainer", train=train_dataset, test=test_dataset)
+
+# TTVSetsIO.save(TTVSetsFormatsContainer.NpzFormat(), ".", dg)
+# load_dg = TTVSetsIO.load("./TestContainer", TTVSetsFormatsContainer)
+
+# for dataset, loaded_dataset in zip(
+#     [dg.train, dg.test], [load_dg.train, load_dg.test],
+# ):
+#     x, y = dataset.items()
+#     xl, ly = loaded_dataset.items()
+
+#     assert x.tolist() == xl.tolist()
+
+# assert load_dg.validation is None

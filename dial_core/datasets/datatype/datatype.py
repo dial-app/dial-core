@@ -55,7 +55,14 @@ class DataType(metaclass=ABCMeta):
 
     @classmethod
     def create(cls, dc: dict):
-        return getattr(DataTypeContainer, dc["class"])().from_dict(dc)
+        if not dc:
+            return None
+
+        try:
+            return getattr(DataTypeContainer, dc["class"])().from_dict(dc)
+
+        except KeyError:
+            return None
 
     def __getstate__(self) -> dict:
         return {"class": str(self)}
