@@ -2,7 +2,7 @@
 
 import json
 import os
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from dial_core.datasets import TTVSets
 from dial_core.datasets.io import DatasetIORegistrySingleton
@@ -83,8 +83,7 @@ class TTVSetsIO:
         directory. This file has the whole structure of the datasets and how to locate
         the necessary files, along with which io_formats use.
         """
-        with open(os.path.join(ttv_dir, "ttv_description.json"), "r") as desc_file:
-            ttv_description = json.load(desc_file)
+        ttv_description = cls.get_ttv_description(ttv_dir)
 
         dataset_io = getattr(dataset_io_providers, ttv_description["format"])()
 
@@ -104,3 +103,10 @@ class TTVSetsIO:
         return TTVSets(
             name=ttv_description["name"], train=train, test=test, validation=validation,
         )
+
+    @classmethod
+    def get_ttv_description(cls, ttv_dir: str) -> Optional[dict]:
+        with open(os.path.join(ttv_dir, "ttv_description.json"), "r") as desc_file:
+            return json.load(desc_file)
+
+        return None
