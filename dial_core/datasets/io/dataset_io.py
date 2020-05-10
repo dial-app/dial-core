@@ -181,7 +181,7 @@ class TxtDatasetIO(DatasetIO):
         return self._dataset_description["x_filename"]
 
     def set_x_filename(self, x_filename: str) -> "TxtDatasetIO":
-        self._dataset_desc["x_filename"] = x_filename
+        self._dataset_description["x_filename"] = x_filename
 
         return self
 
@@ -189,7 +189,7 @@ class TxtDatasetIO(DatasetIO):
         return self._dataset_description["y_filename"]
 
     def set_y_filename(self, y_filename: str) -> "TxtDatasetIO":
-        self._dataset_desc["y_filename"] = y_filename
+        self._dataset_description["y_filename"] = y_filename
 
         return self
 
@@ -213,7 +213,7 @@ class TxtDatasetIO(DatasetIO):
 
     def load(self, parent_dir: str) -> "Dataset":
         """"""
-        dataset = super().load_from_description(parent_dir, self._dataset_description)
+        dataset = super().load(parent_dir)
 
         dataset.x = np.loadtxt(os.path.join(parent_dir, self.get_x_filename()))
         dataset.y = np.loadtxt(os.path.join(parent_dir, self.get_y_filename()))
