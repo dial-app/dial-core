@@ -2,7 +2,9 @@
 
 from typing import Any
 
-from .datatype import DataType
+import dependency_injector.providers as providers
+
+from .datatype import DataType, DataTypeContainer
 
 
 class Numeric(DataType):
@@ -31,3 +33,6 @@ class Numeric(DataType):
 
     def __reduce__(self):
         return (Numeric, (), super().__getstate__())
+
+
+DataTypeContainer.Numeric = providers.Factory(Numeric)

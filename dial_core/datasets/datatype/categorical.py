@@ -2,10 +2,11 @@
 
 from typing import List, Union
 
+import dependency_injector.providers as providers
 import numpy as np
 from tensorflow import keras
 
-from .datatype import DataType
+from .datatype import DataType, DataTypeContainer
 
 
 class Categorical(DataType):
@@ -143,3 +144,6 @@ class Categorical(DataType):
 
     def __reduce__(self):
         return (Categorical, (self.categories,), self.__getstate__())
+
+
+DataTypeContainer.Categorical = providers.Factory(Categorical)

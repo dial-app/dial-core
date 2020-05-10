@@ -1,20 +1,21 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-# import pytest
-# from dial_core.datasets import Dataset
-# from dial_core.datasets.io import (
-#     CategoricalImgDatasetIO,
-#     MnistLoader,
-#     NpzDatasetIO,
-#     TTVSetsIO,
-# )
+import pytest
+
+from dial_core.datasets import Dataset
+from dial_core.datasets.io import (
+    CategoricalImgDatasetIO,
+    MnistLoader,
+    NpzDatasetIO,
+    TTVSetsIO,
+)
 
 
 def test_ttv_io():
     pass
     # ttv_sets = MnistLoader().load()
 
-    # TTVSetsIO.save("TestContainer", CategoricalImgDatasetIO, ttv_sets)
+    # TTVSetsIO.save("TestContainer", , ttv_sets)
 
     # ttv = TTVSetsIO.load("TestContainer/MNIST")
 

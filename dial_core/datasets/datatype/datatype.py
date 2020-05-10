@@ -2,6 +2,8 @@
 
 from abc import ABCMeta, abstractmethod
 
+import dependency_injector.containers as containers
+
 
 class DataType(metaclass=ABCMeta):
     """
@@ -51,6 +53,10 @@ class DataType(metaclass=ABCMeta):
 
         return self
 
+    @classmethod
+    def create(cls, dc: dict):
+        return getattr(DataTypeContainer, dc["class"])().from_dict(dc)
+
     def __getstate__(self) -> dict:
         return {"class": str(self)}
 
@@ -62,3 +68,6 @@ class DataType(metaclass=ABCMeta):
 
     def __str__(self) -> str:
         return type(self).__name__
+
+
+DataTypeContainer = containers.DynamicContainer()

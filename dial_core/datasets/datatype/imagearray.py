@@ -1,8 +1,9 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+import dependency_injector.providers as providers
 import numpy as np
 
-from .datatype import DataType
+from .datatype import DataType, DataTypeContainer
 
 
 class ImageArray(DataType):
@@ -36,3 +37,6 @@ class ImageArray(DataType):
 
     def __reduce__(self):
         return (ImageArray, (), super().__getstate__())
+
+
+DataTypeContainer.ImageArray = providers.Factory(ImageArray)

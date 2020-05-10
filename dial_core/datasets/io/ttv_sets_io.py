@@ -89,9 +89,7 @@ class TTVSetsIO:
 
         def load_dataset(identifier, dataset_description):
             return (
-                dataset_io.load_from_description(
-                    os.path.join(ttv_dir, identifier), dataset_description,
-                )
+                dataset_io.load(os.path.join(ttv_dir, identifier))
                 if dataset_description
                 else None
             )
