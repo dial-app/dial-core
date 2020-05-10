@@ -3,8 +3,9 @@
 import json
 import os
 from enum import Enum
-from typing import Dict, Optional, Type
+from typing import Optional
 
+import dependency_injector.containers as containers
 import dependency_injector.providers as providers
 import numpy as np
 from PIL import Image
@@ -19,6 +20,8 @@ LOGGER = log.get_logger(__name__)
 class DatasetIO:
     """The TTVSetsIOFormat provides an interface for defining different formats in which
     a dataset could be stored on the file system."""
+
+    Label = "DatasetIO"
 
     def __init__(self):
         self._dataset_description = {"x_type": {}, "y_type": {}}
@@ -108,13 +111,15 @@ class DatasetIO:
 
         return self.load(parent_dir)
 
-    def __str__(self):
-        return type(self).__name__
+    def __str__(self) -> str:
+        return self.Label
 
 
 class NpzDatasetIO(DatasetIO):
     """The NpzFormat class stores datasets using Numpy's .npz files. See `np.savez` for
     more details."""
+
+    Label = "Npz Format"
 
     def __init__(self):
         super().__init__()
@@ -171,6 +176,8 @@ class NpzDatasetIO(DatasetIO):
 class TxtDatasetIO(DatasetIO):
     """The TxtFormat class stores datasets on plain readable .txt files."""
 
+    Label = "Txt Format"
+
     def __init__(self):
         super().__init__()
 
@@ -222,6 +229,9 @@ class TxtDatasetIO(DatasetIO):
 
 
 class CategoricalImgDatasetIO(DatasetIO):
+
+    Label = "Categorical Images Format"
+
     class Organization(Enum):
         CategoryOnFolders = 0
         CategoryOnFilename = 1
@@ -293,26 +303,11 @@ class CategoricalImgDatasetIO(DatasetIO):
         return dataset
 
 
-class DatasetIORegistry:
-    def __init__(self):
-        self._providers: Dict[str, Type["DatasetIO"]] = {}
-
-    @property
-    def providers(self):
-        return self._providers
-
-    def register_format(self, name: str, dataset_io: Type["DatasetIO"]):
-        self._providers[name] = dataset_io
-
-    def unregister_format(self, name: str):
-        self._providers.pop(name, None)
-
-
-DatasetIORegistryFactory = providers.Factory(DatasetIORegistry)
-DatasetIORegistrySingleton = providers.Singleton(DatasetIORegistry)
-
-DatasetIORegistrySingleton().register_format("NpzDatasetIO", NpzDatasetIO)
-DatasetIORegistrySingleton().register_format("TxtDatasetIO", TxtDatasetIO)
-DatasetIORegistrySingleton().register_format(
-    "CategoricalImgDatasetIO", CategoricalImgDatasetIO
+DatasetIORegistry = containers.DynamicContainer()
+setattr(DatasetIORegistry, NpzDatasetIO.Label, providers.Factory(NpzDatasetIO))
+setattr(DatasetIORegistry, TxtDatasetIO.Label, providers.Factory(TxtDatasetIO))
+setattr(
+    DatasetIORegistry,
+    CategoricalImgDatasetIO.Label,
+    providers.Factory(CategoricalImgDatasetIO),
 )

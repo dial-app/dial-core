@@ -6,8 +6,7 @@ import dependency_injector.providers as providers
 from .dataset_io import (
     CategoricalImgDatasetIO,
     DatasetIO,
-    DatasetIORegistryFactory,
-    DatasetIORegistrySingleton,
+    DatasetIORegistry,
     NpzDatasetIO,
     TxtDatasetIO,
 )
@@ -31,8 +30,7 @@ __all__ = [
     "NpzDatasetIO",
     "TxtDatasetIO",
     "CategoricalImgDatasetIO",
-    "DatasetIORegistryFactory",
-    "DatasetIORegistrySingleton",
+    "DatasetIORegistry",
     "TTVSetsIO",
     "TTVSetsIO",
     "BostonHousingLoader",

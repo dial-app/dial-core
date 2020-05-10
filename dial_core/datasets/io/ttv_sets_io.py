@@ -5,7 +5,7 @@ import os
 from typing import TYPE_CHECKING, Optional
 
 from dial_core.datasets import TTVSets
-from dial_core.datasets.io import DatasetIORegistrySingleton
+from dial_core.datasets.io import DatasetIORegistry
 
 if TYPE_CHECKING:
     from .ttv_sets_io_format import DatasetIO
@@ -21,25 +21,11 @@ class TTVSetsIO:
     """
 
     @classmethod
-    def save(
-        cls, parent_dir: str, dataset_io: "DatasetIO", ttv_sets: "TTVSets",
+    def save_to_file(
+        cls, description_file_path: str, dataset_io: "DatasetIO", ttv_sets: "TTVSets",
     ) -> dict:
-        """Saves a TTVSets object on the file system.
-
-        Depending on the passed `io_format`, the files structure will be different, but
-        all datasets must have a `description.json` file defining the general structure
-        of the Dataset: name, description, paths to train/test/validation datasets (if
-        any), datatypes used...
-
-        Args:
-            io_format: Format in which the datasets will be stored.
-            parent_path: Directory where the dataset will be created.
-
-        Returns:
-            The saved dictionary with the ttv_sets information
-        """
         # Save all datasets inside this directory
-        ttv_dir = os.path.join(parent_dir, ttv_sets.name)
+        ttv_dir = os.path.dirname(description_file_path)
 
         if not os.path.exists(ttv_dir):
             os.makedirs(ttv_dir, exist_ok=True)
@@ -47,49 +33,54 @@ class TTVSetsIO:
         ttv_description = cls.save_to_description(ttv_dir, dataset_io, ttv_sets)
 
         # Writes the datasets structure on a json file
-        with open(os.path.join(ttv_dir, "ttv_description.json"), "w") as desc_file:
+        with open(description_file_path, "w") as desc_file:
             json.dump(ttv_description, desc_file, indent=4)
 
         return ttv_description
 
     @classmethod
     def save_to_description(
-        self, parent_dir: str, dataset_io: "DatasetIO", ttv_sets: "TTVSets"
+        self, ttv_dir: str, dataset_io: "DatasetIO", ttv_sets: "TTVSets"
     ):
-        def save_dataset(identifier, dataset):
+        def save_dataset(dataset_dir, dataset):
             return (
-                dataset_io.save_to_description(
-                    identifier, os.path.join(parent_dir, identifier), dataset
-                )
+                dataset_io.save(os.path.join(ttv_dir, dataset_dir), dataset)
                 if dataset
                 else {}
             )
 
         return {
             "name": ttv_sets.name,
-            "format": dataset_io.__name__,
+            "format": str(dataset_io),
             "train": save_dataset("train", ttv_sets.train),
             "test": save_dataset("test", ttv_sets.test),
             "validation": save_dataset("validation", ttv_sets.validation),
         }
 
     @classmethod
-    def load(
-        cls, ttv_dir: str, dataset_io_providers=DatasetIORegistrySingleton()
+    def load_from_file(
+        cls, description_file_path: str, dataset_io_providers=DatasetIORegistry,
     ) -> "TTVSets":
-        """Loads a DatasetsGroup from the file system.
+        ttv_dir = os.path.dirname(description_file_path)
+        ttv_description = cls.load_ttv_description(description_file_path)
 
-        This method will first find the `description.json` file inside the dataset
-        directory. This file has the whole structure of the datasets and how to locate
-        the necessary files, along with which io_formats use.
-        """
-        ttv_description = cls.get_ttv_description(ttv_dir)
+        return cls.load_from_description(ttv_dir, ttv_description, dataset_io_providers)
 
-        dataset_io = getattr(dataset_io_providers, ttv_description["format"])()
+    @classmethod
+    def load_from_description(
+        cls,
+        ttv_dir: str,
+        ttv_description: dict,
+        dataset_io_providers=DatasetIORegistry,
+    ) -> "TTVSets":
 
-        def load_dataset(identifier, dataset_description):
+        dataset_io = getattr(dataset_io_providers, ttv_description["format"])
+
+        def load_dataset(dataset_dir, dataset_description):
             return (
-                dataset_io.load(os.path.join(ttv_dir, identifier))
+                dataset_io.set_description(dataset_description).load(
+                    os.path.join(ttv_dir, dataset_dir)
+                )
                 if dataset_description
                 else None
             )
@@ -98,13 +89,11 @@ class TTVSetsIO:
         test = load_dataset("test", ttv_description["test"])
         validation = load_dataset("validation", ttv_description["validation"])
 
-        return TTVSets(
-            name=ttv_description["name"], train=train, test=test, validation=validation,
-        )
+        return TTVSets(ttv_description["name"], train, test, validation)
 
     @classmethod
-    def get_ttv_description(cls, ttv_dir: str) -> Optional[dict]:
-        with open(os.path.join(ttv_dir, "ttv_description.json"), "r") as desc_file:
+    def load_ttv_description(cls, description_file_path: str) -> Optional[dict]:
+        with open(description_file_path, "r") as desc_file:
             return json.load(desc_file)
 
         return None

@@ -3,7 +3,7 @@
 """DataTypes used by the datasets."""
 
 from .categorical import Categorical
-from .datatype import DataType
+from .datatype import DataType, DataTypeContainer
 from .imagearray import ImageArray
 from .numeric import Numeric
 from .numericarray import NumericArray
