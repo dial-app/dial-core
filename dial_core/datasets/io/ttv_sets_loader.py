@@ -3,6 +3,7 @@
 from abc import ABCMeta, abstractmethod
 from typing import Tuple
 
+import numpy as np
 from tensorflow.keras.datasets import boston_housing, cifar10, fashion_mnist, mnist
 
 from dial_core.datasets import Dataset, TTVSets, datatype
@@ -135,6 +136,11 @@ class Cifar10Loader(TTVSetsLoader):
 
         train = Dataset(x_train, y_train, self.x_type, self.y_type)
         test = Dataset(x_test, y_test, self.x_type, self.y_type)
+
+        train.y = np.array(
+            [train.y_type.convert_to_expected_format(i) for i in train.y]
+        )
+        test.y = np.array([test.y_type.convert_to_expected_format(i) for i in test.y])
 
         return train, test, None
 

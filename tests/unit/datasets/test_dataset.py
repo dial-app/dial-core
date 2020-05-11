@@ -168,6 +168,19 @@ def test_process_roles(simple_categorical_dataset):
     assert y.tolist() == ["foo", "bar", "hue"]
 
 
+def test_transformer_functions(simple_numeric_dataset):
+    x_transformations = [lambda x: x * 2, lambda x: x + 2]
+    y_transformations = [lambda y: y / 10, lambda y: y + 10]
+
+    simple_numeric_dataset.x_transformations = x_transformations
+    simple_numeric_dataset.y_transformations = y_transformations
+
+    x, y = simple_numeric_dataset.head(3)
+
+    assert x.tolist() == [4, 6, 8]
+    assert y.tolist() == [11, 12, 13]
+
+
 def test_pickable(simple_numeric_dataset):
     obj = pickle.dumps(simple_numeric_dataset)
     pickle.loads(obj)

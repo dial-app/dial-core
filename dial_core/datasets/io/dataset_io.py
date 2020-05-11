@@ -303,7 +303,7 @@ class CategoricalImgDatasetIO(DatasetIO):
         dataset = super().load(dataset_dir)
 
         # Get categories if not defined
-        if self.get_y_type() is None:
+        if self.get_y_type() is None or len(self.get_y_type().categories) == 0:
             categorical_datatype = Categorical()
 
             if self.get_organization() == self.Organization.CategoryOnFolders:
@@ -336,22 +336,32 @@ class CategoricalImgDatasetIO(DatasetIO):
         x = []
         y = []
 
+        if not dataset_dir:
+            dataset.x = np.array(x)
+            dataset.y = np.array(y)
+
+            return dataset
+
         if self.get_organization() == self.Organization.CategoryOnFolders:
             for category_dir in os.listdir(dataset_dir):
-                if not os.path.isdir(os.path.join(dataset_dir, category_dir)):
+                category_dir_full_path = os.path.join(dataset_dir, category_dir)
+
+                if not os.path.isdir(category_dir_full_path):
                     continue
 
                 category_data = self.get_y_type().convert_to_expected_format(
                     category_dir
                 )
 
-                for image in os.listdir(os.path.join(dataset_dir, category_dir)):
-                    image = Image.open(os.path.join(dataset_dir, category_dir, image))
+                for image_filename in os.listdir(category_dir_full_path):
+                    im = Image.open(
+                        os.path.join(category_dir_full_path, image_filename)
+                    )
 
-                    x.append(np.array(image))
+                    x.append(np.array(im))
                     y.append(category_data)
 
-                    image.close()
+                    im.close()
 
         elif self.get_organization() == self.Organization.CategoryOnFilename:
             for image_filename in os.listdir(os.path.join(dataset_dir)):
@@ -364,12 +374,12 @@ class CategoricalImgDatasetIO(DatasetIO):
                         category_name
                     )
 
-                    image = Image.open(os.path.join(dataset_dir, image_filename))
+                    im = Image.open(os.path.join(dataset_dir, image_filename))
 
-                    x.append(np.array(image))
+                    x.append(np.array(im))
                     y.append(category_data)
 
-                    image.close()
+                    im.close()
 
                 except Exception as err:
                     print(err)
