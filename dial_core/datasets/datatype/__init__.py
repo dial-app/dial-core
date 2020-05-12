@@ -5,6 +5,7 @@
 from .categorical import Categorical
 from .datatype import DataType, DataTypeContainer
 from .imagearray import ImageArray
+from .imagepath import ImagePath
 from .numeric import Numeric
 from .numericarray import NumericArray
 
@@ -12,6 +13,7 @@ __all__ = [
     "Categorical",
     "DataType",
     "ImageArray",
+    "ImagePath",
     "Numeric",
     "NumericArray",
     "DataTypeContainer",
