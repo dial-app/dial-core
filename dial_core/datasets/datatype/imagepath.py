@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 import os
+from typing import Callable, List
 
 import dependency_injector.providers as providers
 import numpy as np
@@ -13,13 +14,18 @@ class ImagePath(DataType):
     """ The ImagePath class represents an image as an absolute path to a file that will
     be loading while training."""
 
+    def __init__(self):
+        super().__init__()
+
+        self.transformations: List[Callable] = []
+
     def process(self, data: str) -> "np.ndarray":
         """Returns `data` as an array with pixel values in the range (0-1)."""
         image_array = self.display(data)
 
-        data = data / 255.0
+        image_array = image_array / 255.0
 
-        return image_array
+        return self._apply_transformations(image_array)
 
     def display(self, data: "np.ndarray") -> "np.ndarray":
         """Returns the loaded data _as it is_. Can be used to paint the image."""

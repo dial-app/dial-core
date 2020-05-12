@@ -1,5 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
+from typing import Callable, List
+
 import dependency_injector.providers as providers
 import numpy as np
 
@@ -18,12 +20,17 @@ class ImageArray(DataType):
     represents the number of color channels (For RGB images it would be 3, for example)
     """
 
+    def __init__(self):
+        super().__init__()
+
+        self.transformations: List[Callable] = []
+
     def process(self, data: "np.ndarray") -> "np.ndarray":
         """Returns `data` as a flattened array with pixel values in the range (0-1)."""
         # data = data.flatten()
         data = data / 255.0
 
-        return data
+        return self._apply_transformations(data)
 
     def display(self, data: "np.ndarray") -> "np.ndarray":
         """Returns the data _as it is_, and can be used to paint the image."""

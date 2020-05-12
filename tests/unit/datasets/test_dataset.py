@@ -172,8 +172,8 @@ def test_transformer_functions(simple_numeric_dataset):
     x_transformations = [lambda x: x * 2, lambda x: x + 2]
     y_transformations = [lambda y: y / 10, lambda y: y + 10]
 
-    simple_numeric_dataset.x_transformations = x_transformations
-    simple_numeric_dataset.y_transformations = y_transformations
+    simple_numeric_dataset.x_type.transformations = x_transformations
+    simple_numeric_dataset.y_type.transformations = y_transformations
 
     x, y = simple_numeric_dataset.head(3)
 

@@ -1,6 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from abc import ABCMeta, abstractmethod
+from typing import Any, Callable, List
 
 import dependency_injector.containers as containers
 
@@ -17,6 +18,8 @@ class DataType(metaclass=ABCMeta):
 
     def __init__(self):
         self.is_editable = False
+
+        self.transformations: List[Callable] = []
 
     @abstractmethod
     def process(self, data):
@@ -63,6 +66,13 @@ class DataType(metaclass=ABCMeta):
 
         except KeyError:
             return None
+
+    def _apply_transformations(self, value: Any):
+        result = value
+        for f in self.transformations:
+            result = f(result)
+
+        return result
 
     def __getstate__(self) -> dict:
         return {"class": str(self)}

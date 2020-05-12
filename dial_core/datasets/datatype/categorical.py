@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import List, Union
+from typing import Callable, List, Union
 
 import dependency_injector.providers as providers
 import numpy as np
@@ -41,6 +41,8 @@ class Categorical(DataType):
 
         self.categories = categories
 
+        self.transformations: List[Callable] = []
+
     def process(self, data: int) -> List[int]:
         """Returns `data` on the one-hot-encoding format.
 
@@ -57,7 +59,9 @@ class Categorical(DataType):
         Raises:
             IndexError: if `data` is out of bounds of the `categories` array.
         """
-        return keras.utils.to_categorical(data, len(self.categories))
+        return self._apply_transformations(
+            keras.utils.to_categorical(data, len(self.categories))
+        )
 
     def display(self, data: int) -> str:
         """Returns `data` as the corresponding name of the category.

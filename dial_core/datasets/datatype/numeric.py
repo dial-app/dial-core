@@ -1,6 +1,6 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-from typing import Any
+from typing import Any, Callable, List
 
 import dependency_injector.providers as providers
 
@@ -15,9 +15,11 @@ class Numeric(DataType):
     def __init__(self):
         self.is_editable = True
 
+        self.transformations: List[Callable] = []
+
     def process(self, data: int) -> int:
         """Returns the number. It doesn't need any processing."""
-        return data
+        return self._apply_transformations(data)
 
     def display(self, data: int) -> str:
         """Returns the interger as a string."""

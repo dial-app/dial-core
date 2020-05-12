@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from enum import Enum
-from typing import TYPE_CHECKING, Any, Callable, List, Tuple
+from typing import TYPE_CHECKING, Any, List, Tuple
 
 import numpy as np
 from tensorflow import keras
@@ -47,10 +47,6 @@ class Dataset(keras.utils.Sequence):
         # Data types
         self.x_type = Numeric() if x_type is None else x_type
         self.y_type = Numeric() if y_type is None else y_type
-
-        # Data transformation functions
-        self.x_transformations: List[Callable] = []
-        self.y_transformations: List[Callable] = []
 
         self.batch_size = batch_size
 
@@ -123,34 +119,13 @@ class Dataset(keras.utils.Sequence):
         and return the corresponding array.
         """
         if role == self.Role.Raw:
-            x_data = np.array(
-                [
-                    self._apply_transformations(
-                        self.x_type.process(element), self.x_transformations
-                    )
-                    for element in x_data
-                ]
-            )
-            y_data = np.array(
-                [
-                    self._apply_transformations(
-                        self.y_type.process(element), self.y_transformations
-                    )
-                    for element in y_data
-                ]
-            )
+            x_data = np.array([self.x_type.process(element) for element in x_data])
+            y_data = np.array([self.y_type.process(element) for element in y_data])
         elif role == self.Role.Display:
             x_data = np.array([self.x_type.display(element) for element in x_data])
             y_data = np.array([self.y_type.display(element) for element in y_data])
 
         return (x_data, y_data)
-
-    def _apply_transformations(self, value: Any, transformations):
-        result = value
-        for transformation in transformations:
-            result = transformation(result)
-
-        return result
 
     def __str__(self):
         return f"Dataset (x={self.x_type}, y={self.y_type})"
