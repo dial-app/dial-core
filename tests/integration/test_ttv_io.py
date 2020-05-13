@@ -1,17 +1,8 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
-import pytest
 import tensorflow as tf
 
 # from dial_core.datasets import Dataset, datatype
-from dial_core.datasets.io import (
-    CategoricalImgDatasetIO,
-    Cifar10Loader,
-    FashionMnistLoader,
-    MnistLoader,
-    NpzDatasetIO,
-    TTVSetsIO,
-)
 
 
 class DataAugmentator:
@@ -29,20 +20,6 @@ class DataAugmentator:
         image = image.resize(self.target_shape)
 
         return tf.keras.preprocessing.image.img_to_array(image)
-
-
-def test_fine_tunning():
-
-    ttv = Cifar10Loader().load()
-
-    da = DataAugmentator()
-
-    ttv.train.x_type.transformations = [da.pfun]
-
-    print(ttv.train.input_shape)
-    print(ttv.train.output_shape)
-
-    pytest.fail("END")
 
 
 # def test_ttv_io():

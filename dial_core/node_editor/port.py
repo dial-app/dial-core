@@ -1,7 +1,7 @@
 # vim: ft=python fileencoding=utf-8 sts=4 sw=4 et:
 
 from copy import deepcopy
-from typing import Any, Optional, Set, Type
+from typing import Any, Set, Type
 
 from dial_core.utils.exceptions import InvalidPortTypeError, PortNotConnectedError
 from dial_core.utils.log import DEBUG, ERROR, log_on_end, log_on_error
@@ -39,7 +39,7 @@ class Port:
         self._connected_to: Set["Port"] = set()  # Avoid repeated ports
         self.compatible_port_classes: Set[Type["Port"]] = set([Port])
 
-        self.node: Optional["Node"] = None  # type: ignore
+        self.node = None  # type: ignore
 
         self.allows_multiple_connections = allows_multiple_connections
 
