@@ -5,9 +5,7 @@ loading.
 """
 
 from .dataset import Dataset
+from .io import DatasetIORegistry
 from .ttv_sets import TTVSets
 
-__all__ = [
-    "Dataset",
-    "TTVSets",
-]
+__all__ = ["Dataset", "TTVSets", "DatasetIORegistry"]
