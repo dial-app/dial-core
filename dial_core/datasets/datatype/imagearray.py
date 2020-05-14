@@ -26,9 +26,11 @@ class ImageArray(DataType):
         self.transformations: List[Callable] = []
 
     def process(self, data: "np.ndarray") -> "np.ndarray":
-        """Returns `data` as a flattened array with pixel values in the range (0-1)."""
-        # data = data.flatten()
+        """Returns `data` with pixel values in the range (0-1)."""
         data = data / 255.0
+
+        if len(data.shape) == 2:
+            data = np.expand_dims(data, axis=2)
 
         return self._apply_transformations(data)
 
