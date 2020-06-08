@@ -97,4 +97,4 @@ def test_generate_notebook():
     notebook_project_generator.set_project(project)
     print(notebook_project_generator.notebook.cells)
 
-    notebook_project_generator.save_notebook_as("testnb.ipynb")
+    # notebook_project_generator.save_notebook_as("testnb.ipynb")
