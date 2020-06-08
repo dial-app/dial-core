@@ -23,7 +23,7 @@ if os.path.exists(readme_path):
 setup(
     long_description=readme,
     name="dial-core",
-    version="0.20a0",
+    version="0.21a0",
     description="Deep Learning, node-based framework",
     python_requires="<=3.8.3,>=3.6.0",
     project_urls={
