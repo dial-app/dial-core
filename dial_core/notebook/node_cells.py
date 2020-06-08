@@ -9,8 +9,7 @@ if TYPE_CHECKING:
 
 
 class NodeCells:
-    """The NodeCells class is the base implementation for a transformation between Node
-    instances and cells that can be inserted on a Jupyter notebook.
+    """The NodeCells class maps a Node class into Jupyter cells.
 
     Attributes:
         node: The associated Node instance.
@@ -29,7 +28,7 @@ class NodeCells:
         return self._header_cells() + self._input_variables_cells() + self._body_cells()
 
     def _title_cells(self) -> List[Dict[str, str]]:
-        """Returns the cells corresponding to the title.
+        """Returns the title, a header identifying the node.
 
         By default, returns a header with the name and node type.
         """
@@ -39,9 +38,18 @@ class NodeCells:
             )
         ]
 
+    def _instantiation_cells(self) -> List[Dict[str, str]]:
+        return [
+            nbf.v4.new_code_cell(
+                source=f"# Instantiation\n"
+                f"{self._node.title.replace(' ', '_').lower()}_node "
+                f"= {type(self._node).__qualname__}()"
+            )
+        ]
+
     def _header_cells(self) -> List[Dict[str, str]]:
-        """Returns the title cells."""
-        return self._title_cells()
+        """Returns the title cells and the node variable."""
+        return self._title_cells() + self._instantiation_cells()
 
     def _input_variables_cells(self):
         """Returns the cells that define the input variables used by this node."""
@@ -63,7 +71,8 @@ class NodeCells:
         return [nbf.v4.new_code_cell(source=input_variables_code)]
 
     def _body_cells(self):
-        """Returns Code and Explanations cells, for example.
+        """Returns cells that constitute the implementation (code, exmplanation text,
+        examples...).
 
         Must be implemented on subclasses.
         """
