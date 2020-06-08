@@ -148,6 +148,9 @@ class Node:
         for port in list(self.inputs.values()) + list(self.outputs.values()):
             port.clear_all_connections()
 
+    def word_id(self) -> str:
+        return self.title.lower().replace(" ", "_") + "_node"
+
     def _nodes_connected_to(self, ports: Union[List["Port"], "Port"]) -> List["Node"]:
         """Returns a list of all the nodes connected to any port in the passed list.
 

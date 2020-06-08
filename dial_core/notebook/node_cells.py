@@ -42,7 +42,7 @@ class NodeCells:
         return [
             nbf.v4.new_code_cell(
                 source=f"# Instantiation\n"
-                f"{self._node.title.replace(' ', '_').lower()}_node "
+                f"{self.node.word_id()} "
                 f"= NodeRegistrySingleton().get_factory_for("
                 f"{type(self._node).__qualname__})()"
             )
